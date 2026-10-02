@@ -8,7 +8,7 @@
 
 O frontend está compilado e ativo para acesso imediato no seu navegador:
 
-- **🔗 URL de Acesso:** [**http://localhost:3000**](http://localhost:3000)
+- **🔗 URL de Acesso Local:** [**http://localhost:5173**](http://localhost:5173)
 - **⚙️ Backend API NestJS:** [**http://localhost:3001/api/v1**](http://localhost:3001/api/v1)
 - **📚 Documentação Swagger / OpenAPI:** [**http://localhost:3001/api/docs**](http://localhost:3001/api/docs)
 - **⚡ Gateway WebSocket Real-Time:** `ws://localhost:3001/realtime`
