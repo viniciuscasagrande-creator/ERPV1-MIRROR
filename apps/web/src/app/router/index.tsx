@@ -25,6 +25,15 @@ import { ApuracaoTributariaPage } from '../../modules/fiscal/ApuracaoTributariaP
 import { SpedObrigacoesPage } from '../../modules/fiscal/SpedObrigacoesPage';
 import { BiDashboardPage } from '../../modules/bi/BiDashboardPage';
 import { RelatoriosPage } from '../../modules/relatorios/RelatoriosPage';
+
+// FASE 8: Portal Contábil do Produtor
+import { ProducerLayout } from '../../modules/producer-portal/ProducerLayout';
+import { ProducerDashboardPage } from '../../modules/producer-portal/ProducerDashboardPage';
+import { ProducerEventosPage } from '../../modules/producer-portal/ProducerEventosPage';
+import { ProducerRepassesPage } from '../../modules/producer-portal/ProducerRepassesPage';
+import { ProducerDocumentosPage } from '../../modules/producer-portal/ProducerDocumentosPage';
+import { ProducerContaBancariaPage } from '../../modules/producer-portal/ProducerContaBancariaPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -49,11 +58,41 @@ const RoleRoute: React.FC<{ roles: PerfilUsuario[]; children: React.ReactNode }>
   return <>{children}</>;
 };
 
+// Redirecionamento de Raiz inteligente baseado no Perfil
+const RootRedirect: React.FC = () => {
+  const user = useAuthStore((state) => state.user);
+  if (
+    user?.roles.includes(PerfilUsuario.PRODUTOR) &&
+    !user?.roles.includes(PerfilUsuario.ADMIN)
+  ) {
+    return <Navigate to="/portal-produtor/dashboard" replace />;
+  }
+  return <Navigate to="/dashboard" replace />;
+};
+
 export const AppRouter: React.FC = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
 
+      {/* Módulo FASE 8: Portal Contábil do Produtor (Acesso Externo Restrito Multi-Tenant) */}
+      <Route
+        path="/portal-produtor"
+        element={
+          <ProtectedRoute>
+            <ProducerLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="/portal-produtor/dashboard" replace />} />
+        <Route path="dashboard" element={<ProducerDashboardPage />} />
+        <Route path="eventos" element={<ProducerEventosPage />} />
+        <Route path="repasses" element={<ProducerRepassesPage />} />
+        <Route path="documentos" element={<ProducerDocumentosPage />} />
+        <Route path="conta-bancaria" element={<ProducerContaBancariaPage />} />
+      </Route>
+
+      {/* ERP Contábil / Financeiro Interno DiskIngressos */}
       <Route
         path="/"
         element={
@@ -62,7 +101,7 @@ export const AppRouter: React.FC = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route index element={<RootRedirect />} />
         <Route path="dashboard" element={<DashboardPage />} />
 
         {/* Módulos FASE 2: Operações Core, Eventos & Produtores */}

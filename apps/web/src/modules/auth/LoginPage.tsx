@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/auth.store';
 import { api } from '../../services/api';
 import { Lock, Mail, ArrowRight, ShieldCheck, UserCheck, AlertCircle } from 'lucide-react';
-import { LoginResponse } from '@diskingressos/types';
+import { LoginResponse, PerfilUsuario } from '@diskingressos/types';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +22,14 @@ export const LoginPage: React.FC = () => {
     try {
       const response = await api.post<any, LoginResponse>('/auth/login', { email, senha });
       setAuth(response.user, response.tokens);
-      navigate('/dashboard');
+      if (
+        response.user.roles.includes(PerfilUsuario.PRODUTOR) &&
+        !response.user.roles.includes(PerfilUsuario.ADMIN)
+      ) {
+        navigate('/portal-produtor/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
       console.error(err);
       setError(

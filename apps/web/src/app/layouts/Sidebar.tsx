@@ -17,6 +17,7 @@ import {
   ChevronDown,
   ChevronRight,
   SlidersHorizontal,
+  ExternalLink,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -121,6 +122,12 @@ const menuItems: MenuItem[] = [
     icon: Users,
     path: '/usuarios',
     requiredRole: [PerfilUsuario.ADMIN],
+  },
+  {
+    title: 'Portal do Produtor',
+    icon: ExternalLink,
+    path: '/portal-produtor/dashboard',
+    badge: 'Externo',
   },
   {
     title: 'Configurações',
