@@ -1,0 +1,25 @@
+{
+  "name": "@diskingressos/utils",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared formatting, masking and validation utilities for DiskIngressos ERP",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "@diskingressos/config": "*",
+    "typescript": "^5.3.3"
+  }
+}

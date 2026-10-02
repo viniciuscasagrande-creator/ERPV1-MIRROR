@@ -1,0 +1,1013 @@
+// ==============================================================================
+// DISKINGRESSOS ERP - SCHEMA DO BANCO DE DADOS (PRISMA ORM)
+// PostgreSQL 16 Enterprise - FASE 1, FASE 2 & FASE 3 (Financeiro & Tesouraria)
+// ==============================================================================
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ------------------------------------------------------------------------------
+// ENUMS DE SEGURANÇA E GOVERNANÇA
+// ------------------------------------------------------------------------------
+
+enum PerfilUsuario {
+  ADMIN
+  DIRETORIA
+  FINANCEIRO
+  CONTABILIDADE
+  OPERACIONAL
+  PRODUTOR
+}
+
+enum StatusOperacao {
+  ATIVO
+  BLOQUEADO
+  INATIVO
+}
+
+enum CanalVenda {
+  ONLINE
+  PDV
+  POS
+  TOTEM
+}
+
+enum StatusVenda {
+  APROVADO
+  PENDENTE
+  CANCELADO
+  ESTORNADO
+}
+
+enum MetodoPagamento {
+  PIX
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  BOLETO
+  OUTRO
+}
+
+enum StatusPagamento {
+  APROVADO
+  PENDENTE
+  ESTORNADO
+  RECUSADO
+}
+
+enum StatusLote {
+  ABERTO
+  ESGOTADO
+  ENCERRADO
+}
+
+enum StatusEvento {
+  PUBLICADO
+  EM_ANDAMENTO
+  REALIZADO
+  CANCELADO
+  ENCERRADO
+}
+
+enum StatusFinanceiroEvento {
+  EM_ANDAMENTO
+  AGUARDANDO_CONCILIACAO
+  APURADO
+  LIQUIDADO
+  FECHADO
+}
+
+// ENUMS DA FASE 3 - FINANCEIRO
+enum StatusRecebivel {
+  A_VENCER
+  VENCIDO
+  RECEBIDO
+  ANTECIPADO
+  BAIXADO
+}
+
+enum StatusContaPagar {
+  EM_ABERTO
+  AGENDADO
+  PAGO
+  ATRASADO
+  CANCELADO
+}
+
+enum StatusRepasse {
+  SOLICITADO
+  EM_ANALISE
+  APROVADO
+  AGENDADO
+  PAGO
+  REJEITADO
+  CANCELADO
+}
+
+enum CategoriaDespesa {
+  FORNECEDOR
+  IMPOSTO
+  TAXA
+  REEMBOLSO
+  INFRAESTRUTURA
+  COMISSAO
+  OUTRO
+}
+
+enum TipoTransacao {
+  ENTRADA
+  SAIDA
+}
+
+// ENUMS DA FASE 4 - BANCOS, GATEWAYS & CONCILIAÇÃO
+enum TipoContaBancaria {
+  CORRENTE
+  POUPANCA
+  APLICACAO
+}
+
+enum TipoLancamentoExtrato {
+  CREDITO
+  DEBITO
+}
+
+enum StatusConciliacao {
+  CONCILIADO
+  PENDENTE
+  DIVERGENTE
+  IGNORADO
+}
+
+enum StatusGateway {
+  ATIVO
+  HOMOLOGACAO
+  MANUTENCAO
+}
+
+// ENUMS DA FASE 5 - CONTABILIDADE OFICIAL (PARTIDAS DOBRADAS)
+enum NaturezaConta {
+  DEVEDORA
+  CREDORA
+}
+
+enum GrupoContabil {
+  ATIVO_CIRCULANTE
+  ATIVO_NAO_CIRCULANTE
+  PASSIVO_CIRCULANTE
+  PASSIVO_NAO_CIRCULANTE
+  PATRIMONIO_LIQUIDO
+  RECEITAS
+  DESPESAS
+  CUSTOS
+}
+
+enum TipoPartida {
+  DEBITO
+  CREDITO
+}
+
+enum StatusLancamento {
+  RASCUNHO
+  CONFIRMADO
+  ESTORNADO
+}
+
+// ENUMS DA FASE 6 - FISCAL, TRIBUTÁRIO & NOTAS FISCAIS
+enum TipoDocumentoFiscal {
+  NFSE
+  NFE
+}
+
+enum StatusDocumentoFiscal {
+  AUTORIZADO
+  EMITIDO
+  PROCESSANDO
+  CANCELADO
+  REJEITADO
+}
+
+enum RegimeTributario {
+  LUCRO_PRESUMIDO
+  LUCRO_REAL
+  SIMPLES_NACIONAL
+}
+
+enum TipoTributo {
+  ISS
+  IRRF
+  PIS
+  COFINS
+  CSLL
+  INSS
+}
+
+enum StatusGuiaRecolhimento {
+  A_RECOLHER
+  PAGA
+  VENCIDA
+}
+
+enum TipoSped {
+  EFD_REINF
+  SPED_FISCAL
+  SPED_CONTRIBUICOES
+  DCTF_WEB
+}
+
+// ------------------------------------------------------------------------------
+// USUÁRIOS, PERFIS E PERMISSÕES (RBAC)
+// ------------------------------------------------------------------------------
+
+model User {
+  id              String         @id @default(uuid())
+  nome            String
+  email           String         @unique
+  senhaHash       String         @map("senha_hash")
+  cargo           String
+  telefone        String?
+  ativo           Boolean        @default(true)
+  status          StatusOperacao @default(ATIVO)
+
+  // Vínculo Multi-Tenant: Obrigatório quando perfil for PRODUTOR
+  producerId      String?        @map("producer_id")
+  producer        Producer?      @relation(fields: [producerId], references: [id], onDelete: SetNull)
+
+  roles           UserRole[]
+  refreshTokens   RefreshToken[]
+  auditLogs       AuditLog[]
+
+  settlementsSolicitados ProducerSettlement[] @relation("SolicitanteRepasse")
+  settlementsAprovados   ProducerSettlement[] @relation("AprovadorRepasse")
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt      @map("updated_at")
+
+  @@map("users")
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  nome            PerfilUsuario    @unique
+  descricao       String
+
+  users           UserRole[]
+  permissions     RolePermission[]
+
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt      @map("updated_at")
+
+  @@map("roles")
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  recurso         String
+  acao            String
+  descricao       String
+
+  roles           RolePermission[]
+
+  @@unique([recurso, acao])
+  @@map("permissions")
+}
+
+model UserRole {
+  userId          String         @map("user_id")
+  roleId          String         @map("role_id")
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role            Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId          String         @map("role_id")
+  permissionId    String         @map("permission_id")
+  role            Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission      Permission     @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model RefreshToken {
+  id              String         @id @default(uuid())
+  tokenHash       String         @unique @map("token_hash")
+  userId          String         @map("user_id")
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiraEm        DateTime       @map("expira_em")
+  revogado        Boolean        @default(false)
+  revogadoEm      DateTime?      @map("revogado_em")
+  ipCriacao       String?        @map("ip_criacao")
+  userAgent       String?        @map("user_agent")
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  @@map("refresh_tokens")
+}
+
+model AuditLog {
+  id              String         @id @default(uuid())
+  usuarioId       String?        @map("usuario_id")
+  usuario         User?          @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+  acao            String
+  entidade        String
+  entidadeId      String?        @map("entidade_id")
+  valorAnterior   String?        @map("valor_anterior")
+  valorNovo       String?        @map("valor_novo")
+  motivo          String?
+  ip              String?
+  userAgent       String?        @map("user_agent")
+
+  criadoEm        DateTime       @default(now()) @map("criado_em")
+
+  @@index([entidade, entidadeId])
+  @@index([criadoEm])
+  @@map("audit_logs")
+}
+
+// ------------------------------------------------------------------------------
+// FASE 2 & FASE 3: PRODUTORES
+// ------------------------------------------------------------------------------
+
+model Producer {
+  id              String         @id @default(uuid())
+  razaoSocial     String         @map("razao_social")
+  nomeFantasia    String         @map("nome_fantasia")
+  cnpj            String         @unique
+  email           String
+  telefone        String
+  status          StatusOperacao @default(ATIVO)
+  cidade          String         @default("Curitiba")
+  estado          String         @default("PR")
+
+  // Regras Comerciais Contratuais
+  taxaComissao    Decimal        @default(10.00) @db.Decimal(5, 2) @map("taxa_comissao")
+  taxaMdr         Decimal        @default(2.90)  @db.Decimal(5, 2) @map("taxa_mdr")
+
+  // Dados Bancários Homologados para Repasses
+  bancoNome       String?        @map("banco_nome")
+  bancoCodigo     String?        @map("banco_codigo")
+  agencia         String?
+  contaCorrente   String?        @map("conta_corrente")
+  chavePix        String?        @map("chave_pix")
+
+  users           User[]
+  events          Event[]
+  settlements     ProducerSettlement[]
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt      @map("updated_at")
+
+  @@map("producers")
+}
+
+// ------------------------------------------------------------------------------
+// FASE 2 & FASE 3: EVENTOS & BILHETERIA
+// ------------------------------------------------------------------------------
+
+model Event {
+  id                String                 @id @default(uuid())
+  nome              String
+  categoria         String                 @default("Show / Festival")
+  dataEvento        DateTime               @map("data_evento")
+  local             String
+  cidade            String                 @default("Curitiba")
+  estado            String                 @default("PR")
+  capacidadeTotal   Int                    @map("capacidade_total")
+  status            StatusEvento           @default(PUBLICADO)
+  statusFinanceiro  StatusFinanceiroEvento @default(EM_ANDAMENTO) @map("status_financeiro")
+
+  producerId        String                 @map("producer_id")
+  producer          Producer               @relation(fields: [producerId], references: [id], onDelete: Restrict)
+
+  batches           TicketBatch[]
+  sales             Sale[]
+  financialSummary  EventFinancialSummary?
+  closingChecklist  EventClosingChecklist?
+  receivables       AccountReceivable[]
+  payables          AccountPayable[]
+  settlements       ProducerSettlement[]
+  fiscalInvoices    FiscalInvoice[]
+
+  createdAt         DateTime               @default(now()) @map("created_at")
+  updatedAt         DateTime               @updatedAt      @map("updated_at")
+
+  @@index([producerId])
+  @@index([dataEvento])
+  @@map("events")
+}
+
+model TicketBatch {
+  id              String         @id @default(uuid())
+  eventId         String         @map("event_id")
+  event           Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  nome            String
+  inicioVendas    DateTime       @default(now()) @map("inicio_vendas")
+  fimVendas       DateTime?      @map("fim_vendas")
+  status          StatusLote     @default(ABERTO)
+
+  ticketTypes     TicketType[]
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt      @map("updated_at")
+
+  @@map("ticket_batches")
+}
+
+model TicketType {
+  id              String         @id @default(uuid())
+  batchId         String         @map("batch_id")
+  batch           TicketBatch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  nome            String
+  precoUnitario   Decimal        @db.Decimal(10, 2) @map("preco_unitario")
+  taxaServico     Decimal        @default(10.00) @db.Decimal(5, 2) @map("taxa_servico")
+  quantidadeTotal Int            @map("quantidade_total")
+  quantidadeVendida Int          @default(0) @map("quantidade_vendida")
+
+  saleItems       SaleItem[]
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt      @map("updated_at")
+
+  @@map("ticket_types")
+}
+
+// ------------------------------------------------------------------------------
+// FASE 2: VENDAS, PAGAMENTOS E ITENS
+// ------------------------------------------------------------------------------
+
+model Sale {
+  id              String         @id @default(uuid())
+  codigoPedido    String         @unique @map("codigo_pedido")
+  eventId         String         @map("event_id")
+  event           Event          @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  canal           CanalVenda     @default(ONLINE)
+
+  compradorNome   String         @map("comprador_nome")
+  compradorCpf    String         @map("comprador_cpf")
+  compradorEmail  String         @map("comprador_email")
+
+  totalBruto      Decimal        @db.Decimal(12, 2) @map("total_bruto")
+  totalTaxas      Decimal        @db.Decimal(12, 2) @map("total_taxas")
+  totalDescontos  Decimal        @default(0.00) @db.Decimal(12, 2) @map("total_descontos")
+  totalLiquido    Decimal        @db.Decimal(12, 2) @map("total_liquido")
+
+  status          StatusVenda    @default(APROVADO)
+
+  items           SaleItem[]
+  payments        Payment[]
+  refunds         Refund[]
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt      @map("updated_at")
+
+  @@index([eventId])
+  @@index([createdAt])
+  @@map("sales")
+}
+
+model SaleItem {
+  id              String         @id @default(uuid())
+  saleId          String         @map("sale_id")
+  sale            Sale           @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  ticketTypeId    String         @map("ticket_type_id")
+  ticketType      TicketType     @relation(fields: [ticketTypeId], references: [id], onDelete: Restrict)
+  quantidade      Int
+  precoUnitario   Decimal        @db.Decimal(10, 2) @map("preco_unitario")
+  subtotal        Decimal        @db.Decimal(10, 2)
+  taxaCalculada   Decimal        @db.Decimal(10, 2) @map("taxa_calculada")
+
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  @@map("sale_items")
+}
+
+model Payment {
+  id                  String          @id @default(uuid())
+  saleId              String          @map("sale_id")
+  sale                Sale            @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  metodo              MetodoPagamento
+  parcelas            Int             @default(1)
+  gateway             String          @default("Cielo")
+  transacaoId         String          @map("transacao_id")
+  codigoAutorizacao   String?         @map("codigo_autorizacao")
+
+  valorPago           Decimal         @db.Decimal(12, 2) @map("valor_pago")
+  taxaMdrPercent      Decimal         @db.Decimal(5, 2) @map("taxa_mdr_percent")
+  taxaMdrValor        Decimal         @db.Decimal(10, 2) @map("taxa_mdr_valor")
+  valorLiquidoGateway Decimal         @db.Decimal(12, 2) @map("valor_liquido_gateway")
+
+  status              StatusPagamento @default(APROVADO)
+  pagoEm              DateTime        @default(now()) @map("pago_em")
+
+  refunds             Refund[]
+
+  createdAt           DateTime        @default(now()) @map("created_at")
+
+  @@index([saleId])
+  @@map("payments")
+}
+
+model Refund {
+  id              String         @id @default(uuid())
+  saleId          String         @map("sale_id")
+  sale            Sale           @relation(fields: [saleId], references: [id], onDelete: Restrict)
+  paymentId       String?        @map("payment_id")
+  payment         Payment?       @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  valorEstorno    Decimal        @db.Decimal(12, 2) @map("valor_estorno")
+  taxaRetida      Decimal        @default(0.00) @db.Decimal(10, 2) @map("taxa_retida")
+  motivo          String
+  status          String         @default("PROCESSADO_GATEWAY")
+
+  solicitadoEm    DateTime       @default(now()) @map("solicitado_em")
+  processadoEm    DateTime?      @map("processado_em")
+
+  @@map("refunds")
+}
+
+model EventFinancialSummary {
+  id                    String                 @id @default(uuid())
+  eventId               String                 @unique @map("event_id")
+  event                 Event                  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  vendasBrutas          Decimal                @default(0.00) @db.Decimal(15, 2) @map("vendas_brutas")
+  cancelamentos         Decimal                @default(0.00) @db.Decimal(15, 2)
+  estornos              Decimal                @default(0.00) @db.Decimal(15, 2)
+  taxasMdrGateway       Decimal                @default(0.00) @db.Decimal(15, 2) @map("taxas_mdr_gateway")
+  comissaoDisk          Decimal                @default(0.00) @db.Decimal(15, 2) @map("comissao_disk")
+  taxasServicoDisk      Decimal                @default(0.00) @db.Decimal(15, 2) @map("taxas_servico_disk")
+  retencoesTributarias  Decimal                @default(0.00) @db.Decimal(15, 2) @map("retencoes_tributarias")
+  valorLiquidoProdutor  Decimal                @default(0.00) @db.Decimal(15, 2) @map("valor_liquido_produtor")
+
+  ingressosVendidos     Int                    @default(0) @map("ingressos_vendidos")
+  ingressosCancelados   Int                    @default(0) @map("ingressos_cancelados")
+
+  updatedAt             DateTime               @updatedAt @map("updated_at")
+
+  @@map("event_financial_summaries")
+}
+
+model EventClosingChecklist {
+  id                      String   @id @default(uuid())
+  eventId                 String   @unique @map("event_id")
+  event                   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  vendasConferidas        Boolean  @default(false) @map("vendas_conferidas")
+  cancelamentosConferidos Boolean  @default(false) @map("cancelamentos_conferidos")
+  estornosConferidos      Boolean  @default(false) @map("estornos_conferidos")
+  gatewayConciliado       Boolean  @default(false) @map("gateway_conciliado")
+  bancoConciliado         Boolean  @default(false) @map("banco_conciliado")
+  financeiroApurado       Boolean  @default(false) @map("financeiro_apurado")
+  contabilidadeProcessada Boolean  @default(false) @map("contabilidade_processada")
+  repasseCalculado        Boolean  @default(false) @map("repasse_calculado")
+  repasseAprovado         Boolean  @default(false) @map("repasse_aprovado")
+  eventoFechado           Boolean  @default(false) @map("evento_fechado")
+
+  observacoes             String?
+  fechadoPor              String?  @map("fechado_por")
+  fechadoEm               DateTime? @map("fechado_em")
+
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  @@map("event_closing_checklists")
+}
+
+// ------------------------------------------------------------------------------
+// FASE 3: FINANCEIRO & TESOURARIA
+// ------------------------------------------------------------------------------
+
+model AccountReceivable {
+  id              String          @id @default(uuid())
+  eventId         String          @map("event_id")
+  event           Event           @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  adquirente      String          // Cielo, Stone, Rede, PagBank
+  metodo          MetodoPagamento
+  transacaoRef    String          @map("transacao_ref")
+
+  valorBruto      Decimal         @db.Decimal(15, 2) @map("valor_bruto")
+  taxaMdr         Decimal         @db.Decimal(15, 2) @map("taxa_mdr")
+  valorLiquido    Decimal         @db.Decimal(15, 2) @map("valor_liquido")
+
+  dataVencimento  DateTime        @map("data_vencimento")
+  dataRecebimento DateTime?       @map("data_recebimento")
+  status          StatusRecebivel @default(A_VENCER)
+  antecipado      Boolean         @default(false)
+
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt      @map("updated_at")
+
+  @@index([eventId])
+  @@index([dataVencimento])
+  @@index([status])
+  @@map("accounts_receivable")
+}
+
+model AccountPayable {
+  id                String           @id @default(uuid())
+  descricao         String
+  categoria         CategoriaDespesa @default(FORNECEDOR)
+  fornecedorNome    String           @map("fornecedor_nome")
+  fornecedorCpfCnpj String           @map("fornecedor_cpf_cnpj")
+  
+  valor             Decimal          @db.Decimal(15, 2)
+  dataVencimento    DateTime         @map("data_vencimento")
+  dataPagamento     DateTime?        @map("data_pagamento")
+  status            StatusContaPagar @default(EM_ABERTO)
+  formaPagamento    String           @default("PIX") @map("forma_pagamento")
+  comprovanteRef    String?          @map("comprovante_ref")
+  aprovadoPor       String?          @map("aprovado_por")
+
+  eventId           String?          @map("event_id")
+  event             Event?           @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt      @map("updated_at")
+
+  @@index([dataVencimento])
+  @@index([status])
+  @@map("accounts_payable")
+}
+
+model ProducerSettlement {
+  id                  String         @id @default(uuid())
+  codigo              String         @unique // Ex: "REP-2026-000129"
+  producerId          String         @map("producer_id")
+  producer            Producer       @relation(fields: [producerId], references: [id], onDelete: Restrict)
+  eventId             String         @map("event_id")
+  event               Event          @relation(fields: [eventId], references: [id], onDelete: Restrict)
+
+  valorBrutoApurado   Decimal        @db.Decimal(15, 2) @map("valor_bruto_apurado")
+  retencaoSeguranca   Decimal        @default(0.00) @db.Decimal(15, 2) @map("retencao_seguranca")
+  valorSolicitado     Decimal        @db.Decimal(15, 2) @map("valor_solicitado")
+  valorLiquido        Decimal        @db.Decimal(15, 2) @map("valor_liquido")
+
+  status              StatusRepasse  @default(SOLICITADO)
+
+  solicitadoPorId     String         @map("solicitado_por_id")
+  solicitadoPor       User           @relation("SolicitanteRepasse", fields: [solicitadoPorId], references: [id])
+  solicitadoEm        DateTime       @default(now()) @map("solicitado_em")
+
+  aprovadoPorId       String?        @map("aprovado_por_id")
+  aprovadoPor         User?          @relation("AprovadorRepasse", fields: [aprovadoPorId], references: [id])
+  aprovadoEm          DateTime?      @map("aprovado_em")
+
+  pagoEm              DateTime?      @map("pago_em")
+  autenticacaoBancaria String?       @map("autenticacao_bancaria")
+  bancoDestino        String         @map("banco_destino")
+  chavePix            String?        @map("chave_pix")
+  observacoes         String?
+
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt      @map("updated_at")
+
+  @@index([producerId])
+  @@index([eventId])
+  @@index([status])
+  @@map("producer_settlements")
+}
+
+model FinancialTransaction {
+  id              String        @id @default(uuid())
+  tipo            TipoTransacao
+  descricao       String
+  valor           Decimal       @db.Decimal(15, 2)
+  dataLancamento  DateTime      @default(now()) @map("data_lancamento")
+  categoria       String
+  referenciaTipo  String?       @map("referencia_tipo") // RECEBIVEL, REPASSE, CONTA_PAGAR
+  referenciaId    String?       @map("referencia_id")
+  contaBancaria   String        @default("Conta Movimento Itaú") @map("conta_bancaria")
+  saldoApos       Decimal       @db.Decimal(15, 2) @map("saldo_apos")
+
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  @@index([dataLancamento])
+  @@map("financial_transactions")
+}
+
+// ------------------------------------------------------------------------------
+// FASE 4: BANCOS, CONCILIAÇÃO & GATEWAYS
+// ------------------------------------------------------------------------------
+
+model BankAccount {
+  id              String             @id @default(uuid())
+  bancoNome       String             @map("banco_nome")
+  bancoCodigo     String             @map("banco_codigo")
+  agencia         String
+  conta           String
+  digito          String             @default("0")
+  tipo            TipoContaBancaria  @default(CORRENTE)
+
+  saldoAtual      Decimal            @default(0.00) @db.Decimal(15, 2) @map("saldo_atual")
+  saldoDisponivel Decimal            @default(0.00) @db.Decimal(15, 2) @map("saldo_disponivel")
+  saldoBloqueado  Decimal            @default(0.00) @db.Decimal(15, 2) @map("saldo_bloqueado")
+  limiteCredito   Decimal            @default(0.00) @db.Decimal(15, 2) @map("limite_credito")
+  chavePix        String?            @map("chave_pix")
+  ativo           Boolean            @default(true)
+
+  statementItems  BankStatementItem[]
+  ofxImports      OfxImport[]
+
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt      @map("updated_at")
+
+  @@map("bank_accounts")
+}
+
+model OfxImport {
+  id               String              @id @default(uuid())
+  bankAccountId    String              @map("bank_account_id")
+  bankAccount      BankAccount         @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  nomeArquivo      String              @map("nome_arquivo")
+  dataInicio       DateTime            @map("data_inicio")
+  dataFim          DateTime            @map("data_fim")
+  totalTransacoes  Int                 @map("total_transacoes")
+  totalCreditos    Decimal             @default(0.00) @db.Decimal(15, 2) @map("total_creditos")
+  totalDebitos     Decimal             @default(0.00) @db.Decimal(15, 2) @map("total_debitos")
+  status           String              @default("PROCESSADO")
+
+  statementItems   BankStatementItem[]
+
+  criadoEm         DateTime            @default(now()) @map("criado_em")
+
+  @@map("ofx_imports")
+}
+
+model BankStatementItem {
+  id                  String                @id @default(uuid())
+  bankAccountId       String                @map("bank_account_id")
+  bankAccount         BankAccount           @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  ofxImportId         String?               @map("ofx_import_id")
+  ofxImport           OfxImport?            @relation(fields: [ofxImportId], references: [id], onDelete: SetNull)
+
+  fitId               String                @map("fit_id")
+  dataLancamento      DateTime              @map("data_lancamento")
+  documento           String?
+  descricao           String
+  valor               Decimal               @db.Decimal(15, 2)
+  tipo                TipoLancamentoExtrato
+
+  statusConciliacao   StatusConciliacao     @default(PENDENTE) @map("status_conciliacao")
+  conciliadoComTipo   String?               @map("conciliado_com_tipo") // RECEBIVEL, CONTA_PAGAR, REPASSE, MANUAL
+  conciliadoComId     String?               @map("conciliado_com_id")
+  conciliadoPor       String?               @map("conciliado_por")
+  dataConciliacao     DateTime?             @map("data_conciliacao")
+  scoreConfianca      Decimal?              @db.Decimal(5, 2) @map("score_confianca")
+  observacoes         String?
+
+  createdAt           DateTime              @default(now()) @map("created_at")
+
+  @@index([bankAccountId])
+  @@index([dataLancamento])
+  @@index([statusConciliacao])
+  @@map("bank_statement_items")
+}
+
+model GatewayIntegration {
+  id                   String         @id @default(uuid())
+  nome                 String
+  codigo               String         @unique // CIELO, STONE, REDE, PAGBANK
+  status               StatusGateway  @default(ATIVO)
+  taxaMdrPadrao        Decimal        @default(2.89) @db.Decimal(5, 2) @map("taxa_mdr_padrao")
+  webhookUrl           String?        @map("webhook_url")
+  totalTransacoesHoje  Int            @default(0) @map("total_transacoes_hoje")
+  volumeHoje           Decimal        @default(0.00) @db.Decimal(15, 2) @map("volume_hoje")
+  taxaPraticadaMedia   Decimal        @default(2.89) @db.Decimal(5, 2) @map("taxa_praticada_media")
+  desvioMdr            Decimal        @default(0.00) @db.Decimal(5, 2) @map("desvio_mdr")
+  ultimaSincronizacao  DateTime?      @map("ultima_sincronizacao")
+
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime       @updatedAt      @map("updated_at")
+
+  @@map("gateway_integrations")
+}
+
+// ------------------------------------------------------------------------------
+// FASE 5: CONTABILIDADE OFICIAL (PLANO DE CONTAS, DIÁRIO, RAZÃO, BALANCETE & DRE)
+// ------------------------------------------------------------------------------
+
+model ChartOfAccounts {
+  id          String        @id @default(uuid())
+  codigo      String        @unique // Ex: '1.1.01.01.001'
+  nome        String        // Ex: 'Banco Itaú - Conta Movimento'
+  grupo       GrupoContabil
+  natureza    NaturezaConta
+  nivel       Int           // 1 (sintética) até 5 (analítica)
+  analitica   Boolean       @default(true) // Recebe lançamentos diretos se true
+  codigoPai   String?       @map("codigo_pai")
+  saldoAtual  Decimal       @default(0.00) @db.Decimal(15, 2) @map("saldo_atual")
+  ativo       Boolean       @default(true)
+
+  journalItems JournalEntryItem[]
+
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt      @map("updated_at")
+
+  @@index([codigo])
+  @@index([grupo])
+  @@map("chart_of_accounts")
+}
+
+model JournalEntry {
+  id                String             @id @default(uuid())
+  numeroLancamento  String             @unique @map("numero_lancamento") // Ex: 'LAN-2026-000101'
+  data              DateTime
+  historico         String
+  origem            String             @default("MANUAL") // BILHETERIA, REPASSE, PAGAMENTO, OFX, MANUAL
+  origemId          String?            @map("origem_id")
+  totalDebito       Decimal            @db.Decimal(15, 2) @map("total_debito")
+  totalCredito      Decimal            @db.Decimal(15, 2) @map("total_credito")
+  equilibrado       Boolean            @default(true)
+  status            StatusLancamento   @default(CONFIRMADO)
+  criadoPor         String?            @map("criado_por")
+
+  items             JournalEntryItem[]
+
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt         @map("updated_at")
+
+  @@index([data])
+  @@index([status])
+  @@map("journal_entries")
+}
+
+model JournalEntryItem {
+  id                    String          @id @default(uuid())
+  journalEntryId        String          @map("journal_entry_id")
+  journalEntry          JournalEntry    @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  accountId             String          @map("account_id")
+  account               ChartOfAccounts @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  tipo                  TipoPartida     // DEBITO ou CREDITO
+  valor                 Decimal         @db.Decimal(15, 2)
+  historicoComplementar String?         @map("historico_complementar")
+
+  createdAt             DateTime        @default(now()) @map("created_at")
+
+  @@index([journalEntryId])
+  @@index([accountId])
+  @@map("journal_entry_items")
+}
+
+// ------------------------------------------------------------------------------
+// FASE 6: FISCAL, TRIBUTÁRIO, NOTAS FISCAIS (NFS-e/NF-e) & SPED
+// ------------------------------------------------------------------------------
+
+model FiscalInvoice {
+  id                    String                @id @default(uuid())
+  numeroNota            String                @unique @map("numero_nota") // Ex: 'NFS-2026-000142'
+  serie                 String                @default("1")
+  tipo                  TipoDocumentoFiscal   @default(NFSE)
+  status                StatusDocumentoFiscal @default(AUTORIZADO)
+  dataEmissao           DateTime              @default(now()) @map("data_emissao")
+  competencia           String                // Ex: "2026-09"
+  codigoVerificacao     String?               @map("codigo_verificacao")
+  chaveAcesso           String?               @unique @map("chave_acesso")
+
+  // Tomador do serviço
+  tomadorTipo           String                @default("PRODUTOR") @map("tomador_tipo") // PRODUTOR ou CLIENTE
+  tomadorNome           String                @map("tomador_nome")
+  tomadorDoc            String                @map("tomador_doc") // CNPJ ou CPF
+  tomadorEmail          String?               @map("tomador_email")
+  tomadorCidade         String?               @default("Curitiba") @map("tomador_cidade")
+  tomadorUf             String?               @default("PR") @map("tomador_uf")
+
+  // Prestador (DiskIngressos)
+  prestadorCnpj         String                @default("08.123.456/0001-99") @map("prestador_cnpj")
+  prestadorIm           String                @default("123456-7") @map("prestador_im")
+
+  // Tributação do Serviço
+  codigoServico         String                @default("12.07") @map("codigo_servico") // 12.07 - Bilheteria e intermediação
+  discriminacao         String                @db.Text
+  
+  // Valores
+  valorServicos         Decimal               @db.Decimal(15, 2) @map("valor_servicos")
+  valorDeducoes         Decimal               @default(0.00) @db.Decimal(15, 2) @map("valor_deducoes")
+  baseCalculo           Decimal               @db.Decimal(15, 2) @map("base_calculo")
+  aliquotaIss           Decimal               @default(5.00) @db.Decimal(5, 2) @map("aliquota_iss") // 5% em Curitiba
+  valorIss              Decimal               @default(0.00) @db.Decimal(15, 2) @map("valor_iss")
+  issRetido             Boolean               @default(false) @map("iss_retido")
+  
+  // Impostos Federais (PIS, COFINS, INSS, IR, CSLL)
+  aliquotaPis           Decimal               @default(0.65) @db.Decimal(5, 2) @map("aliquota_pis")
+  valorPis              Decimal               @default(0.00) @db.Decimal(15, 2) @map("valor_pis")
+  aliquotaCofins        Decimal               @default(3.00) @db.Decimal(5, 2) @map("aliquota_cofins")
+  valorCofins           Decimal               @default(0.00) @db.Decimal(15, 2) @map("valor_cofins")
+  valorInss             Decimal               @default(0.00) @db.Decimal(15, 2) @map("valor_inss")
+  valorIr               Decimal               @default(0.00) @db.Decimal(15, 2) @map("valor_ir")
+  valorCsll             Decimal               @default(0.00) @db.Decimal(15, 2) @map("valor_csll")
+  
+  valorLiquido          Decimal               @db.Decimal(15, 2) @map("valor_liquido")
+
+  // Vínculos Operacionais
+  eventId               String?               @map("event_id")
+  event                 Event?                @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  // Metadados
+  xmlContent            String?               @db.Text @map("xml_content")
+  motivoCancelamento    String?               @map("motivo_cancelamento")
+  canceladoEm           DateTime?             @map("cancelado_em")
+
+  createdAt             DateTime              @default(now()) @map("created_at")
+  updatedAt             DateTime              @updatedAt      @map("updated_at")
+
+  @@index([numeroNota])
+  @@index([competencia])
+  @@index([status])
+  @@index([eventId])
+  @@map("fiscal_invoices")
+}
+
+model TaxRetention {
+  id                    String          @id @default(uuid())
+  origemTipo            String          // REPASSE, CONTA_PAGAR
+  origemId              String          @map("origem_id")
+  favorecidoNome        String          @map("favorecido_nome")
+  favorecidoDoc         String          @map("favorecido_doc")
+  tributo               TipoTributo
+  baseCalculo           Decimal         @db.Decimal(15, 2) @map("base_calculo")
+  aliquota              Decimal         @db.Decimal(5, 2)
+  valorRetido           Decimal         @db.Decimal(15, 2) @map("valor_retido")
+  dataFatoGerador       DateTime        @map("data_fato_gerador")
+  dataVencimentoGuia    DateTime        @map("data_vencimento_guia")
+  competencia           String          // Ex: "2026-09"
+  status                String          @default("APURADO") // APURADO, RECOLHIDO, DISPENSADO
+  
+  createdAt             DateTime        @default(now()) @map("created_at")
+  updatedAt             DateTime        @updatedAt      @map("updated_at")
+
+  @@index([competencia])
+  @@index([tributo])
+  @@map("tax_retentions")
+}
+
+model TaxSummary {
+  id                            String            @id @default(uuid())
+  competencia                   String            @unique // Ex: "2026-09"
+  regime                        RegimeTributario  @default(LUCRO_PRESUMIDO)
+  receitaBrutaIngressos         Decimal           @default(0.00) @db.Decimal(15, 2) @map("receita_bruta_ingressos")
+  receitaPropriaTaxasComissoes  Decimal           @default(0.00) @db.Decimal(15, 2) @map("receita_propria_taxas_comissoes")
+  baseCalculoISS                Decimal           @default(0.00) @db.Decimal(15, 2) @map("base_calculo_iss")
+  valorIssTotal                 Decimal           @default(0.00) @db.Decimal(15, 2) @map("valor_iss_total")
+  baseCalculoFederal            Decimal           @default(0.00) @db.Decimal(15, 2) @map("base_calculo_federal")
+  valorPisTotal                 Decimal           @default(0.00) @db.Decimal(15, 2) @map("valor_pis_total")
+  valorCofinsTotal              Decimal           @default(0.00) @db.Decimal(15, 2) @map("valor_cofins_total")
+  valorIrpjTotal                Decimal           @default(0.00) @db.Decimal(15, 2) @map("valor_irpj_total")
+  valorCsllTotal                Decimal           @default(0.00) @db.Decimal(15, 2) @map("valor_csll_total")
+  totalImpostos                 Decimal           @default(0.00) @db.Decimal(15, 2) @map("total_impostos")
+  fechado                       Boolean           @default(false)
+  dataFechamento                DateTime?         @map("data_fechamento")
+
+  createdAt                     DateTime          @default(now()) @map("created_at")
+  updatedAt                     DateTime          @updatedAt      @map("updated_at")
+
+  @@map("tax_summaries")
+}
+
+model TaxGuide {
+  id                String                  @id @default(uuid())
+  codigoReceita     String                  @map("codigo_receita") // Ex: "DARF-5952", "DAM-ISS-01"
+  descricao         String                  // Ex: "DARF CSRF Retenções", "DAM ISSQN Serviços Bilheteria"
+  tipoTributo       TipoTributo             @map("tipo_tributo")
+  competencia       String                  // Ex: "2026-09"
+  vencimento        DateTime
+  valorPrincipal    Decimal                 @db.Decimal(15, 2) @map("valor_principal")
+  jurosMulta        Decimal                 @default(0.00) @db.Decimal(15, 2) @map("juros_multa")
+  valorTotal        Decimal                 @db.Decimal(15, 2) @map("valor_total")
+  codigoBarras      String?                 @map("codigo_barras")
+  linhaDigitavel    String?                 @map("linha_digitavel")
+  status            StatusGuiaRecolhimento  @default(A_RECOLHER)
+  pagaEm            DateTime?               @map("paga_em")
+  comprovanteUrl    String?                 @map("comprovante_url")
+
+  createdAt         DateTime                @default(now()) @map("created_at")
+  updatedAt         DateTime                @updatedAt      @map("updated_at")
+
+  @@index([competencia])
+  @@index([status])
+  @@map("tax_guides")
+}
+
+model SpedExport {
+  id            String    @id @default(uuid())
+  tipo          TipoSped
+  competencia   String    // Ex: "2026-09"
+  versaoLeiaute String    @default("v2.1") @map("versao_leiaute")
+  nomeArquivo   String    @map("nome_arquivo")
+  hashArquivo   String    @map("hash_arquivo")
+  conteudo      String    @db.Text
+  totalLinhas   Int       @default(0) @map("total_linhas")
+  geradoPor     String?   @map("gerado_por")
+  
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@index([competencia])
+  @@index([tipo])
+  @@map("sped_exports")
+}
