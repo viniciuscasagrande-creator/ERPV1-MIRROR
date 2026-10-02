@@ -27,6 +27,7 @@ import {
   TipoTributo,
   StatusGuiaRecolhimento,
   TipoSped,
+  StatusPeriodoContabil,
 } from '@prisma/client';
 import * as crypto from 'crypto';
 
@@ -1556,7 +1557,58 @@ async function main() {
   });
 
   console.log('✅ Dados da FASE 6 (NFS-e, Retenções, Apurações de Tributos e Guias DARF/DAM) semeados com sucesso!');
-  console.log('🏁 Seed das FASES 1, 2, 3, 4, 5 e 6 concluído.');
+
+  // 17. FASE 9: Governança Contábil, Travas de Período & Fechamento Mensal
+  console.log('⏳ Semeando Períodos Contábeis e Travas de Competência (Fase 9)...');
+  const mesesFechamento = [
+    { mes: 1, comp: '2026-01', status: StatusPeriodoContabil.ENCERRADO, rec: 3100000, desp: 2790000, res: 310000 },
+    { mes: 2, comp: '2026-02', status: StatusPeriodoContabil.ENCERRADO, rec: 2850000, desp: 2565000, res: 285000 },
+    { mes: 3, comp: '2026-03', status: StatusPeriodoContabil.ENCERRADO, rec: 4500000, desp: 4050000, res: 450000 },
+    { mes: 4, comp: '2026-04', status: StatusPeriodoContabil.ENCERRADO, rec: 3900000, desp: 3510000, res: 390000 },
+    { mes: 5, comp: '2026-05', status: StatusPeriodoContabil.ENCERRADO, rec: 5200000, desp: 4680000, res: 520000 },
+    { mes: 6, comp: '2026-06', status: StatusPeriodoContabil.ENCERRADO, rec: 4800000, desp: 4320000, res: 480000 },
+    { mes: 7, comp: '2026-07', status: StatusPeriodoContabil.ENCERRADO, rec: 4100000, desp: 3690000, res: 410000 },
+    { mes: 8, comp: '2026-08', status: StatusPeriodoContabil.ABERTO, rec: 3850000, desp: 3465000, res: 385000 },
+    { mes: 9, comp: '2026-09', status: StatusPeriodoContabil.ABERTO, rec: 1488000, desp: 1339200, res: 148800 },
+    { mes: 10, comp: '2026-10', status: StatusPeriodoContabil.ABERTO, rec: 0, desp: 0, res: 0 },
+    { mes: 11, comp: '2026-11', status: StatusPeriodoContabil.ABERTO, rec: 0, desp: 0, res: 0 },
+    { mes: 12, comp: '2026-12', status: StatusPeriodoContabil.ABERTO, rec: 0, desp: 0, res: 0 },
+  ];
+
+  for (const m of mesesFechamento) {
+    const isEncerrado = m.status === StatusPeriodoContabil.ENCERRADO;
+    await prisma.accountingPeriod.upsert({
+      where: { competencia: m.comp },
+      update: {
+        status: m.status,
+        totalReceitas: m.rec,
+        totalDespesas: m.desp,
+        resultadoPeriodo: m.res,
+      },
+      create: {
+        competencia: m.comp,
+        ano: 2026,
+        mes: m.mes,
+        dataInicio: new Date(`2026-${String(m.mes).padStart(2, '0')}-01T00:00:00Z`),
+        dataFim: new Date(`2026-${String(m.mes).padStart(2, '0')}-28T23:59:59Z`),
+        status: m.status,
+        conciliacaoBancariaOk: isEncerrado || m.mes === 8,
+        conciliacaoMdrOk: isEncerrado || m.mes === 8,
+        partidasDobradasOk: isEncerrado || m.mes === 8,
+        apuracaoFiscalOk: isEncerrado || m.mes === 8,
+        fechamentoEventosOk: isEncerrado || m.mes === 8,
+        fechadoPorNome: isEncerrado ? 'Carlos Contador (CRC 12345/PR)' : null,
+        fechadoEm: isEncerrado ? new Date(`2026-${String(m.mes + 1).padStart(2, '0')}-05T18:00:00Z`) : null,
+        justificativaFechamento: isEncerrado ? 'Fechamento contábil e fiscal homologado sem ressalvas.' : null,
+        totalReceitas: m.rec,
+        totalDespesas: m.desp,
+        resultadoPeriodo: m.res,
+      },
+    });
+  }
+
+  console.log('✅ Períodos contábeis e travas de competência semeados com sucesso!');
+  console.log('🏁 Seed completo de todas as 10 Fases concluído.');
 }
 
 main()

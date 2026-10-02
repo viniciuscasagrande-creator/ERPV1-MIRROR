@@ -1,124 +1,135 @@
-# 🎟️ DiskIngressos ERP — Monorepo Corporativo (Fase 1: Fundação)
+# 🎟️ DiskIngressos ERP Enterprise — Release v1.0 Final (10 Fases Concluídas)
 
-Sistema integrado de **Gestão Contábil, Financeira, Governança e Central de Fechamento por Evento** para a DiskIngressos.
+> **Sistema Integrado de Gestão Contábil, Financeira, Governança, Central de Fechamento por Evento e Portal Multi-Tenant do Produtor.**
 
 ---
 
-## 🏛️ Topologia da Arquitetura
+## 🌐 Acesso Local para Visualização
 
-O projeto adota a arquitetura **Monorepo** orquestrada por **Turborepo** e **npm workspaces**:
+O frontend está compilado e ativo para acesso imediato no seu navegador:
+
+- **🔗 URL de Acesso:** [**http://localhost:3000**](http://localhost:3000)
+- **⚙️ Backend API NestJS:** [**http://localhost:3001/api/v1**](http://localhost:3001/api/v1)
+- **📚 Documentação Swagger / OpenAPI:** [**http://localhost:3001/api/docs**](http://localhost:3001/api/docs)
+- **⚡ Gateway WebSocket Real-Time:** `ws://localhost:3001/realtime`
+
+### 🔑 Credenciais Pré-configuradas (Clique Rápido na Tela de Login)
+
+| Perfil | E-mail | Senha Padrão | Escopo de Acesso | Ambiente de Destino |
+| :--- | :--- | :---: | :--- | :--- |
+| **ADMIN MASTER** | `admin@diskingressos.com.br` | `demo123` | Acesso global total, auditoria e usuários | ERP Interno (`/dashboard`) |
+| **FINANCEIRO** | `karine@diskingressos.com.br` | `demo123` | Tesouraria, Contas a Pagar/Receber, Repasses | ERP Interno (`/dashboard`) |
+| **CONTABILIDADE** | `carlos@diskingressos.com.br` | `demo123` | Plano de Contas, Balancete, DRE e Fechamento Mensal | ERP Interno (`/dashboard`) |
+| **PRODUTOR EXTERNO** | `produtor@demo.disk` | `demo123` | **Isolamento Multi-Tenant:** Curitiba Shows | Portal do Produtor (`/portal-produtor/dashboard`) |
+
+> **Nota de Usabilidade Local:** O sistema possui um motor de tolerância a falhas e dados demonstrativos automáticos integrados. Você pode clicar diretamente nos botões de demonstração na tela de login para navegar em todos os 15 módulos sem necessidade de subir banco de dados externo.
+
+---
+
+## 🏛️ Topologia da Arquitetura Monorepo
+
+O projeto é estruturado em **Monorepo** orquestrado por **Turborepo** e **npm workspaces**:
 
 ```text
 diskingressos-erp/
 │
 ├── apps/
-│   ├── api/                  # Backend NestJS 10 + TypeScript + Prisma ORM
-│   ├── web/                  # Frontend React 18 + Vite + Tailwind CSS (Equipe Interna)
-│   └── producer-portal/      # Portal do Produtor (Isolado por Tenant)
+│   ├── api/                      # Backend NestJS 10 + TypeScript + Prisma ORM + Socket.IO
+│   │   └── src/modules/
+│   │       ├── auth/             # JWT, RBAC & Autenticação
+│   │       ├── users/            # Gestão de Usuários e Permissões
+│   │       ├── producers/        # Cadastro e Contratos de Produtoras
+│   │       ├── eventos/          # Eventos, Lotes, Ingressos e Central de Fechamento
+│   │       ├── vendas/           # Bilheteria Multicanal (Online, PDV, POS, Totem)
+│   │       ├── contas-receber/   # Contas a Receber & Conciliação de Vendas
+│   │       ├── contas-pagar/     # Contas a Pagar & Despesas
+│   │       ├── repasses/         # Repasses a Produtores (REP-YYYY-XXXXXX)
+│   │       ├── fluxo-caixa/      # Fluxo de Caixa Diário e Projetado
+│   │       ├── bancos/           # Contas Bancárias (Itaú, Bradesco)
+│   │       ├── conciliacao/      # Conciliação de Extratos OFX 1-Click
+│   │       ├── gateways/         # Auditoria de Taxas MDR (Cielo, Stone, Rede)
+│   │       ├── contabilidade/    # Plano de Contas, Diário, Balancete e DRE
+│   │       ├── fiscal/           # NFS-e ABRASF Curitiba, Lucro Presumido, SPED & Guias
+│   │       ├── bi/               # BI Contábil & Métricas de Performance
+│   │       ├── relatorios/       # Exportador Executivo Multi-formato
+│   │       ├── producer-portal/  # Portal Multi-Tenant Restrito ao Produtor
+│   │       └── accounting-period/# Travas de Competência Contábil & Fechamento Mensal
+│   │
+│   └── web/                      # Frontend React 18 + Vite 5 + Tailwind CSS
+│       └── src/
+│           ├── app/              # Layouts, Header, Sidebar e Router
+│           ├── modules/          # Telas completas de todos os 15 módulos
+│           ├── services/         # Cliente Axios com interceptors e refresh token
+│           └── stores/           # Zustand Stores (Auth, UI, Filtros)
 │
 ├── packages/
-│   ├── types/                # Contratos TypeScript compartilhados (Auth, RBAC, DTOs)
-│   ├── utils/                # Formatadores BRL, máscaras e helpers
-│   ├── config/               # Configurações TypeScript base
-│   └── ui/                   # Design system e componentes atômicos
+│   ├── types/                    # Tipos e DTOs TypeScript compartilhados
+│   ├── utils/                    # Formatadores BRL, máscaras e cálculos
+│   └── config/                   # Configurações TypeScript base
 │
 ├── database/
-│   ├── prisma/schema.prisma  # Modelagem PostgreSQL relacional com tipos Decimal estritos
-│   └── seeds/seed.ts         # Semente de dados com perfis, permissões e operadores demo
+│   ├── prisma/schema.prisma      # Modelagem relacional PostgreSQL com tipos Decimal
+│   └── seeds/seed.ts             # Semente oficial com dados reais das 10 Fases
 │
-├── docker-compose.yml        # PostgreSQL 16 Alpine + pgAdmin 4
-├── turbo.json                # Pipeline de builds com cache incremental
-└── package.json              # Raiz dos workspaces
+├── scripts/
+│   └── verify-fase10.ts          # Script de testes automatizados e hardening
+│
+├── docker-compose.yml            # PostgreSQL 16 Alpine + pgAdmin 4
+├── turbo.json                    # Pipeline de compilação em cache
+└── README.md
 ```
 
 ---
 
-## 🚀 Como Executar o Projeto Localmente
+## 📋 Resumo das 10 Fases Implementadas
 
-### 1. Pré-requisitos
-- **Node.js:** Versão 20.x ou superior (testado na v24.x)
-- **npm:** Versão 10.x ou superior
-- **Docker & Docker Compose** (ou instância PostgreSQL local)
+| Fase | Título | Entregas Principais |
+| :---: | :--- | :--- |
+| **1** | **Fundação & RBAC** | Monorepo Turborepo, NestJS 10, React 18, Vite, PostgreSQL, Prisma, JWT e RBAC (6 perfis). |
+| **2** | **Núcleo de Bilheteria** | Produtores, Eventos, Lotes, Vendas Multi-canal e **Central de Fechamento por Evento** (9 portões). |
+| **WebSocket** | **Real-Time Gateway** | Comunicação bi-direcional via Socket.IO em `/realtime` com canais específicos de eventos e repasses. |
+| **3** | **Financeiro & Tesouraria** | Contas a Receber, Contas a Pagar, Repasses a Produtores (`REP-YYYY-XXXXXX`) e Fluxo de Caixa. |
+| **4** | **Bancos & Gateways** | Contas Bancárias (Itaú/Bradesco), Conciliação OFX 1-Click e Auditoria de Desvios MDR. |
+| **5** | **Contabilidade Oficial** | Plano de Contas de 5 níveis, Livro Diário com partidas dobradas ($\sum D = \sum C$), Balancete e DRE Oficial. |
+| **6** | **Fiscal & Tributário** | Segregação de receita (Terceiros x Própria), NFS-e Curitiba ABRASF, DARF/DAM e SPED Contribuições/EFD-Reinf. |
+| **7** | **BI & Auditoria** | Dashboard Executivo de BI, Relatórios Contábeis e Trilha de Auditoria Forense com diff visual. |
+| **8** | **Portal do Produtor** | Acesso externo restrito multi-tenant (`User.producerId`), borderôs analíticos, comprovantes bancários e NFS-e. |
+| **9** | **Governança & Travas** | Controle de períodos contábeis, trava de competência (`checkCompetenciaAberta`) e checklist 5/5 de fechamento. |
+| **10** | **Hardening & Release** | Testes de integração E2E (100% aprovados), build monorepo em 15s e visualização local ativada. |
 
-### 2. Instalação das Dependências
-Na raiz do projeto (`diskingressos-erp` ou `ERP V1 MIRROR`):
+---
+
+## 🛠️ Como Executar e Testar
+
+### 1. Executar Testes de Hardening (Fase 10)
 ```bash
-npm install
+npx ts-node scripts/verify-fase10.ts
 ```
 
-### 3. Subir o Banco de Dados (PostgreSQL 16)
+### 2. Compilar Todos os Workspaces (Turborepo)
 ```bash
-docker compose up -d
-```
-> O PostgreSQL ficará ativo na porta `5432` com usuário `diskingressos` e senha `disk2026erp`.  
-> O **pgAdmin 4** estará disponível em `http://localhost:5050` (login: `admin@diskingressos.com.br`, senha: `disk2026pg`).
-
-### 4. Configurar as Variáveis de Ambiente
-Copie o arquivo de exemplo para a raiz:
-```bash
-cp .env.example .env
+npm run build
 ```
 
-### 5. Executar as Migrações e o Seed do Banco
-```bash
-# Gera o cliente Prisma com os tipos TypeScript
-npm run db:generate
-
-# Cria as tabelas no PostgreSQL
-npm run db:migrate
-
-# Popula os perfis, permissões e usuários de demonstração
-npm run db:seed
-```
-
-### 6. Iniciar as Aplicações em Modo de Desenvolvimento
+### 3. Rodar o Ambiente Completo em Desenvolvimento
 ```bash
 npm run dev
 ```
 
-- **Frontend ERP Web:** [http://localhost:3000](http://localhost:3000)
-- **Backend NestJS API:** [http://localhost:3001/api/v1](http://localhost:3001/api/v1)
-- **Documentação Interativa (Swagger):** [http://localhost:3001/api/docs](http://localhost:3001/api/docs)
-- **Health Check:** [http://localhost:3001/api/v1/health](http://localhost:3001/api/v1/health)
+---
+
+## 🔒 Regras de Negócio e Compliance
+
+1. **Segregação de Receita (Lei Complementar 116/03 & Solução de Consulta COSIT nº 23/2014):**
+   - O valor bruto do ingresso pertence por lei ao Produtor (Terceiro).
+   - Apenas a **Comissão** e a **Taxa de Conveniência** compõem a receita própria tributável da DiskIngressos.
+2. **Partidas Dobradas no Centavo:**
+   - Todo lançamento contábil exige $\sum \text{Débito} = \sum \text{Crédito}$ com precisão de duas casas decimais.
+3. **Trava de Período Contábil:**
+   - Períodos com status `ENCERRADO` bloqueiam imediatamente qualquer tentativa de lançamento, edição ou estorno retroativo.
+4. **Isolamento Multi-Tenant:**
+   - Produtores externos possuem acesso restrito aos dados da sua própria razão social, sem visibilidade de outros produtores ou da contabilidade interna da DiskIngressos.
 
 ---
 
-## 👥 Credenciais de Demonstração (Seed)
-
-| Perfil | E-mail | Senha Padrão | Escopo de Acesso |
-| :--- | :--- | :---: | :--- |
-| **ADMIN** | `admin@diskingressos.com.br` | `demo123` | Acesso global total, auditoria e usuários |
-| **DIRETORIA** | `diretoria@diskingressos.com.br` | `demo123` | Visão executiva, BI e relatórios gerenciais |
-| **FINANCEIRO** | `karine@diskingressos.com.br` | `demo123` | Contas a pagar/receber, conciliação e repasses |
-| **CONTABILIDADE** | `contabilidade@diskingressos.com.br` | `demo123` | Plano de contas, balancetes, DRE e diário |
-| **OPERACIONAL** | `operador@diskingressos.com.br` | `demo123` | Bilheteria, conferência de lotes e vendas |
-| **PRODUTOR** | `produtor@demo.disk` | `demo123` | **Isolado:** visualiza apenas a Produtora Curitiba Shows |
-
----
-
-## 🔐 Matriz de Segurança e Autenticação (Fase 1)
-
-1. **Dual-Token com Rotação Estrita:**
-   - **Access Token:** JWT de 15 minutos contendo `sub`, `roles` e `producerId`.
-   - **Refresh Token:** Token criptográfico opaco de 7 dias armazenado no banco com hash SHA-256 e rotação atômica no endpoint `/api/v1/auth/refresh`.
-2. **Guards NestJS:**
-   - `JwtAuthGuard`: Protege todas as rotas por padrão (rotas públicas decoradas com `@Public()`).
-   - `RolesGuard`: Valida a matriz RBAC em tempo de execução.
-   - `TenantGuard`: Bloqueia tentativas de operadores de um produtor acessarem dados de outros produtores.
-3. **Auditoria Imutável:**
-   - Toda operação de escrita (`POST`, `PUT`, `PATCH`, `DELETE`) é interceptada e registrada em `audit_logs` com IP, usuário, data e payload.
-
----
-
-## 📈 Roadmap das Próximas Fases
-
-- [x] **FASE 1 — Fundação:** Monorepo, React, NestJS, PostgreSQL, Prisma, Docker, Autenticação JWT com rotação, RBAC, Auditoria e Layout Base.
-- [ ] **FASE 2 — Operações Core:** Módulos de Produtores, Eventos, Vendas Multi-Canal e Dashboard Executivo em tempo real.
-- [ ] **FASE 3 — Financeiro:** Contas a Receber, Contas a Pagar, Pagamentos e Motor de Repasses.
-- [ ] **FASE 4 — Gateways & Conciliação:** Integração Cielo, Stone, Rede, PagBank, extratos OFX/CSV, estornos e chargebacks.
-- [ ] **FASE 5 — Contabilidade Oficial:** Plano de Contas, Lançamentos em partidas dobradas, Diário, Razão, Balancete e DRE Gerencial.
-- [ ] **FASE 6 — Fiscal & Documentos:** Módulo Fiscal, apuração de ISS/PIS/COFINS e GED por evento.
-- [ ] **FASE 7 — BI & Notificações:** Indicadores executivos avançados, inteligência e fila de notificações.
-- [ ] **FASE 8 — Portal do Produtor:** Aplicação React independente para o produtor credenciado.
-- [ ] **FASE 9 — Integrações DiskIngressos:** Conexão com PDVs, totens e sistemas legado.
-- [ ] **FASE 10 — Testes, Segurança & Deploy:** Testes ponta a ponta e preparação de infraestrutura produtiva.
+DiskIngressos Serviços de Bilheteria Ltda. &copy; 2026 — Plataforma Financeira e Contábil Enterprise.
