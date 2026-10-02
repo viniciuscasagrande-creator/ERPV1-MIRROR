@@ -85,6 +85,7 @@ const menuItems: MenuItem[] = [
       { title: 'Razão Contábil', path: '/contabilidade/razao' },
       { title: 'Balancete', path: '/contabilidade/balancete' },
       { title: 'DRE Gerencial', path: '/contabilidade/dre' },
+      { title: 'Fechamento & Travas', path: '/governanca/fechamento-mensal', badge: 'Travas' },
     ],
   },
   {

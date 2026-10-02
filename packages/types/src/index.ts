@@ -19,3 +19,4 @@ export * from './fiscal.js';
 export * from './bi.js';
 export * from './relatorios.js';
 export * from './producer-portal.js';
+export * from './accounting-period.js';

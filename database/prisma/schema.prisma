@@ -219,6 +219,13 @@ enum TipoSped {
   DCTF_WEB
 }
 
+enum StatusPeriodoContabil {
+  ABERTO
+  EM_FECHAMENTO
+  ENCERRADO
+  REABERTO
+}
+
 // ------------------------------------------------------------------------------
 // USUÁRIOS, PERFIS E PERMISSÕES (RBAC)
 // ------------------------------------------------------------------------------
@@ -1011,3 +1018,48 @@ model SpedExport {
   @@index([tipo])
   @@map("sped_exports")
 }
+
+// ------------------------------------------------------------------------------
+// FASE 9: GOVERNANÇA CONTÁBIL, TRAVAS DE PERÍODO & FECHAMENTO MENSAL
+// ------------------------------------------------------------------------------
+
+model AccountingPeriod {
+  id                      String                @id @default(uuid())
+  competencia             String                @unique // Ex: "2026-08", "2026-09"
+  ano                     Int
+  mes                     Int
+  dataInicio              DateTime              @map("data_inicio")
+  dataFim                 DateTime              @map("data_fim")
+  status                  StatusPeriodoContabil @default(ABERTO)
+  
+  // Checklist de Fechamento Contábil (5 Pilares)
+  conciliacaoBancariaOk   Boolean               @default(false) @map("conciliacao_bancaria_ok")
+  conciliacaoMdrOk        Boolean               @default(false) @map("conciliacao_mdr_ok")
+  partidasDobradasOk      Boolean               @default(false) @map("partidas_dobradas_ok")
+  apuracaoFiscalOk        Boolean               @default(false) @map("apuracao_fiscal_ok")
+  fechamentoEventosOk     Boolean               @default(false) @map("fechamento_eventos_ok")
+
+  // Carimbos e Auditoria
+  fechadoPorId            String?               @map("fechado_por_id")
+  fechadoPorNome          String?               @map("fechado_por_nome")
+  fechadoEm               DateTime?             @map("fechado_em")
+  justificativaFechamento String?               @map("justificativa_fechamento")
+  
+  reabertoPorId           String?               @map("reaberto_por_id")
+  reabertoPorNome         String?               @map("reaberto_por_nome")
+  reabertoEm              DateTime?             @map("reaberto_em")
+  motivoReabertura        String?               @map("motivo_reabertura")
+
+  // Resumo Financeiro Consolidado da Competência
+  totalReceitas           Decimal               @default(0.00) @db.Decimal(15, 2) @map("total_receitas")
+  totalDespesas           Decimal               @default(0.00) @db.Decimal(15, 2) @map("total_despesas")
+  resultadoPeriodo        Decimal               @default(0.00) @db.Decimal(15, 2) @map("resultado_periodo")
+
+  createdAt               DateTime              @default(now()) @map("created_at")
+  updatedAt               DateTime              @updatedAt      @map("updated_at")
+
+  @@index([status])
+  @@index([ano, mes])
+  @@map("accounting_periods")
+}
+

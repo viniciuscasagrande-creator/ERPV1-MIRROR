@@ -34,6 +34,9 @@ import { ProducerRepassesPage } from '../../modules/producer-portal/ProducerRepa
 import { ProducerDocumentosPage } from '../../modules/producer-portal/ProducerDocumentosPage';
 import { ProducerContaBancariaPage } from '../../modules/producer-portal/ProducerContaBancariaPage';
 
+// FASE 9: Governança Contábil & Fechamento Mensal
+import { FechamentoMensalPage } from '../../modules/governanca/FechamentoMensalPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -131,6 +134,8 @@ export const AppRouter: React.FC = () => {
         <Route path="contabilidade/balancete" element={<BalancetePage />} />
         <Route path="contabilidade/razao" element={<BalancetePage />} />
         <Route path="contabilidade/dre" element={<DreOficialPage />} />
+        <Route path="contabilidade/fechamento" element={<FechamentoMensalPage />} />
+        <Route path="governanca/fechamento-mensal" element={<FechamentoMensalPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

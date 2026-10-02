@@ -23,6 +23,7 @@ import { FiscalModule } from './modules/fiscal/fiscal.module';
 import { BiModule } from './modules/bi/bi.module';
 import { RelatoriosModule } from './modules/relatorios/relatorios.module';
 import { ProducerPortalModule } from './modules/producer-portal/producer-portal.module';
+import { AccountingPeriodModule } from './modules/accounting-period/accounting-period.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -54,6 +55,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     BiModule,
     RelatoriosModule,
     ProducerPortalModule,
+    AccountingPeriodModule,
   ],
   providers: [
     PrismaService,

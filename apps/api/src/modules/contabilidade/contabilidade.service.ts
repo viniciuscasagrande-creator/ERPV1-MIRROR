@@ -13,10 +13,14 @@ import {
   DreStatement,
   JwtPayload,
 } from '@diskingressos/types';
+import { AccountingPeriodService } from '../accounting-period/accounting-period.service';
 
 @Injectable()
 export class ContabilidadeService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly periodService: AccountingPeriodService
+  ) {}
 
   async getChartOfAccounts(filters?: { grupo?: GrupoContabil; analitica?: boolean }) {
     const where: any = { ativo: true };
@@ -109,6 +113,9 @@ export class ContabilidadeService {
    * Registra Lançamento Contábil do Livro Diário com validação canônica de Partidas Dobradas
    */
   async createJournalEntry(dto: CreateJournalEntryDto, user?: JwtPayload) {
+    // Fase 9: Trava de Período Contábil
+    await this.periodService.checkCompetenciaAberta(dto.data);
+
     if (!dto.items || dto.items.length < 2) {
       throw new BadRequestException('Um lançamento contábil requer no mínimo 2 partidas (1 débito e 1 crédito)');
     }
