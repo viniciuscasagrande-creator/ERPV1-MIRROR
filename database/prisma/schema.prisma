@@ -2036,6 +2036,88 @@ model LgpdDataAnonymizationLog {
   @@map("lgpd_data_anonymization_logs")
 }
 
+// ============================================================================
+// FASE 24: GATEWAY GLOBAL MULTI-MOEDA, FX SPOT & COMPLIANCE CAMBIAL
+// Resoluções Bacen 277/2022, Decreto 6.306/07 (IOF) e NBC TG 02 / IAS 21
+// ============================================================================
+
+model CurrencyExchangeRate {
+  id                    String   @id @default(uuid())
+  moedaOrigem           String   @map("moeda_origem") // USD, EUR, GBP
+  moedaDestino          String   @default("BRL") @map("moeda_destino")
+  taxaPtaxOficial       Decimal  @db.Decimal(10, 4) @map("taxa_ptax_oficial")
+  spreadPercent         Decimal  @default(2.50) @db.Decimal(5, 2) @map("spread_percent") // Spread DiskIngressos
+  taxaEfetivaSpot       Decimal  @db.Decimal(10, 4) @map("taxa_efetiva_spot")
+  dataHoraCotacao       DateTime @default(now()) @map("data_hora_cotacao")
+  fonteCotacao          String   @default("BACEN_SISBACEN_PTAX") @map("fonte_cotacao")
+  ativa                 Boolean  @default(true)
+
+  @@index([moedaOrigem, ativa])
+  @@map("currency_exchange_rates")
+}
+
+model InternationalTicketSale {
+  id                    String   @id @default(uuid())
+  codigoTransacao       String   @unique @map("codigo_transacao")
+  vendaId               String?  @map("venda_id")
+  eventoId              String   @map("evento_id")
+  eventoNome            String   @map("evento_nome")
+  paisComprador         String   @map("pais_comprador") // US, DE, GB, FR, etc.
+  moedaEstrangeira      String   @map("moeda_estrangeira") // USD, EUR, GBP
+  valorMoedaEstrangeira Decimal  @db.Decimal(12, 2) @map("valor_moeda_estrangeira")
+  taxaCambioAplicada    Decimal  @db.Decimal(10, 4) @map("taxa_cambio_aplicada")
+  aliquotaIofPercent    Decimal  @default(4.38) @db.Decimal(5, 2) @map("aliquota_iof_percent") // Decreto 6.306/07
+  valorIofBrl           Decimal  @db.Decimal(10, 2) @map("valor_iof_brl")
+  valorTotalBrl         Decimal  @db.Decimal(12, 2) @map("valor_total_brl")
+  valorLiquidoProdutorBrl Decimal @db.Decimal(12, 2) @map("valor_liquido_produtor_brl")
+  spreadReceitaDiskBrl  Decimal  @db.Decimal(10, 2) @map("spread_receita_disk_brl")
+  statusCambial         String   @default("LIQUIDADO_BORDERO") // COTADO, TRAVADO_SPOT, LIQUIDADO_BORDERO, CANCELADO
+  dataTransacao         DateTime @default(now()) @map("data_transacao")
+
+  @@index([eventoId])
+  @@index([moedaEstrangeira])
+  @@index([statusCambial])
+  @@map("international_ticket_sales")
+}
+
+model FxHedgeContract {
+  id                    String   @id @default(uuid())
+  codigoContratoHedge   String   @unique @map("codigo_contrato_hedge") // Ex: "HDG-2026-008"
+  eventoId              String   @map("evento_id")
+  eventoNome            String   @map("evento_nome")
+  produtorId            String   @map("produtor_id")
+  moedaProtegida        String   @map("moeda_protegida") // USD, EUR
+  volumeMoedaProtegido  Decimal  @db.Decimal(15, 2) @map("volume_moeda_protegido")
+  taxaCambioTravadaSpot Decimal  @db.Decimal(10, 4) @map("taxa_cambio_travada_spot")
+  valorBrlGarantido     Decimal  @db.Decimal(15, 2) @map("valor_brl_garantido")
+  instituicaoFinanceira String   @map("instituicao_financeira")
+  dataAbertura          DateTime @default(now()) @map("data_abertura")
+  dataLiquidacaoPrevista DateTime @map("data_liquidacao_prevista")
+  status                String   @default("ATIVO") // ATIVO, LIQUIDADO, EXPIRADO
+
+  @@index([eventoId])
+  @@index([status])
+  @@map("fx_hedge_contracts")
+}
+
+model FxAccountingEntry {
+  id                    String   @id @default(uuid())
+  codigoLancamento      String   @unique @map("codigo_lancamento")
+  eventoId              String?  @map("evento_id")
+  tipoVariacao          String   @map("tipo_variacao") // ATIVA_RECEITA, PASSIVA_DESPESA
+  moedaOrigem           String   @map("moeda_origem")
+  taxaCotacaoInicial    Decimal  @db.Decimal(10, 4) @map("taxa_cotacao_inicial")
+  taxaLiquidacao        Decimal  @db.Decimal(10, 4) @map("taxa_liquidacao")
+  valorDiferencaBrl     Decimal  @db.Decimal(12, 2) @map("valor_diferenca_brl")
+  contaContabilDebito   String   @map("conta_contabil_debito")
+  contaContabilCredito  String   @map("conta_contabil_credito")
+  historicoContabil     String   @map("historico_contabil") // Norma NBC TG 02 / IAS 21
+  dataLancamento        DateTime @default(now()) @map("data_lancamento")
+
+  @@index([tipoVariacao])
+  @@map("fx_accounting_entries")
+}
+
 
 
 

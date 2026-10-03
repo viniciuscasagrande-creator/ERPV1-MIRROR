@@ -109,6 +109,7 @@ diskingressos-erp/
 | **21** | **Open Finance (ITP) & Pix SPI Real-Time** | Iniciação de Pagamentos (Res. BCB 109/21), Pix Cobrança Dinâmico com Split SPI, Conciliação Preditiva Sub-segundo (Bacen mTLS) e Escrituração Contábil Automática. |
 | **22** | **IA Tesouraria, Yield Management & Credit Scoring** | Modelagem Estocástica de Fluxo de Caixa a 90 Dias com Alerta de Gaps, Precificação Dinâmica de Ingressos por Elasticidade de Demanda, Credit Scoring Soberano de Produtores (AAA a C) e Cash Sweep Automático em 100% CDI. |
 | **23** | **Auditoria Contínua com IA, Antifraude Sentinel & LGPD** | Detecção Comportamental de Bots Cambistas em Milissegundos, Quarentena Preventiva de Ingressos, Reconciliação Contínua de Divergências Gateway vs Borderô, Gestão de Direitos dos Titulares (LGPD Art. 18) e Anonimização Segura com Preservação de Guarda Fiscal de 5 Anos (Art. 16, I). |
+| **24** | **Gateway Global Multi-Moeda & Câmbio FX** | Venda Internacional em USD, EUR e GBP com Conversão Spot PTAX/Bacen, Tributação Automatizada de IOF Câmbio (Decreto 6.306/07), Contratos de Trava Cambial (FX Lock / Hedge) para Atrações Internacionais e Escrituração Contábil NBC TG 02 / IAS 21. |
 
 ---
 

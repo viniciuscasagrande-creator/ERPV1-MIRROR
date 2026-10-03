@@ -78,6 +78,9 @@ import { AiTreasuryPage } from '../../modules/ai-treasury/AiTreasuryPage';
 // FASE 23: Auditoria Contínua com IA, Antifraude Sentinel & Compliance LGPD/CVM
 import { AuditCompliancePage } from '../../modules/audit-compliance/AuditCompliancePage';
 
+// FASE 24: Gateway Global Multi-Moeda, Conversão Cambial Spot & Hedge FX
+import { GlobalFxPage } from '../../modules/global-fx/GlobalFxPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -238,6 +241,13 @@ export const AppRouter: React.FC = () => {
         <Route path="compliance-lgpd" element={<AuditCompliancePage />} />
         <Route path="governanca/compliance-lgpd" element={<AuditCompliancePage />} />
         <Route path="auditoria/continua" element={<AuditCompliancePage />} />
+
+        {/* Módulos FASE 24: Gateway Global Multi-Moeda, Conversão Cambial Spot & Hedge FX */}
+        <Route path="global-fx" element={<GlobalFxPage />} />
+        <Route path="cambio-multimoeda" element={<GlobalFxPage />} />
+        <Route path="vendas-internacionais" element={<GlobalFxPage />} />
+        <Route path="financeiro/cambio" element={<GlobalFxPage />} />
+        <Route path="financeiro/hedge" element={<GlobalFxPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

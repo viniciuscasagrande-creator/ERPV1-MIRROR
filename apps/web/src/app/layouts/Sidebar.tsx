@@ -24,6 +24,7 @@ import {
   TrendingUp,
   Split,
   BrainCircuit,
+  Globe2,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -86,6 +87,7 @@ const menuItems: MenuItem[] = [
       { title: 'Gateways & Auditoria MDR', path: '/bancos/gateways' },
       { title: 'Open Finance & Pix (ITP)', path: '/open-finance', badge: 'SPI Bacen' },
       { title: 'IA Tesouraria & Yield', path: '/ai-tesouraria', badge: 'Preditiva' },
+      { title: 'Câmbio FX & Multi-Moeda', path: '/global-fx', badge: 'PTAX' },
     ],
   },
   {

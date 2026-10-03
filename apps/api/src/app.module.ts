@@ -40,6 +40,7 @@ import { TaxReformModule } from './modules/tax-reform/tax-reform.module';
 import { OpenFinanceModule } from './modules/open-finance/open-finance.module';
 import { AiTreasuryModule } from './modules/ai-treasury/ai-treasury.module';
 import { AuditComplianceModule } from './modules/audit-compliance/audit-compliance.module';
+import { GlobalFxModule } from './modules/global-fx/global-fx.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -88,6 +89,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     OpenFinanceModule,
     AiTreasuryModule,
     AuditComplianceModule,
+    GlobalFxModule,
   ],
   providers: [
     PrismaService,
