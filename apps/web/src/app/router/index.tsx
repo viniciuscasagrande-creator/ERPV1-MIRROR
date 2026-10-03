@@ -93,6 +93,9 @@ import { RwaDrexPage } from '../../modules/rwa-drex/RwaDrexPage';
 // FASE 28: FIDC de Bilheteria & Entretenimento (Res. CVM 175)
 import { FidcEntertainmentPage } from '../../modules/fidc-entertainment/FidcEntertainmentPage';
 
+// FASE 29: Inteligência Regulamentar de IA Contábil, Fechamento Zero-Touch & Copilot CFO
+import { AiAutonomousClosingPage } from '../../modules/ai-autonomous-closing/AiAutonomousClosingPage';
+
 
 
 
@@ -290,6 +293,12 @@ export const AppRouter: React.FC = () => {
         <Route path="fundos-investimento" element={<FidcEntertainmentPage />} />
         <Route path="fidc" element={<FidcEntertainmentPage />} />
         <Route path="financeiro/fidc" element={<FidcEntertainmentPage />} />
+
+        {/* Módulos FASE 29: Inteligência Regulamentar de IA Contábil, Swarm Zero-Touch & Copilot CFO */}
+        <Route path="fechamento-ia" element={<AiAutonomousClosingPage />} />
+        <Route path="ai-copilot" element={<AiAutonomousClosingPage />} />
+        <Route path="zero-touch" element={<AiAutonomousClosingPage />} />
+        <Route path="contabilidade/fechamento-ia" element={<AiAutonomousClosingPage />} />
 
 
 

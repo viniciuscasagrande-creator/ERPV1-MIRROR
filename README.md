@@ -114,9 +114,7 @@ diskingressos-erp/
 | **26** | **Governança ESG, Pegada de Carbono & Borderô Verde** | Inventário GHG Protocol por Evento (Escopos 1, 2 e 3), Cálculo Paramétrico de Emissões de Deslocamento de Público (CEP) e Resíduos, Retenção Automática de Sustentabilidade no Borderô (Ingresso Neutro), Custódia e Aposentadoria de Créditos de Carbono Certificados (Verra VCS / B3 CBIOMOB) e Demonstrações CVM Res. 193/2023 / IFRS S1 e S2. |
 | **27** | **Tokenização RWA, Recebíveis em DREX & Smart Contracts** | Emissão de Pools de Tokens RWA no Piloto DREX (Bacen / Hyperledger Besu) e ERC-3643, Liquidação Escrow Condicional por Oráculos de Eventos (Soundcheck/Portões), Mercado Secundário Regulado com Trava Anti-Cambismo (+20% máx), Split Automático de Royalties Contínuos e Escrituração OCPC 10 / CVM. |
 | **28** | **FIDC de Bilheteria & Entretenimento (Resolução CVM 175)** | Estruturação de Cotas Seniores, Mezanino e Subordinadas (First-loss piece 25%), Monitoramento de Índice de Subordinação Mínimo com Trava Regulatória, Cessão Fiduciária de Recebíveis com Registro CERC/B3, Marcação a Mercado Diária (MtM) e Escrituração Contábil Fiduciária. |
-
-
-
+| **29** | **Inteligência Regulamentar de IA Contábil & Copilot CFO** | Swarm de 5 Agentes Especialistas em Paralelo (Fiscal EC 132, DREX/SPI, IFRS/MEP, FIDC/RWA e Governança SoD), Fechamento Contábil Autônomo "Zero-Touch", Reconciliação Sub-Segundo de Centavos e Truncamento com Chain of Thought, AI Copilot CFO Interativo com Métricas Consolidadas e Radar Preditivo de Balanços. |
 
 ---
 

@@ -2492,6 +2492,86 @@ model FidcAccountingMovement {
   @@map("fidc_accounting_movements")
 }
 
+// ============================================================================
+// FASE 29: Inteligência Regulamentar de IA Contábil (AI Agent Swarm & Copilot CFO)
+// Fechamento Contábil Autônomo "Zero-Touch", Chain of Thought & Análise Preditiva
+// ============================================================================
+
+model AiClosingExecution {
+  id                            String   @id @default(uuid())
+  codigoFechamento              String   @unique @map("codigo_fechamento") // Ex: "CLOSE-AI-2026-03"
+  periodoAnoMes                 String   @map("periodo_ano_mes") // Ex: "2026-03"
+  statusFechamento              String   @default("CONCILIADO_SUCESSO") @map("status_fechamento") // INICIADO, EM_ANALISE_SWARM, CONCILIADO_SUCESSO, REQUER_APROVACAO_CFO, CONCLUIDO_TRAVADO
+  totalLancamentosAuditados     Int      @default(0) @map("total_lancamentos_auditados")
+  totalDiscrepanciasCorrigidas  Int      @default(0) @map("total_discrepancias_corrigidas")
+  tempoExecucaoSegundos         Decimal  @default(0.00) @db.Decimal(8, 2) @map("tempo_execucao_segundos")
+  confiancaMediaPercent         Decimal  @default(99.40) @db.Decimal(5, 2) @map("confianca_media_percent")
+  iniciadoPor                   String   @default("SYSTEM_SWARM_SCHEDULER") @map("iniciado_por")
+  concluidoEm                   DateTime? @map("concluido_em")
+  criadoEm                      DateTime @default(now()) @map("criado_em")
+
+  agentLogs                     AiAgentAuditLog[]
+  copilotMessages               AiCfoCopilotMessage[]
+
+  @@index([periodoAnoMes])
+  @@index([statusFechamento])
+  @@map("ai_closing_executions")
+}
+
+model AiAgentAuditLog {
+  id                            String   @id @default(uuid())
+  closingExecutionId            String   @map("closing_execution_id")
+  agenteEspecialista            String   @map("agente_especialista") // AGENTE_FISCAL_REFORMA, AGENTE_TESOURARIA_SPI_DREX, AGENTE_SOCIETARIO_IFRS_MEP, AGENTE_FIDC_RISCO_RWA, AGENTE_GOVERNANCA_SOD
+  moduloAuditado                String   @map("modulo_auditado")
+  statusValidacao               String   @map("status_validacao") // APROVADO_AUTO, AJUSTADO_AUTO, ALERTA_HUMANO
+  justificativaRaciocinio       String   @db.Text @map("justificativa_raciocinio") // Chain of Thought
+  normaRegulamentar             String   @map("norma_regulamentar") // Ex: "NBC TG 02 / Resolução CVM 175 / EC 132"
+  divergenciaBrl                Decimal  @default(0.00) @db.Decimal(15, 2) @map("divergencia_brl")
+  ajusteRealizadoBrl            Decimal  @default(0.00) @db.Decimal(15, 2) @map("ajuste_realizado_brl")
+  dataLog                       DateTime @default(now()) @map("data_log")
+
+  closingExecution              AiClosingExecution @relation(fields: [closingExecutionId], references: [id])
+
+  @@index([closingExecutionId])
+  @@index([agenteEspecialista])
+  @@index([statusValidacao])
+  @@map("ai_agent_audit_logs")
+}
+
+model AiCfoCopilotMessage {
+  id                            String   @id @default(uuid())
+  closingExecutionId            String?  @map("closing_execution_id")
+  usuarioId                     String   @map("usuario_id")
+  perguntaUsuario               String   @db.Text @map("pergunta_usuario")
+  respostaCopilot               String   @db.Text @map("resposta_copilot")
+  metricasCitadasJson           String?  @db.Text @map("metricas_citadas_json")
+  sugestaoAcao                  String?  @map("sugestao_acao")
+  dataHora                      DateTime @default(now()) @map("data_hora")
+
+  closingExecution              AiClosingExecution? @relation(fields: [closingExecutionId], references: [id])
+
+  @@index([usuarioId])
+  @@index([closingExecutionId])
+  @@map("ai_cfo_copilot_messages")
+}
+
+model AiPredictiveBalanceInsight {
+  id                            String   @id @default(uuid())
+  periodoReferencia             String   @map("periodo_referencia")
+  tipoInsight                   String   @map("tipo_insight") // PROJECAO_EBITDA, RISCO_LIQUIDEZ, OTIMIZACAO_TRIBUTARIA, COBERTURA_FIDC
+  titulo                        String   @map("titulo")
+  descricaoDetalhada            String   @db.Text @map("descricao_detalhada")
+  impactoEstimadoBrl            Decimal  @db.Decimal(15, 2) @map("impacto_estimado_brl")
+  grauUrgencia                  String   @default("MEDIO") @map("grau_urgencia") // BAIXO, MEDIO, ALTO, CRITICO
+  acaoRecomendada               String   @map("acao_recomendada")
+  dataGeracao                   DateTime @default(now()) @map("data_geracao")
+
+  @@index([periodoReferencia])
+  @@index([grauUrgencia])
+  @@map("ai_predictive_balance_insights")
+}
+
+
 
 
 

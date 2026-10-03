@@ -45,6 +45,7 @@ import { ConsolidationIfrsModule } from './modules/consolidation-ifrs/consolidat
 import { EsgSustainabilityModule } from './modules/esg-sustainability/esg-sustainability.module';
 import { RwaDrexModule } from './modules/rwa-drex/rwa-drex.module';
 import { FidcEntertainmentModule } from './modules/fidc-entertainment/fidc-entertainment.module';
+import { AiAutonomousClosingModule } from './modules/ai-autonomous-closing/ai-autonomous-closing.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -98,6 +99,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     EsgSustainabilityModule,
     RwaDrexModule,
     FidcEntertainmentModule,
+    AiAutonomousClosingModule,
   ],
   providers: [
     PrismaService,
