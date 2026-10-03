@@ -34,6 +34,10 @@ import {
   Zap,
   Receipt,
   Store,
+  Utensils,
+  Gavel,
+  Award,
+  Truck,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -215,6 +219,41 @@ const menuItems: MenuItem[] = [
     path: '/seguro-ingressos',
     badge: 'SUSEP',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Cashless A&B & Bloco K',
+    icon: Utensils,
+    path: '/cashless-ab',
+    badge: 'RFID/NFC',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Cobrança & PECLD',
+    icon: Gavel,
+    path: '/cobranca-recuperacao',
+    badge: 'IFRS 9',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Patrocínios & Barter',
+    icon: Award,
+    path: '/patrocinios-naming',
+    badge: 'Naming',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Logística & Frota',
+    icon: Truck,
+    path: '/logistica-frota',
+    badge: 'IFRS 16',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Governança SOX & IPO',
+    icon: Building2,
+    path: '/governanca-sox',
+    badge: 'PCAOB',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
   },
   {
     title: 'Disaster Recovery (5 Anos)',

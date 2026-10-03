@@ -62,6 +62,11 @@ import { ArtistRoyaltiesModule } from './modules/artist-royalties/artist-royalti
 import { LoyaltyIfrs15Module } from './modules/loyalty-ifrs15/loyalty-ifrs15.module';
 import { PosCashierModule } from './modules/pos-cashier/pos-cashier.module';
 import { TicketInsuranceModule } from './modules/ticket-insurance/ticket-insurance.module';
+import { CashlessInventoryModule } from './modules/cashless-inventory/cashless-inventory.module';
+import { DebtRecoveryModule } from './modules/debt-recovery/debt-recovery.module';
+import { SponsorshipBarterModule } from './modules/sponsorship-barter/sponsorship-barter.module';
+import { TourFleetModule } from './modules/tour-fleet/tour-fleet.module';
+import { SoxIpoModule } from './modules/sox-ipo/sox-ipo.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -134,6 +139,11 @@ import { PrismaModule } from './database/prisma.module';
     LoyaltyIfrs15Module,
     PosCashierModule,
     TicketInsuranceModule,
+    CashlessInventoryModule,
+    DebtRecoveryModule,
+    SponsorshipBarterModule,
+    TourFleetModule,
+    SoxIpoModule,
   ],
   providers: [
     PrismaService,

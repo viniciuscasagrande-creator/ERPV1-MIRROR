@@ -58,6 +58,11 @@ export * from './artist-royalties-withholding.js';
 export * from './loyalty-ifrs15.js';
 export * from './pos-cashier-reconciliation.js';
 export * from './ticket-insurance-susep.js';
+export * from './cashless-inventory-sped.js';
+export * from './debt-recovery-ifrs9.js';
+export * from './sponsorship-barter-ifrs15.js';
+export * from './tour-fleet-ifrs16.js';
+export * from './sox-ipo-governance.js';
 
 
 

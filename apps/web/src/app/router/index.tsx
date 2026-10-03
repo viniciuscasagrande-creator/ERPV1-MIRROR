@@ -144,6 +144,21 @@ import { PosCashierPage } from '../../modules/pos-cashier/PosCashierPage';
 // FASE 45: Central de Seguros de Ingressos, Proteção de Reembolso & Sinistros SUSEP
 import { TicketInsurancePage } from '../../modules/ticket-insurance/TicketInsurancePage';
 
+// FASE 46: Gestão de A&B, Cashless RFID / NFC & Estoque SPED Bloco K
+import { CashlessInventoryPage } from '../../modules/cashless-inventory/CashlessInventoryPage';
+
+// FASE 47: Cobrança Judicial, Recuperação de Crédito & PECLD (IFRS 9 / CPC 48)
+import { DebtRecoveryPage } from '../../modules/debt-recovery/DebtRecoveryPage';
+
+// FASE 48: Patrocínios Corporativos, Naming Rights & Barter (IFRS 15)
+import { SponsorshipBarterPage } from '../../modules/sponsorship-barter/SponsorshipBarterPage';
+
+// FASE 49: Logística de Turnês, Frota & Contratos IFRS 16
+import { TourFleetPage } from '../../modules/tour-fleet/TourFleetPage';
+
+// FASE 50: Governança SOX 404, PCAOB & IPO Dual-Listing (B3 / NYSE)
+import { SoxIpoPage } from '../../modules/sox-ipo/SoxIpoPage';
+
 
 
 
@@ -431,6 +446,31 @@ export const AppRouter: React.FC = () => {
         <Route path="seguro-ingressos" element={<TicketInsurancePage />} />
         <Route path="financeiro/seguros" element={<TicketInsurancePage />} />
         <Route path="susep/sinistros" element={<TicketInsurancePage />} />
+
+        {/* Módulos FASE 46: Gestão de A&B, Cashless RFID / NFC & Estoque SPED Bloco K */}
+        <Route path="cashless-ab" element={<CashlessInventoryPage />} />
+        <Route path="eventos/cashless" element={<CashlessInventoryPage />} />
+        <Route path="fiscal/sped-bloco-k" element={<CashlessInventoryPage />} />
+
+        {/* Módulos FASE 47: Cobrança Judicial, Recuperação de Crédito & PECLD (IFRS 9 / CPC 48) */}
+        <Route path="cobranca-recuperacao" element={<DebtRecoveryPage />} />
+        <Route path="financeiro/cobranca" element={<DebtRecoveryPage />} />
+        <Route path="contabilidade/pecld-ifrs9" element={<DebtRecoveryPage />} />
+
+        {/* Módulos FASE 48: Patrocínios Corporativos, Naming Rights & Barter (IFRS 15) */}
+        <Route path="patrocinios-naming" element={<SponsorshipBarterPage />} />
+        <Route path="comercial/patrocinios" element={<SponsorshipBarterPage />} />
+        <Route path="contabilidade/barter" element={<SponsorshipBarterPage />} />
+
+        {/* Módulos FASE 49: Logística de Turnês, Frota & Contratos IFRS 16 */}
+        <Route path="logistica-frota" element={<TourFleetPage />} />
+        <Route path="operacoes/frota" element={<TourFleetPage />} />
+        <Route path="contabilidade/ifrs16-leasing" element={<TourFleetPage />} />
+
+        {/* Módulos FASE 50: Governança SOX 404, PCAOB & IPO Dual-Listing (B3 / NYSE) */}
+        <Route path="governanca-sox" element={<SoxIpoPage />} />
+        <Route path="diretoria/ipo-sox" element={<SoxIpoPage />} />
+        <Route path="compliance/sox-404" element={<SoxIpoPage />} />
 
 
 

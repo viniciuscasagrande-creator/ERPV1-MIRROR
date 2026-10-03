@@ -132,12 +132,17 @@ diskingressos-erp/
 | **43** | **Hub de Fidelidade, Cashback & Passivo Circulante CPC 47 / IFRS 15** | Alocação do Preço da Transação para Obrigações de Desempenho Não Cumpridas, Taxa Estimada de Expiração (Breakage Rate Atuarial) e Reconhecimento Diferido. |
 | **44** | **Gestão Contábil de PDVs Físicos, Totens & Sangria com Custódia** | Fechamento Auditado de Turnos de Caixas, Conciliação Multimeios (Espécie, TEF, Pix), Sangrias Lacradas com GTV e Custódia por Transportadora de Valores (Brinks/Prosegur). |
 | **45** | **Central de Seguros de Ingressos & Sinistros (SUSEP Circular 621/2021)** | Ticket Refund Insurance, Emissão Automática de Apólices SUSEP, Regulação de Sinistros por Força Maior/Médico, Repartição de Comissões de Corretagem (DiskSeg 20%) e Monitoramento de Loss Ratio. |
+| **46** | **Gestão de A&B, Cashless RFID / NFC & Estoque SPED Bloco K** | Pulseiras de Consumo Pré-Pago, Reconciliação Instantânea de CMV nos Bares, Gestão de Sobras Não Resgatadas (Breakage) e Inventário SPED Fiscal Bloco K. |
+| **47** | **Cobrança Judicial, Recuperação de Crédito & PECLD (IFRS 9 / CPC 48)** | Gestão Temporal de Aging de Produtores Inadimplentes, Negativação nos Birôs (Serasa/Boa Vista), Protesto em Cartório e Provisão Atuarial de Perdas Esperadas (ECL). |
+| **48** | **Patrocínios Corporativos, Naming Rights & Barter (IFRS 15)** | Gestão Contratual de Naming Rights e Cotas Master, Operações de Permuta Comercial com Notas Fiscais e Amortização Linear de Receita Diferida na DRE. |
+| **49** | **Logística de Turnês, Frota & Contratos IFRS 16 (CPC 06 R2)** | Frota de Vans e Carretas de Som/Luz, Gestão de Cartões de Combustível/Pedágio, Custo por Km Rodado e Escrituração de Ativo Direito de Uso / Passivo de Arrendamento. |
+| **50** | **Governança SOX 404, PCAOB & IPO Dual-Listing (B3 / NYSE)** | Matriz de Controles Internos SOX 404 com Zero Deficiências Materiais, Comitê de Auditoria Independente, Certificação CVM EmpresasNet e SEC Registration Statement Form F-1. |
 
 ---
 
 ## 🛠️ Como Executar e Testar
 
-### 1. Executar Bateria de Testes de Auditoria e Hardening (Fases 32 a 45)
+### 1. Executar Bateria de Testes de Auditoria e Hardening (Fases 32 a 50)
 ```bash
 npx tsx scripts/verify-fase32.ts
 npx tsx scripts/verify-fase33.ts
@@ -153,6 +158,11 @@ npx tsx scripts/verify-fase42.ts
 npx tsx scripts/verify-fase43.ts
 npx tsx scripts/verify-fase44.ts
 npx tsx scripts/verify-fase45.ts
+npx tsx scripts/verify-fase46.ts
+npx tsx scripts/verify-fase47.ts
+npx tsx scripts/verify-fase48.ts
+npx tsx scripts/verify-fase49.ts
+npx tsx scripts/verify-fase50.ts
 ```
 
 ### 2. Compilar Todos os Workspaces (Turborepo)

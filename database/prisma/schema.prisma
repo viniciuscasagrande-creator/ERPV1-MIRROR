@@ -3396,6 +3396,229 @@ model SusepBrokerageCommission {
   @@map("susep_brokerage_commissions")
 }
 
+// ============================================================================
+// FASE 46: GESTÃO DE A&B, CASHLESS RFID / NFC & ESTOQUE SPED BLOCO K
+// ============================================================================
+
+model CashlessRfidWristband {
+  id                    String           @id @default(uuid())
+  tagRfidUid            String           @unique @map("tag_rfid_uid")
+  eventoId              String           @map("evento_id")
+  saldoAtualBrl         Decimal          @db.Decimal(10, 2) @default(0.00) @map("saldo_atual_brl")
+  saldoNaoResgatadoBrl  Decimal          @db.Decimal(10, 2) @default(0.00) @map("saldo_nao_resgatado_brl")
+  taxaAtivacaoPagaBrl   Decimal          @db.Decimal(10, 2) @default(5.00) @map("taxa_ativacao_paga_brl")
+  statusPulseira        String           @default("ATIVA") @map("status_pulseira") // ATIVA, BLOQUEADA, REEMBOLSADA
+  ultimaCargaEm         DateTime         @default(now()) @map("ultima_carga_em")
+
+  @@index([eventoId])
+  @@map("cashless_rfid_wristbands")
+}
+
+model EventFoodBeverageSale {
+  id                       String        @id @default(uuid())
+  pulseiraId               String        @map("pulseira_id")
+  eventoId                 String        @map("evento_id")
+  pontoVendaBar            String        @map("ponto_venda_bar")
+  itemDescricao            String        @map("item_descricao")
+  quantidade               Int           @map("quantidade")
+  valorTotalBrl            Decimal       @db.Decimal(10, 2) @map("valor_total_brl")
+  custoMercadoriaVendidaBrl Decimal      @db.Decimal(10, 2) @map("custo_mercadoria_vendida_brl")
+  timestampVenda           DateTime      @default(now()) @map("timestamp_venda")
+
+  @@index([eventoId, pontoVendaBar])
+  @@map("event_food_beverage_sales")
+}
+
+model SpedInventoryBlockKRecord {
+  id                       String        @id @default(uuid())
+  eventoId                 String        @map("evento_id")
+  mesCompetencia           String        @map("mes_competencia")
+  codigoItemInsumo         String        @map("codigo_item_insumo")
+  quantidadeEstoqueInicial Decimal       @db.Decimal(12, 3) @map("quantidade_estoque_inicial")
+  quantidadeConsumida      Decimal       @db.Decimal(12, 3) @map("quantidade_consumida")
+  quantidadeEstoqueFinal   Decimal       @db.Decimal(12, 3) @map("quantidade_estoque_final")
+  perdaApuradaQuebra       Decimal       @db.Decimal(12, 3) @default(0.000) @map("perda_apurada_quebra")
+  dataFechamento           DateTime      @default(now()) @map("data_fechamento")
+
+  @@map("sped_inventory_block_k_records")
+}
+
+// ============================================================================
+// FASE 47: COBRANÇA JUDICIAL, RECUPERAÇÃO DE CRÉDITO & PECLD (CPC 48 / IFRS 9)
+// ============================================================================
+
+model ProducerDebtCollection {
+  id                         String      @id @default(uuid())
+  produtorId                 String      @map("produtor_id")
+  codigoDivida               String      @unique @map("codigo_divida")
+  valorOriginalDividaBrl     Decimal     @db.Decimal(12, 2) @map("valor_original_divida_brl")
+  saldoDevedorAtualBrl       Decimal     @db.Decimal(12, 2) @map("saldo_devedor_atual_brl")
+  diasEmAtrasoAging          Int         @map("dias_em_atraso_aging")
+  estagioCobranca            String      @default("AMIGAVEL") @map("estagio_cobranca") // AMIGAVEL, EXTRAJUDICIAL, PROTESTO, JUDICIAL
+  taxaJurosMoraMensalPercent Decimal     @db.Decimal(5, 2) @default(1.00) @map("taxa_juros_mora_mensal_percent")
+  criadoEm                   DateTime    @default(now()) @map("criado_em")
+
+  @@index([produtorId])
+  @@map("producer_debt_collections")
+}
+
+model CreditBureauProtestRecord {
+  id                         String      @id @default(uuid())
+  dividaId                   String      @map("divida_id")
+  cartorioProtestoComarca    String      @map("cartorio_protesto_comarca")
+  protocoloCertidaoProtesto  String      @unique @map("protocolo_certidao_protesto")
+  statusSerasaBoaVista       String      @default("NEGATIVADO") @map("status_serasa_boa_vista")
+  dataNegativacao            DateTime    @default(now()) @map("data_negativacao")
+  dataBaixaProtesto          DateTime?   @map("data_baixa_protesto")
+
+  @@map("credit_bureau_protest_records")
+}
+
+model Ifrs9ExpectedCreditLoss {
+  id                               String   @id @default(uuid())
+  competenciaMesAno                String   @map("competencia_mes_ano")
+  categoriaAgingCarteira           String   @map("categoria_aging_carteira")
+  exposicaoAoRiscoBrl              Decimal  @db.Decimal(12, 2) @map("exposicao_ao_risco_brl")
+  probabilidadeInadimplenciaPd     Decimal  @db.Decimal(5, 2) @map("probabilidade_inadimplencia_pd")
+  perdaDadoIncumprimentoLgd        Decimal  @db.Decimal(5, 2) @map("perda_dado_incumprimento_lgd")
+  provisaoPecldCalculadaBrl        Decimal  @db.Decimal(12, 2) @map("provisao_pecld_calculada_brl")
+  dataApuracao                     DateTime @default(now()) @map("data_apuracao")
+
+  @@map("ifrs9_expected_credit_losses")
+}
+
+// ============================================================================
+// FASE 48: PATROCÍNIOS CORPORATIVOS, NAMING RIGHTS & BARTER (IFRS 15)
+// ============================================================================
+
+model SponsorshipNamingAgreement {
+  id                         String      @id @default(uuid())
+  empresaPatrocinadoraNome   String      @map("empresa_patrocinadora_nome")
+  cnpjPatrocinador           String      @map("cnpj_patrocinador")
+  eventoOuEspacoNome         String      @map("evento_ou_espaco_nome")
+  tipoContrato               String      @map("tipo_contrato") // NAMING_RIGHTS, COTA_MASTER, PERMUTA_BARTER
+  valorTotalContratoBrl      Decimal     @db.Decimal(12, 2) @map("valor_total_contrato_brl")
+  prazoVigenciaMeses         Int         @map("prazo_vigencia_meses")
+  statusContrato             String      @default("ATIVO") @map("status_contrato")
+  dataInicioVigencia         DateTime    @map("data_inicio_vigencia")
+
+  @@map("sponsorship_naming_agreements")
+}
+
+model BarterTradeExchangeRecord {
+  id                         String      @id @default(uuid())
+  acordoPatrocinioId         String      @map("acordo_patrocinio_id")
+  descricaoItemPermuta       String      @map("descricao_item_permuta")
+  valorEconomicoAvaliadoBrl  Decimal     @db.Decimal(12, 2) @map("valor_economico_avaliado_brl")
+  numeroNotaFiscalEntrada    String      @map("numero_nota_fiscal_entrada")
+  numeroNotaFiscalSaida      String      @map("numero_nota_fiscal_saida")
+  comprovanteEntregaServicoUrl String?   @map("comprovante_entrega_servico_url")
+  dataEfetivacao             DateTime    @default(now()) @map("data_efetivacao")
+
+  @@map("barter_trade_exchange_records")
+}
+
+model SponsorshipRevenueAmortization {
+  id                         String      @id @default(uuid())
+  acordoPatrocinioId         String      @map("acordo_patrocinio_id")
+  mesCompetencia             String      @map("mes_competencia")
+  receitaDiferidaInicialBrl  Decimal     @db.Decimal(12, 2) @map("receita_diferida_inicial_brl")
+  amortizacaoCompetenciaBrl  Decimal     @db.Decimal(12, 2) @map("amortizacao_competencia_brl")
+  saldoReceitaDiferidaFinalBrl Decimal   @db.Decimal(12, 2) @map("saldo_receita_diferida_final_brl")
+  contaContabilCredito       String      @default("3.1.1.10 - Receitas de Patrocínios e Naming Rights") @map("conta_contabil_credito")
+  apuradoEm                  DateTime    @default(now()) @map("apurado_em")
+
+  @@map("sponsorship_revenue_amortizations")
+}
+
+// ============================================================================
+// FASE 49: LOGÍSTICA DE TURNÊS, FROTA & LEASING (CPC 06 R2 / IFRS 16)
+// ============================================================================
+
+model TourLogisticsVehicle {
+  id                         String      @id @default(uuid())
+  placaVeiculo               String      @unique @map("placa_veiculo")
+  tipoVeiculo                String      @map("tipo_veiculo") // VAN_EXECUTIVA, ONIBUS_LEITO, CARRETA_SOM
+  identificadorFrota         String      @map("identificador_frota")
+  motoristaResponsavel       String      @map("motorista_responsavel")
+  capacidadePassageirosCarga String      @map("capacidade_passageiros_carga")
+  statusOperacional          String      @default("DISPONIVEL") @map("status_operacional")
+
+  @@map("tour_logistics_vehicles")
+}
+
+model FieldExpenseFleetReport {
+  id                         String      @id @default(uuid())
+  veiculoId                  String      @map("veiculo_id")
+  eventoId                   String      @map("evento_id")
+  cartaoCombustivelNumero    String      @map("cartao_combustivel_numero")
+  litrosAbastecidos          Decimal     @db.Decimal(8, 2) @map("litros_abastecidos")
+  valorTotalAbastecimentoBrl Decimal     @db.Decimal(10, 2) @map("valor_total_abastecimento_brl")
+  quilometragemOdometro      Int         @map("quilometragem_odometro")
+  pedagioSemPararBrl         Decimal     @db.Decimal(10, 2) @default(0.00) @map("pedagio_sem_parar_brl")
+  dataDespesa                DateTime    @default(now()) @map("data_despesa")
+
+  @@map("field_expense_fleet_reports")
+}
+
+model Ifrs16LeaseVehicleContract {
+  id                         String      @id @default(uuid())
+  veiculoId                  String      @map("veiculo_id")
+  empresaLocadora            String      @map("empresa_locadora")
+  valorAluguelMensalBrl      Decimal     @db.Decimal(10, 2) @map("valor_aluguel_mensal_brl")
+  prazoMeses                 Int         @map("prazo_meses")
+  taxaDescontoArrendamento   Decimal     @db.Decimal(5, 2) @map("taxa_desconto_arrendamento")
+  ativoDireitoDeUsoBrl       Decimal     @db.Decimal(12, 2) @map("ativo_direito_de_uso_brl")
+  passivoArrendamentoBrl     Decimal     @db.Decimal(12, 2) @map("passivo_arrendamento_brl")
+  dataAssinatura             DateTime    @default(now()) @map("data_assinatura")
+
+  @@map("ifrs16_lease_vehicle_contracts")
+}
+
+// ============================================================================
+// FASE 50: GOVERNANÇA CVM / SEC PARA IPO & DUAL-LISTING (SOX 404 & PCAOB)
+// ============================================================================
+
+model SoxInternalControlMatrix {
+  id                         String      @id @default(uuid())
+  codigoControleSox          String      @unique @map("codigo_controle_sox")
+  processoNegocio            String      @map("processo_negocio")
+  descricaoControle          String      @map("descricao_controle")
+  frequenciaTeste            String      @map("frequencia_teste") // DIARIA, MENSAL, ANUAL
+  tipoControle               String      @map("tipo_controle") // AUTOMATIZADO, MANUAL
+  efetividadeTeste           String      @default("EFICAZ_SEM_DEFICIENCIA") @map("efetividade_teste")
+  testadoPor                 String      @map("testado_por")
+  dataUltimoTeste            DateTime    @default(now()) @map("data_ultimo_teste")
+
+  @@map("sox_internal_control_matrices")
+}
+
+model AuditCommitteeReviewDossier {
+  id                         String      @id @default(uuid())
+  numeroAtaComite            String      @unique @map("numero_ata_comite")
+  membrosComitePresentes     String      @map("membros_comite_presentes")
+  relatorioAuditoriaIndependente String  @map("relatorio_auditoria_independente")
+  recomendacoesCfo           String      @map("recomendacoes_cfo")
+  aprovadoParaConselho       Boolean     @default(true) @map("aprovado_para_conselho")
+  dataReuniao                DateTime    @default(now()) @map("data_reuniao")
+
+  @@map("audit_committee_review_dossiers")
+}
+
+model IpoDualListingReadinessEvaluation {
+  id                               String   @id @default(uuid())
+  periodoReferencia                String   @map("periodo_referencia")
+  indiceProntidaoB3Percent         Decimal  @db.Decimal(5, 2) @map("indice_prontidao_b3_percent")
+  indiceProntidaoSecNysePercent    Decimal  @db.Decimal(5, 2) @map("indice_prontidao_sec_nyse_percent")
+  statusFormularioReferenciaCvm    String   @default("HOMOLOGADO") @map("status_formulario_referencia_cvm")
+  statusRegistrationFormF1Sec      String   @default("HOMOLOGADO") @map("status_registration_form_f1_sec")
+  auditorExternoIndependente       String   @default("PwC / Deloitte Independent Audit") @map("auditor_externo_independente")
+  certificadoEm                    DateTime @default(now()) @map("certificado_em")
+
+  @@map("ipo_dual_listing_readiness_evaluations")
+}
+
+
 
 
 
