@@ -32,6 +32,7 @@ import {
   Bot,
   Presentation,
   Zap,
+  Receipt,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -127,6 +128,7 @@ const menuItems: MenuItem[] = [
       { title: 'Apuração & Guias DAM/DARF', path: '/fiscal/apuracao' },
       { title: 'EFD-Reinf & SPED', path: '/fiscal/sped' },
       { title: 'Reforma Tributária 2026', path: '/reforma-tributaria', badge: 'EC 132' },
+      { title: 'Split Tributário Checkout', path: '/split-tributario', badge: 'PLP 68' },
     ],
   },
   {
@@ -260,6 +262,13 @@ const menuItems: MenuItem[] = [
     path: '/pix-automatico',
     badge: 'BCB 430',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Split Tributário Checkout',
+    icon: Receipt,
+    path: '/split-tributario',
+    badge: 'PLP 68',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO, PerfilUsuario.CONTABILIDADE],
   },
   {
     title: 'Usuários & Permissões',

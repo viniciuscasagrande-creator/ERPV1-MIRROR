@@ -102,6 +102,9 @@ import { ExecutiveBoardroomPage } from '../../modules/executive-boardroom/Execut
 // FASE 31: Pix Automático, Débito Recorrente BCB 430/431 & Smart Retries SPI
 import { PixAutomaticoPage } from '../../modules/pix-automatico/PixAutomaticoPage';
 
+// FASE 32: Split Payment Tributário Inteligente no Checkout (PLP 68/2024 & Comitê Gestor IBS/CBS)
+import { TaxSplitCheckoutPage } from '../../modules/tax-split-checkout/TaxSplitCheckoutPage';
+
 
 
 
@@ -316,6 +319,12 @@ export const AppRouter: React.FC = () => {
         <Route path="pix-automatico" element={<PixAutomaticoPage />} />
         <Route path="recorrencia-pix" element={<PixAutomaticoPage />} />
         <Route path="financeiro/pix-automatico" element={<PixAutomaticoPage />} />
+
+        {/* Módulos FASE 32: Split Payment Tributário Inteligente no Checkout (PLP 68/2024 & Comitê Gestor IBS/CBS) */}
+        <Route path="split-tributario" element={<TaxSplitCheckoutPage />} />
+        <Route path="reforma-tributaria/split" element={<TaxSplitCheckoutPage />} />
+        <Route path="fiscal/split-payment" element={<TaxSplitCheckoutPage />} />
+        <Route path="checkout/split-tributario" element={<TaxSplitCheckoutPage />} />
 
 
 

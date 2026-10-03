@@ -2713,6 +2713,75 @@ model PixAutomaticoRetryConfig {
   @@map("pix_automatico_retry_configs")
 }
 
+// ============================================================================
+// FASE 32: SPLIT PAYMENT TRIBUTÁRIO INTELIGENTE NO CHECKOUT (PLP 68/2024 & COMITÊ GESTOR IBS)
+// ============================================================================
+
+model TaxSplitCheckoutExecution {
+  id                            String   @id @default(uuid())
+  codigoSplit                   String   @unique @map("codigo_split") // SPLIT-TAX-2026-0001
+  pedidoId                      String   @map("pedido_id")
+  numeroIngressos               Int      @map("numero_ingressos")
+  valorTotalTransacaoBrl        Decimal  @db.Decimal(12, 2) @map("valor_total_transacao_brl")
+  
+  // Segregação de Base de Cálculo (LC 116/03)
+  basePropriaComissaoBrl        Decimal  @db.Decimal(12, 2) @map("base_propria_comissao_brl") // Receita Própria Disk
+  baseRepasseProdutorBrl        Decimal  @db.Decimal(12, 2) @map("base_repasse_produtor_brl") // Repasse Isento de CBS/IBS Disk
+  
+  // Retenções na Fonte do IVA Dual
+  aliquotaCbsPercent            Decimal  @db.Decimal(5, 2) @map("aliquota_cbs_percent")
+  aliquotaIbsPercent            Decimal  @db.Decimal(5, 2) @map("aliquota_ibs_percent")
+  valorCbsRetidoBrl             Decimal  @db.Decimal(12, 2) @map("valor_cbs_retido_brl") // Destino: Conta Única Tesouro Nacional
+  valorIbsRetidoBrl             Decimal  @db.Decimal(12, 2) @map("valor_ibs_retido_brl") // Destino: Comitê Gestor IBS
+  
+  // Parcelas Líquidas Liberadas
+  valorLiquidoDiskIngressosBrl  Decimal  @db.Decimal(12, 2) @map("valor_liquido_diskingressos_brl")
+  valorLiquidoProdutorBrl       Decimal  @db.Decimal(12, 2) @map("valor_liquido_produtor_brl")
+  
+  // Protocolo Oficial e Conciliação
+  protocoloComiteGestorIbs      String   @map("protocolo_comite_gestor_ibs") // CG-IBS-2026-BR-091823
+  statusSplit                   String   @default("HOMOLOGADO_BACEN") @map("status_split") // PROCESSANDO, HOMOLOGADO_BACEN, REJEITADO_COMITE
+  tempoProcessamentoMs          Int      @default(320) @map("tempo_processamento_ms")
+  metodoPagamento               String   @map("metodo_pagamento") // PIX, CARTAO_CREDITO, DREX
+  dataLiquidacao                DateTime @default(now()) @map("data_liquidacao")
+
+  @@index([pedidoId])
+  @@index([statusSplit])
+  @@index([protocoloComiteGestorIbs])
+  @@map("tax_split_checkout_executions")
+}
+
+model TaxCreditAccumulator {
+  id                            String   @id @default(uuid())
+  codigoCredito                 String   @unique @map("codigo_credito") // CRD-IBS-2026-0042
+  fornecedorNome                String   @map("fornecedor_nome")
+  fornecedorCnpj                String   @map("fornecedor_cnpj")
+  numeroNfeRef                  String   @map("numero_nfe_ref") // NF-e 412604000...
+  tipoInsumoEvento              String   @map("tipo_insumo_evento") // LOCACAO_ARENA, SOM_ILUMINACAO, SEGURANCA_PRIVADA, GERADORES_ENERGIA
+  valorTotalInsumoBrl           Decimal  @db.Decimal(12, 2) @map("valor_total_insumo_brl")
+  creditoCbsApropriadoBrl       Decimal  @db.Decimal(12, 2) @map("credito_cbs_apropriado_brl")
+  creditoIbsApropriadoBrl       Decimal  @db.Decimal(12, 2) @map("credito_ibs_apropriado_brl")
+  statusApropriacao             String   @default("HOMOLOGADO_SPED") @map("status_apropriacao")
+  dataApropriacao               DateTime @default(now()) @map("data_apropriacao")
+
+  @@index([fornecedorCnpj])
+  @@index([tipoInsumoEvento])
+  @@map("tax_credit_accumulators")
+}
+
+model TaxSplitFiscalParam {
+  id                            String   @id @default(uuid())
+  versaoNormaRegulamentar       String   @default("PLP 68/2024 & EC 132/2023") @map("versao_norma_regulamentar")
+  aliquotaCbsPercent            Decimal  @db.Decimal(5, 2) @default(0.90) @map("aliquota_cbs_percent") // Alíquota teste 2026 (0.90%) ou padrão (8.80%)
+  aliquotaIbsEstadualPercent    Decimal  @db.Decimal(5, 2) @default(0.07) @map("aliquota_ibs_estadual_percent") // 0.07% teste
+  aliquotaIbsMunicipalPercent   Decimal  @db.Decimal(5, 2) @default(0.03) @map("aliquota_ibs_municipal_percent") // 0.03% teste
+  modoTransitorio2026           Boolean  @default(true) @map("modo_transitorio_2026")
+  splitPaymentAutomaticoAtivo   Boolean  @default(true) @map("split_payment_automatico_ativo")
+  atualizadoEm                  DateTime @default(now()) @updatedAt @map("atualizado_em")
+
+  @@map("tax_split_fiscal_params")
+}
+
 
 
 

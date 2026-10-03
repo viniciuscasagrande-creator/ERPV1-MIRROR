@@ -48,6 +48,7 @@ import { FidcEntertainmentModule } from './modules/fidc-entertainment/fidc-enter
 import { AiAutonomousClosingModule } from './modules/ai-autonomous-closing/ai-autonomous-closing.module';
 import { ExecutiveBoardroomModule } from './modules/executive-boardroom/executive-boardroom.module';
 import { PixAutomaticoModule } from './modules/pix-automatico/pix-automatico.module';
+import { TaxSplitCheckoutModule } from './modules/tax-split-checkout/tax-split-checkout.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -106,6 +107,7 @@ import { PrismaModule } from './database/prisma.module';
     AiAutonomousClosingModule,
     ExecutiveBoardroomModule,
     PixAutomaticoModule,
+    TaxSplitCheckoutModule,
   ],
   providers: [
     PrismaService,
