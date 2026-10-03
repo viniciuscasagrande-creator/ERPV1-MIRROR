@@ -1063,3 +1063,46 @@ model AccountingPeriod {
   @@map("accounting_periods")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 11: GED (GESTÃO ELETRÔNICA DE DOCUMENTOS) & LOTES BANCÁRIOS CNAB 240
+// ------------------------------------------------------------------------------
+
+model DocumentItem {
+  id              String    @id @default(uuid())
+  nomeArquivo     String    @map("nome_arquivo")
+  descricao       String
+  categoria       String    // CONTRATO_PRODUTOR, ALVARA_EVENTO, COMPROVANTE_PAGAMENTO, DOCUMENTO_FISCAL, OUTRO
+  tamanhoBytes    Int       @default(0) @map("tamanho_bytes")
+  formato         String    @default("PDF") // PDF, PNG, JPG, XML, ZIP
+  urlArquivo      String?   @map("url_arquivo")
+  hashSha256      String    @map("hash_sha256")
+  referenciaTipo  String?   @map("referencia_tipo") // EVENTO, PRODUTOR, REPASSE, GERAL
+  referenciaId    String?   @map("referencia_id")
+  criadoPor       String?   @map("criado_por")
+  criadoEm        DateTime  @default(now()) @map("criado_em")
+
+  @@index([categoria])
+  @@index([referenciaTipo, referenciaId])
+  @@map("document_items")
+}
+
+model CnabBatch {
+  id              String    @id @default(uuid())
+  codigoLote      String    @unique @map("codigo_lote") // Ex: "CNAB-2026-000041"
+  bancoCodigo     String    @map("banco_codigo") // 341 Itaú, 237 Bradesco
+  tipoOperacao    String    @map("tipo_operacao") // REMESSA_PAGAMENTO, RETORNO_LIQUIDACAO
+  totalRegistros  Int       @default(0) @map("total_registros")
+  valorTotal      Decimal   @default(0.00) @db.Decimal(15, 2) @map("valor_total")
+  status          String    @default("GERADO") // GERADO, ENVIADO_BANCO, PROCESSADO_RETORNO, REJEITADO
+  conteudoArquivo String    @db.Text @map("conteudo_arquivo")
+  geradoPor       String?   @map("gerado_por")
+  processadoEm    DateTime? @map("processado_em")
+
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt      @map("updated_at")
+
+  @@index([bancoCodigo])
+  @@index([status])
+  @@map("cnab_batches")
+}
+

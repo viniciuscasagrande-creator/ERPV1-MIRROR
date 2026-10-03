@@ -37,6 +37,11 @@ import { ProducerContaBancariaPage } from '../../modules/producer-portal/Produce
 // FASE 9: Governança Contábil & Fechamento Mensal
 import { FechamentoMensalPage } from '../../modules/governanca/FechamentoMensalPage';
 
+// FASE 11: GED, CNAB 240 FEBRABAN & Configurações Globais
+import { DocumentosGedPage } from '../../modules/ged/DocumentosGedPage';
+import { CnabPage } from '../../modules/financeiro/CnabPage';
+import { ConfiguracoesPage } from '../../modules/configuracoes/ConfiguracoesPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -120,6 +125,7 @@ export const AppRouter: React.FC = () => {
         <Route path="financeiro/pagamentos" element={<ContasPagarPage />} />
         <Route path="financeiro/repasses" element={<RepassesPage />} />
         <Route path="financeiro/fluxo-caixa" element={<FluxoCaixaPage />} />
+        <Route path="financeiro/cnab" element={<CnabPage />} />
 
         {/* Módulos FASE 4: Bancos, Conciliação OFX & Gateways */}
         <Route path="bancos/contas" element={<ContasBancariasPage />} />
@@ -166,6 +172,17 @@ export const AppRouter: React.FC = () => {
           element={
             <RoleRoute roles={[PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA]}>
               <AuditPage />
+            </RoleRoute>
+          }
+        />
+
+        {/* Módulos FASE 11: GED Digital & Parâmetros do ERP */}
+        <Route path="documentos" element={<DocumentosGedPage />} />
+        <Route
+          path="configuracoes"
+          element={
+            <RoleRoute roles={[PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA]}>
+              <ConfiguracoesPage />
             </RoleRoute>
           }
         />

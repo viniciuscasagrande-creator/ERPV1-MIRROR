@@ -20,3 +20,6 @@ export * from './bi.js';
 export * from './relatorios.js';
 export * from './producer-portal.js';
 export * from './accounting-period.js';
+export * from './ged.js';
+export * from './cnab.js';
+export * from './settings.js';

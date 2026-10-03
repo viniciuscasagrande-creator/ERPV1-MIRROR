@@ -48,6 +48,7 @@ const menuItems: MenuItem[] = [
       { title: 'Pagamentos', path: '/financeiro/pagamentos' },
       { title: 'Repasses', path: '/financeiro/repasses' },
       { title: 'Fluxo de Caixa', path: '/financeiro/fluxo-caixa' },
+      { title: 'Lotes CNAB 240', path: '/financeiro/cnab', badge: 'FEBRABAN' },
     ],
   },
   {
