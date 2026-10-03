@@ -81,6 +81,9 @@ import { AuditCompliancePage } from '../../modules/audit-compliance/AuditComplia
 // FASE 24: Gateway Global Multi-Moeda, Conversão Cambial Spot & Hedge FX
 import { GlobalFxPage } from '../../modules/global-fx/GlobalFxPage';
 
+// FASE 25: Consolidação IFRS / CPC 36, Equivalência Patrimonial & Balanço Global
+import { ConsolidationIfrsPage } from '../../modules/consolidation-ifrs/ConsolidationIfrsPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -248,6 +251,14 @@ export const AppRouter: React.FC = () => {
         <Route path="vendas-internacionais" element={<GlobalFxPage />} />
         <Route path="financeiro/cambio" element={<GlobalFxPage />} />
         <Route path="financeiro/hedge" element={<GlobalFxPage />} />
+
+        {/* Módulos FASE 25: Consolidação IFRS / CPC 36, Equivalência Patrimonial & Balanço Global */}
+        <Route path="consolidacao-ifrs" element={<ConsolidationIfrsPage />} />
+        <Route path="balanco-global" element={<ConsolidationIfrsPage />} />
+        <Route path="demonstracoes-consolidadas" element={<ConsolidationIfrsPage />} />
+        <Route path="contabilidade/consolidacao" element={<ConsolidationIfrsPage />} />
+        <Route path="contabilidade/mep" element={<ConsolidationIfrsPage />} />
+
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

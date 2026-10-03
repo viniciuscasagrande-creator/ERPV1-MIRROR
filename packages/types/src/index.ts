@@ -37,3 +37,4 @@ export * from './open-finance-pix.js';
 export * from './ai-treasury.js';
 export * from './audit-compliance.js';
 export * from './global-fx.js';
+export * from './consolidation-ifrs.js';

@@ -2118,6 +2118,86 @@ model FxAccountingEntry {
   @@map("fx_accounting_entries")
 }
 
+// ============================================================================
+// FASE 25: CONSOLIDAÇÃO IFRS / CPC 36, EQUIVALÊNCIA PATRIMONIAL & CONVERSÃO FX
+// Normas CPC 36 (IFRS 10), CPC 18 (IAS 28 MEP) e CPC 02 (IAS 21 Conversão)
+// ============================================================================
+
+model ConsolidatedEntity {
+  id                    String   @id @default(uuid())
+  codigoEntidade        String   @unique @map("codigo_entidade") // Ex: "ENT-MATRIZ", "ENT-SPE-PEDREIRA"
+  razaoSocial           String   @map("razao_social")
+  cnpj                  String   @unique
+  tipoEntidade          String   @map("tipo_entidade") // MATRIZ, FILIAL, SPE_EVENTO, SCP_INVESTIDA, CONTROLADA
+  percentualParticipacao Decimal @default(100.00) @db.Decimal(5, 2) @map("percentual_participacao")
+  metodoConsolidacao    String   @default("CONSOLIDACAO_INTEGRAL") @map("metodo_consolidacao") // CONSOLIDACAO_INTEGRAL, EQUIVALENCIA_PATRIMONIAL_MEP, CUSTO
+  moedaFuncional        String   @default("BRL") @map("moeda_funcional")
+  ativa                 Boolean  @default(true)
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  @@index([tipoEntidade])
+  @@index([metodoConsolidacao])
+  @@map("consolidated_entities")
+}
+
+model IntercompanyElimination {
+  id                    String   @id @default(uuid())
+  codigoEliminacao      String   @unique @map("codigo_eliminacao") // Ex: "ELM-2026-001"
+  periodoAnoMes         String   @map("periodo_ano_mes") // Ex: "2026-03"
+  tipoOperacao          String   @map("tipo_operacao") // REPASSE_TAXA_SERVICO, MUTUO_FINANCEIRO_INTERNO, DIVIDENDO_SCP_DISTRIBUIDO, COMPRA_VENDA_INGRESSOS
+  entidadeOrigemId      String   @map("entidade_origem_id")
+  entidadeDestinoId     String   @map("entidade_destino_id")
+  valorEliminadoBrl     Decimal  @db.Decimal(15, 2) @map("valor_eliminado_brl")
+  contaContabilDebito   String   @map("conta_contabil_debito")
+  contaContabilCredito  String   @map("conta_contabil_credito")
+  justificativaIfrs     String   @map("justificativa_ifrs") // Eliminação de lucros não realizados / saldos recíprocos CPC 36
+  eliminadoEm           DateTime @default(now()) @map("eliminado_em")
+
+  @@index([periodoAnoMes])
+  @@index([tipoOperacao])
+  @@map("intercompany_eliminations")
+}
+
+model EquityAccountingMep {
+  id                    String   @id @default(uuid())
+  codigoApuracaoMep     String   @unique @map("codigo_apuracao_mep") // Ex: "MEP-2026-004"
+  investidaId           String   @map("investida_id")
+  investidaNome         String   @map("investida_nome")
+  periodoApuracao       String   @map("periodo_apuracao") // Ex: "1T-2026"
+  percentualDetido      Decimal  @db.Decimal(5, 2) @map("percentual_detido")
+  patrimonioLiquidoAjustado Decimal @db.Decimal(15, 2) @map("patrimonio_liquido_ajustado")
+  lucroLiquidoPeriodo   Decimal  @db.Decimal(15, 2) @map("lucro_liquido_periodo")
+  resultadoEquivalenciaBrl Decimal @db.Decimal(15, 2) @map("resultado_equivalencia_brl") // % * Lucro da investida
+  valorInvestimentoContabil Decimal @db.Decimal(15, 2) @map("valor_investimento_contabil") // % * PL investida
+  dataApuracao          DateTime @default(now()) @map("data_apuracao")
+
+  @@index([investidaId])
+  @@index([periodoApuracao])
+  @@map("equity_accounting_mep")
+}
+
+model ConsolidatedBalanceSheet {
+  id                    String   @id @default(uuid())
+  codigoDemonstracao    String   @unique @map("codigo_demonstracao") // Ex: "DFS-IFRS-2026-01"
+  periodo               String   @map("periodo") // Ex: "2026-03" ou "1T-2026"
+  moedaApresentacao     String   @default("BRL") @map("moeda_apresentacao") // BRL, USD, EUR
+  taxaConversaoFechamento Decimal @default(1.0000) @db.Decimal(10, 4) @map("taxa_conversao_fechamento")
+  ativoCirculanteTotal  Decimal  @db.Decimal(15, 2) @map("ativo_circulante_total")
+  ativoNaoCirculanteTotal Decimal @db.Decimal(15, 2) @map("ativo_nao_circulante_total")
+  ativoTotal            Decimal  @db.Decimal(15, 2) @map("ativo_total")
+  passivoCirculanteTotal Decimal @db.Decimal(15, 2) @map("passivo_circulante_total")
+  passivoNaoCirculanteTotal Decimal @db.Decimal(15, 2) @map("passivo_nao_circulante_total")
+  patrimonioLiquidoTotal Decimal @db.Decimal(15, 2) @map("patrimonio_liquido_total")
+  ajusteAvaliacaoPatrimonial Decimal @default(0.00) @db.Decimal(15, 2) @map("ajuste_avaliacao_patrimonial") // AAP conversão FX
+  receitaLiquidaConsolidada Decimal @db.Decimal(15, 2) @map("receita_liquida_consolidada")
+  lucroLiquidoConsolidado Decimal @db.Decimal(15, 2) @map("lucro_liquido_consolidado")
+  status                String   @default("FECHADO_AUDITADO") // EM_ANDAMENTO, FECHADO_AUDITADO, RETIFICADO
+  geradoEm              DateTime @default(now()) @map("gerado_em")
+
+  @@index([periodo, moedaApresentacao])
+  @@map("consolidated_balance_sheets")
+}
+
 
 
 

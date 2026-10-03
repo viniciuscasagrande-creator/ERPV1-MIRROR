@@ -25,6 +25,7 @@ import {
   Split,
   BrainCircuit,
   Globe2,
+  Layers,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -100,6 +101,7 @@ const menuItems: MenuItem[] = [
       { title: 'Razão Contábil', path: '/contabilidade/razao' },
       { title: 'Balancete', path: '/contabilidade/balancete' },
       { title: 'DRE Gerencial', path: '/contabilidade/dre' },
+      { title: 'Consolidação IFRS & MEP', path: '/consolidacao-ifrs', badge: 'CPC 36' },
       { title: 'Fechamento & Travas', path: '/governanca/fechamento-mensal', badge: 'Travas' },
       { title: 'Exportações & Integrações', path: '/contabilidade/exportador', badge: 'Domínio' },
       { title: 'Disaster Recovery (DR)', path: '/disaster-recovery', badge: '5 Anos' },
@@ -190,6 +192,20 @@ const menuItems: MenuItem[] = [
     path: '/ai-tesouraria',
     badge: 'IA v2.4',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Câmbio FX & Multi-Moeda',
+    icon: Globe2,
+    path: '/global-fx',
+    badge: 'PTAX',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Consolidação IFRS & MEP',
+    icon: Layers,
+    path: '/consolidacao-ifrs',
+    badge: 'CPC 36',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.CONTABILIDADE],
   },
   {
     title: 'Usuários & Permissões',
