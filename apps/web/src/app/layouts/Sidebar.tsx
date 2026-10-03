@@ -69,6 +69,7 @@ const menuItems: MenuItem[] = [
       { title: 'Antecipações & Travas', path: '/antecipacoes', badge: 'BCB' },
       { title: 'Split de Pagamento', path: '/split', badge: 'Nativo' },
       { title: 'Pix Automático & Recorrência', path: '/pix-automatico', badge: 'BCB 430' },
+      { title: 'Orçamento & Forecast', path: '/orcamento-forecast', badge: 'Rolling' },
     ],
   },
   {
@@ -80,6 +81,8 @@ const menuItems: MenuItem[] = [
       { title: 'Vendas de Ingressos', path: '/eventos/vendas' },
       { title: 'Cancelamentos & Estornos', path: '/eventos/estornos' },
       { title: 'DRE por Evento (ABC)', path: '/dre-evento', badge: 'Art. 187' },
+      { title: 'Borderô Assinatura ICP', path: '/bordero-assinatura', badge: 'ITI' },
+      { title: 'ECAD & Direitos Autorais', path: '/ecad-direitos', badge: 'Lei 9.610' },
     ],
   },
   {
@@ -101,6 +104,7 @@ const menuItems: MenuItem[] = [
       { title: 'Câmbio FX & Multi-Moeda', path: '/global-fx', badge: 'PTAX' },
       { title: 'Tokenização RWA & DREX', path: '/rwa-drex', badge: 'DREX' },
       { title: 'FIDC de Bilheteria & Cotas', path: '/fidc-bilheteria', badge: 'CVM 175' },
+      { title: 'Mensageria ISO 20022', path: '/iso20022-spi', badge: 'RSFN' },
     ],
   },
   {
@@ -160,6 +164,20 @@ const menuItems: MenuItem[] = [
     icon: ShieldAlert,
     path: '/auditoria-ia',
     badge: 'Sentinel',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
+  },
+  {
+    title: 'Compliance PLD-FT (COAF)',
+    icon: ShieldAlert,
+    path: '/pld-compliance',
+    badge: 'SISCOAF',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
+  },
+  {
+    title: 'War Room Soberano (CFO)',
+    icon: ShieldCheck,
+    path: '/war-room',
+    badge: 'ISAE 3402',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
   },
   {

@@ -51,6 +51,12 @@ import { PixAutomaticoModule } from './modules/pix-automatico/pix-automatico.mod
 import { TaxSplitCheckoutModule } from './modules/tax-split-checkout/tax-split-checkout.module';
 import { EventCostCenterDreModule } from './modules/event-cost-center-dre/event-cost-center-dre.module';
 import { AiBankReconciliationModule } from './modules/ai-bank-reconciliation/ai-bank-reconciliation.module';
+import { BudgetForecastModule } from './modules/budget-forecast/budget-forecast.module';
+import { BorderoIcpSignatureModule } from './modules/bordero-icp-signature/bordero-icp-signature.module';
+import { EcadCopyrightModule } from './modules/ecad-copyright/ecad-copyright.module';
+import { PldCoafComplianceModule } from './modules/pld-coaf-compliance/pld-coaf-compliance.module';
+import { Iso20022SettlementModule } from './modules/iso20022-settlement/iso20022-settlement.module';
+import { SovereignAuditWarRoomModule } from './modules/sovereign-audit-war-room/sovereign-audit-war-room.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -112,6 +118,12 @@ import { PrismaModule } from './database/prisma.module';
     TaxSplitCheckoutModule,
     EventCostCenterDreModule,
     AiBankReconciliationModule,
+    BudgetForecastModule,
+    BorderoIcpSignatureModule,
+    EcadCopyrightModule,
+    PldCoafComplianceModule,
+    Iso20022SettlementModule,
+    SovereignAuditWarRoomModule,
   ],
   providers: [
     PrismaService,

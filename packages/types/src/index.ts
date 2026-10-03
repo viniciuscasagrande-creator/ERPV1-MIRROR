@@ -47,6 +47,12 @@ export * from './pix-automatico.js';
 export * from './tax-split-checkout.js';
 export * from './event-cost-center-dre.js';
 export * from './ai-bank-reconciliation.js';
+export * from './budget-forecast.js';
+export * from './bordero-icp-signature.js';
+export * from './ecad-copyright.js';
+export * from './pld-coaf-compliance.js';
+export * from './iso20022-settlement.js';
+export * from './sovereign-audit-war-room.js';
 
 
 

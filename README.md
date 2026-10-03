@@ -121,32 +121,36 @@ diskingressos-erp/
 | **32** | **Split Payment Tributário Inteligente no Checkout (PLP 68/2024 & Comitê Gestor IBS/CBS)** | Retenção e Segregação Atômica do IVA Dual (CBS Federal + IBS Subnacional) no Momento da Liquidação Bancária no SPI, Isolamento Estrito de Base Própria (Comissões) vs Fiduciária de Repasse dos Produtores (Art. 52 PLP 68/2024), Alíquotas de Transição 2026 (0,9% CBS / 0,1% IBS) e Regime Reduzido de Eventos (3,52% CBS / 7,08% IBS), Acumulador de Créditos de Insumos da Não-Cumulatividade (Art. 28) e Emissão Automática de Protocolos Homologados pelo Comitê Gestor IBS. |
 | **33** | **DRE & Balancete por Centro de Custo de Evento com Custeio ABC** | Apuração Gerencial Vertical e Horizontal por Evento/Espetáculo (Art. 187 Lei 6.404/76 e NBC TG 26 / CPC 26), Segregação Matricial de Custos Diretos e Indiretos, Alocação Automatizada via Custeio Baseado em Atividades (ABC) com Direcionadores Operacionais (SAC, Cloud K8s, Gateway) e Imutabilidade Criptográfica SHA-256 para Big Four. |
 | **34** | **Conciliação Bancária Autônoma Contínua via IA & Liquidação D+0 com Escrow** | Agente Autônomo de Conciliação Bancária com IA em Tempo Real (Acurácia > 99,8%), Detecção e Escrituração Contábil Automática de Tarifas Bancárias Ocultas (PIX, TED, Float e Registradora CIP/CERC), Trava Paramétrica de Saldo Mínimo Escrow de Segurança (15%) para Risco de Chargeback e Liquidação Instantânea de Repasses D+0. |
+| **35** | **Gestão Orçamentária Corporativa, Budget vs. Actual & Forecast Preditivo por IA** | Planejamento Orçamentário Anual e Plurianual (CAPEX/OPEX), Comparativo em Tempo Real de Orçado vs. Realizado (*Budget vs Actual*), Matriz de Variância Contábil, Projeção Rolling Forecast a 12 Meses e Simulador de Sensibilidade/Estresse. |
+| **36** | **Auditoria de Borderô Físico-Digital com Assinatura ICP-Brasil & ITI** | Homologação Jurídica Irrevogável (MP 2.200-2/2001 e Lei 14.063/2020), Carimbo do Tempo Oficial (ACT Observatório Nacional), Padrão Criptográfico PAdES-LTV (Long Term Validation) e Validador ITI. |
+| **37** | **Central de Gestão & Apuração ECAD / Direitos Autorais Automatizada** | Apuração Paramétrica de Direitos Autorais (7,5% a 10,0% da Receita Bruta segundo Art. 68 da Lei 9.610/98), Retenção Fiduciária no Borderô, Segregação em Conta de Terceiros (Passivo 2.1.4.05) e Catalogação de Cue-Sheets ISRC. |
+| **38** | **Prevenção à Lavagem de Dinheiro (PLD-FT), COAF & Monitoramento Bacen** | Conformidade Circular BCB 3.978/2020 e Lei 9.613/98, Radar Comportamental Anti-Smurfing e Compras Fracionadas, Triagem Automatizada de Pessoas Politicamente Expostas (PEP), Quarentena Preventiva e Comunicação SISCOAF. |
+| **39** | **Liquidação Interbancária Contínua SPI / STR & Mensageria ISO 20022** | Conectividade Nativa com a Rede RSFN via Mensageria Padronizada ISO 20022 (pacs.008, pacs.004, camt.053), Liquidação Bruta em Tempo Real (LBTR) Sub-segundo no SPI e Conciliação Atômica Interbancária sem Risco de Fila. |
+| **40** | **Suíte Soberana de Auditoria Contínua & War Room da Diretoria / CFO** | War Room Supremo C-Level com *Zero-Trust Financial Kernel*, Validação Contínua de 480 Regras Contábeis em Todas as 40 Fases, Árvore Criptográfica Merkle Patricia Tree (MPT), *Kill-Switch Patrimonial* e Dossiê ISAE 3402 / SOC 1 Type II para Big Four. |
 
 ---
 
 ## 🛠️ Como Executar e Testar
 
-### 1. Executar Testes de Hardening & Split Tributário (Fase 32)
+### 1. Executar Bateria de Testes de Auditoria e Hardening (Fases 32 a 40)
 ```bash
 npx ts-node scripts/verify-fase32.ts
-```
-
-### 2. Executar Testes de DRE por Centro de Custo & Custeio ABC (Fase 33)
-```bash
 npx ts-node scripts/verify-fase33.ts
-```
-
-### 3. Executar Testes de Conciliação Autônoma IA & Escrow D+0 (Fase 34)
-```bash
 npx ts-node scripts/verify-fase34.ts
+npx ts-node scripts/verify-fase35.ts
+npx ts-node scripts/verify-fase36.ts
+npx ts-node scripts/verify-fase37.ts
+npx ts-node scripts/verify-fase38.ts
+npx ts-node scripts/verify-fase39.ts
+npx ts-node scripts/verify-fase40.ts
 ```
 
-### 4. Compilar Todos os Workspaces (Turborepo)
+### 2. Compilar Todos os Workspaces (Turborepo)
 ```bash
 npm run build
 ```
 
-### 5. Rodar o Ambiente Completo em Desenvolvimento
+### 3. Rodar o Ambiente Completo em Desenvolvimento
 ```bash
 npm run dev
 ```

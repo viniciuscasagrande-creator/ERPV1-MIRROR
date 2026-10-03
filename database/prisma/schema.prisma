@@ -2906,6 +2906,268 @@ model EscrowSafetyThreshold {
   @@map("escrow_safety_thresholds")
 }
 
+// ============================================================================
+// FASE 35: Gestão Orçamentária Corporativa, Budget vs Actual & Rolling Forecast
+// ============================================================================
+
+model CorporateBudget {
+  id                        String           @id @default(uuid())
+  codigoOrcamento           String           @unique @map("codigo_orcamento") // BGT-2026-CORP
+  anoExercicio              Int              @map("ano_exercicio")
+  descricao                 String
+  valorTotalPrevistoBrl     Decimal          @db.Decimal(15, 2) @map("valor_total_previsto_brl")
+  valorTotalExecutadoBrl    Decimal          @db.Decimal(15, 2) @map("valor_total_executado_brl")
+  statusAprovacao           String           @default("APROVADO_CONSELHO") @map("status_aprovacao")
+  criadoEm                  DateTime         @default(now()) @map("criado_em")
+  atualizadoEm              DateTime         @updatedAt @map("atualizado_em")
+  itens                     BudgetLineItem[]
+
+  @@map("corporate_budgets")
+}
+
+model BudgetLineItem {
+  id                    String           @id @default(uuid())
+  orcamentoId           String           @map("orcamento_id")
+  categoria             String           // CAPEX_INFRA, OPEX_MARKETING, OPEX_PESSOAL, CUSTO_TRANSACIONAL
+  centroCustoCodigo     String           @map("centro_custo_codigo")
+  mesCompetencia        String           @map("mes_competencia") // 2026-04
+  valorOrcadoBrl        Decimal          @db.Decimal(12, 2) @map("valor_orcado_brl")
+  valorRealizadoBrl     Decimal          @db.Decimal(12, 2) @map("valor_realizado_brl")
+  varianciaPercentual   Decimal          @db.Decimal(5, 2) @map("variancia_percentual")
+  statusVariancia       String           @map("status_variancia") // DENTRO_DA_META, ALERTA_ESTOURO, SOBRECAPACIDADE
+  orcamento             CorporateBudget  @relation(fields: [orcamentoId], references: [id], onDelete: Cascade)
+
+  @@index([orcamentoId])
+  @@index([centroCustoCodigo])
+  @@map("budget_line_items")
+}
+
+model ForecastVarianceRecord {
+  id                    String           @id @default(uuid())
+  codigoForecast        String           @unique @map("codigo_forecast")
+  mesReferencia         String           @map("mes_referencia")
+  projecaoProximosMeses Json             @map("projecao_proximos_meses")
+  confiancaIaPercent    Decimal          @db.Decimal(5, 2) @map("confianca_ia_percent")
+  fatorSazonalidade     Decimal          @db.Decimal(4, 2) @map("fator_sazonalidade")
+  criadoEm              DateTime         @default(now()) @map("criado_em")
+
+  @@map("forecast_variance_records")
+}
+
+// ============================================================================
+// FASE 36: Auditoria de Borderô Físico-Digital com Assinatura ICP-Brasil & ITI
+// ============================================================================
+
+model DigitalBorderoSeal {
+  id                    String           @id @default(uuid())
+  codigoBordero         String           @unique @map("codigo_bordero")
+  eventoId              String           @map("evento_id")
+  produtorId            String           @map("produtor_id")
+  hashDocSha256         String           @map("hash_doc_sha256")
+  statusAssinatura      String           @map("status_assinatura") // ASSINADO_ICP_BRASIL, PENDENTE_ASSINATURA, REJEITADO
+  certificadoEmissor    String           @map("certificado_emissor") // AC SERPRO / AC CERTISIGN ICP-BRASIL
+  padraoAssinatura      String           @default("PADES_LTV") @map("padrao_assinatura")
+  urlDocumentoPdf       String           @map("url_documento_pdf")
+  criadoEm              DateTime         @default(now()) @map("criado_em")
+
+  @@index([eventoId])
+  @@map("digital_bordero_seals")
+}
+
+model IcpSignatureAuditTrail {
+  id                    String           @id @default(uuid())
+  borderoSealId         String           @map("bordero_seal_id")
+  signatarioNome        String           @map("signatario_nome")
+  signatarioCpfCnpj     String           @map("signatario_cpf_cnpj")
+  protocoloValidadorIti String           @map("protocolo_validador_iti")
+  carimboDoTempo        DateTime         @map("carimbo_do_tempo")
+  ipOrigem              String           @map("ip_origem")
+  statusValidacao       String           @map("status_validacao") // CONFORME_ITI_MP_2200
+
+  @@index([borderoSealId])
+  @@map("icp_signature_audit_trails")
+}
+
+model BorderoTimeStampingRecord {
+  id                    String           @id @default(uuid())
+  codigoCarimbo         String           @unique @map("codigo_carimbo")
+  autoridadeTempo       String           @map("autoridade_tempo") // ACT BR - Observatório Nacional
+  hashVinculado         String           @map("hash_vinculado")
+  dataHoraOficial       DateTime         @map("data_hora_oficial")
+
+  @@map("bordero_time_stamping_records")
+}
+
+// ============================================================================
+// FASE 37: Central de Gestão & Apuração ECAD / Direitos Autorais Automatizada
+// ============================================================================
+
+model EcadTaxCalculation {
+  id                    String           @id @default(uuid())
+  codigoApuracao        String           @unique @map("codigo_apuracao")
+  eventoId              String           @map("evento_id")
+  produtorId            String           @map("produtor_id")
+  receitaBrutaBaseBrl   Decimal          @db.Decimal(12, 2) @map("receita_bruta_base_brl")
+  aliquotaEcadPercent   Decimal          @db.Decimal(5, 2) @map("aliquota_ecad_percent") // 7.5% ou 10%
+  valorEcadDevidoBrl    Decimal          @db.Decimal(12, 2) @map("valor_ecad_devido_brl")
+  guiaEcadNumero        String           @map("guia_ecad_numero")
+  statusGuia            String           @default("RETIDO_FIDUCIARIO") @map("status_guia")
+  contaPassivoEcad      String           @default("2.1.4.05 - Obrigações com Direitos Autorais ECAD") @map("conta_passivo_ecad")
+  calculadoEm           DateTime         @default(now()) @map("calculado_em")
+
+  @@index([eventoId])
+  @@map("ecad_tax_calculations")
+}
+
+model EcadMusicalCueSheet {
+  id                    String           @id @default(uuid())
+  eventoId              String           @map("evento_id")
+  tituloObra            String           @map("titulo_obra")
+  autorCompositor       String           @map("autor_compositor")
+  isrcCode              String           @map("isrc_code")
+  duracaoSegundos       Int              @map("duracao_segundos")
+
+  @@index([eventoId])
+  @@map("ecad_musical_cue_sheets")
+}
+
+model EcadSettlementVoucher {
+  id                    String           @id @default(uuid())
+  codigoComprovante     String           @unique @map("codigo_comprovante")
+  apuracaoId            String           @map("apuracao_id")
+  valorLiquidadoBrl     Decimal          @db.Decimal(12, 2) @map("valor_liquidado_brl")
+  autenticacaoBancaria  String           @map("autenticacao_bancaria")
+  dataLiquidacao        DateTime         @map("data_liquidacao")
+
+  @@map("ecad_settlement_vouchers")
+}
+
+// ============================================================================
+// FASE 38: Prevenção à Lavagem de Dinheiro (PLD-FT), COAF & Bacen 3.978/2020
+// ============================================================================
+
+model PldTransactionAlert {
+  id                    String           @id @default(uuid())
+  codigoAlerta          String           @unique @map("codigo_alerta") // ALR-PLD-2026-0041
+  transacaoId           String           @map("transacao_id")
+  clienteCpfCnpj        String           @map("cliente_cpf_cnpj")
+  clienteNome           String           @map("cliente_nome")
+  tipoInfracaoDetectada String           @map("tipo_infracao_detectada") // SMURFING, CARTAO_MULTIPLO_SUSPEITO, ALTO_VALOR_ESPECIE
+  scoreRiscoPld         Decimal          @db.Decimal(5, 2) @map("score_risco_pld") // 0 a 100
+  valorOperacaoBrl      Decimal          @db.Decimal(12, 2) @map("valor_operacao_brl")
+  statusAnalise         String           @default("EM_ANALISE_COMPLIANCE") @map("status_analise")
+  dataDeteccao          DateTime         @default(now()) @map("data_deteccao")
+
+  @@index([clienteCpfCnpj])
+  @@map("pld_transaction_alerts")
+}
+
+model PepScreeningRecord {
+  id                    String           @id @default(uuid())
+  cpfConsultado         String           @unique @map("cpf_consultado")
+  nomeCompleto          String           @map("nome_completo")
+  isPepAtivo            Boolean          @default(false) @map("is_pep_ativo")
+  cargoFuncaoPublica    String?          @map("cargo_funcao_publica")
+  orgaoPublico          String?          @map("orgao_publico")
+  dataConsulta          DateTime         @default(now()) @map("data_consulta")
+
+  @@map("pep_screening_records")
+}
+
+model CoafCommunicationReport {
+  id                    String           @id @default(uuid())
+  numeroProtocoloSiscoaf String          @unique @map("numero_protocolo_siscoaf")
+  alertaId              String           @map("alerta_id")
+  justificativaLegal    String           @map("justificativa_legal")
+  enviadoAoCoafEm       DateTime         @default(now()) @map("enviado_ao_coaf_em")
+  statusComunicacao     String           @default("HOMOLOGADO_SISCOAF") @map("status_comunicacao")
+
+  @@map("coaf_communication_reports")
+}
+
+// ============================================================================
+// FASE 39: Liquidação Interbancária Contínua SPI / STR & Mensageria ISO 20022
+// ============================================================================
+
+model Iso20022MessageLog {
+  id                    String           @id @default(uuid())
+  messageId             String           @unique @map("message_id") // MSG-ISO-2026-pacs008-0012
+  messageType           String           @map("message_type") // pacs.008, pacs.004, camt.053
+  direction             String           @map("direction") // INBOUND, OUTBOUND
+  senderIspb            String           @map("sender_ispb")
+  receiverIspb          String           @map("receiver_ispb")
+  xmlPayload            String           @db.Text @map("xml_payload")
+  statusProcessamento   String           @map("status_processamento") // PROCESSADO_COM_SUCESSO, REJEITADO_RSFN
+  latenciaMs            Int              @map("latencia_ms")
+  timestampMensagem     DateTime         @default(now()) @map("timestamp_mensagem")
+
+  @@index([messageType])
+  @@map("iso20022_message_logs")
+}
+
+model InterbankSettlementRecord {
+  id                    String           @id @default(uuid())
+  codigoLiquidacao      String           @unique @map("codigo_liquidacao")
+  canalLiquidacao       String           @map("canal_liquidacao") // SPI_BACEN, STR_LBTR
+  valorLiquidadoBrl     Decimal          @db.Decimal(15, 2) @map("valor_liquidado_brl")
+  statusFinal           String           @map("status_final") // LIQUIDADO_SEM_DIVERGENCIA
+  dataLiquidacao        DateTime         @default(now()) @map("data_liquidacao")
+
+  @@map("interbank_settlement_records")
+}
+
+model RsfnNetworkAuditTrail {
+  id                    String           @id @default(uuid())
+  sessaoRsfn            String           @map("sessao_rsfn")
+  certificadoTlsThumbprint String        @map("certificado_tls_thumbprint")
+  conectividadeStatus   String           @map("conectividade_status") // ONLINE_OPERACIONAL
+
+  @@map("rsfn_network_audit_trails")
+}
+
+// ============================================================================
+// FASE 40: Suíte Soberana de Auditoria Contínua & War Room da Diretoria / CFO
+// ============================================================================
+
+model ZeroTrustAuditKernel {
+  id                    String           @id @default(uuid())
+  codigoCicloKernel     String           @unique @map("codigo_ciclo_kernel")
+  timestampExecucao     DateTime         @default(now()) @map("timestamp_execucao")
+  totalRegrasAuditadas  Int              @map("total_regras_auditadas")
+  regrasConformes       Int              @map("regras_conformes")
+  violacoesCriticas     Int              @default(0) @map("violacoes_criticas")
+  integridadeContabilScore Decimal       @db.Decimal(5, 2) @map("integridade_contabil_score") // 99.99%
+  statusKernel          String           @default("SOBERANO_EQUILIBRADO") @map("status_kernel")
+  hashGlobalMptSha256   String           @map("hash_global_mpt_sha256") // Merkle Patricia Tree Root Hash
+
+  @@map("zero_trust_audit_kernels")
+}
+
+model PatrimonialKillSwitchEvent {
+  id                    String           @id @default(uuid())
+  eventoKillSwitchId    String           @unique @map("evento_kill_switch_id")
+  motivoAcionamento     String           @map("motivo_acionamento")
+  ativo                 Boolean          @default(false) @map("ativo")
+  acionadoPor           String           @map("acionado_por")
+  dataAcionamento       DateTime?        @map("data_acionamento")
+  quarentenaPatrimonialStatus String     @default("DESATIVADO_NORMAL") @map("quarentena_patrimonial_status")
+
+  @@map("patrimonial_kill_switch_events")
+}
+
+model Isae3402ComplianceDossier {
+  id                    String           @id @default(uuid())
+  codigoDossie          String           @unique @map("codigo_dossie")
+  anoPeriodoAuditoria   String           @map("ano_periodo_auditoria") // 2026-Q1
+  auditorResponsavel    String           @map("auditor_responsavel") // Big Four Independente
+  statusHomologacao     String           @default("APROVADO_SEM_RESSALVAS") @map("status_homologacao")
+  hashAssinaturaAuditoria String         @map("hash_assinatura_auditoria")
+  emitidoEm             DateTime         @default(now()) @map("emitido_em")
+
+  @@map("isae3402_compliance_dossiers")
+}
+
+
 
 
 

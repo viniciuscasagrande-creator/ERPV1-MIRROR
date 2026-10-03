@@ -111,6 +111,24 @@ import { EventCostCenterDrePage } from '../../modules/cost-center-dre/EventCostC
 // FASE 34: Conciliação Bancária Autônoma Contínua via IA, Reconhecimento de Tarifas & Repasses D+0
 import { AiBankReconciliationPage } from '../../modules/ai-reconciliation/AiBankReconciliationPage';
 
+// FASE 35: Gestão Orçamentária Corporativa, Budget vs Actual & Rolling Forecast
+import { BudgetForecastPage } from '../../modules/budget-forecast/BudgetForecastPage';
+
+// FASE 36: Auditoria de Borderô Físico-Digital com Assinatura ICP-Brasil & ITI
+import { BorderoIcpSignaturePage } from '../../modules/bordero-signature/BorderoIcpSignaturePage';
+
+// FASE 37: Central de Gestão & Apuração ECAD / Direitos Autorais
+import { EcadCopyrightPage } from '../../modules/ecad-copyright/EcadCopyrightPage';
+
+// FASE 38: Prevenção à Lavagem de Dinheiro (PLD-FT), COAF & Bacen 3.978/2020
+import { PldCoafCompliancePage } from '../../modules/pld-coaf/PldCoafCompliancePage';
+
+// FASE 39: Liquidação Interbancária Contínua SPI / STR & Mensageria ISO 20022
+import { Iso20022SettlementPage } from '../../modules/iso20022-settlement/Iso20022SettlementPage';
+
+// FASE 40: Suíte Soberana de Auditoria Contínua & War Room da Diretoria / CFO
+import { SovereignWarRoomPage } from '../../modules/sovereign-war-room/SovereignWarRoomPage';
+
 
 
 
@@ -343,6 +361,36 @@ export const AppRouter: React.FC = () => {
         <Route path="bancos/conciliacao-ia" element={<AiBankReconciliationPage />} />
         <Route path="financeiro/conciliacao-autonoma" element={<AiBankReconciliationPage />} />
         <Route path="bancos/reconciliation" element={<AiBankReconciliationPage />} />
+
+        {/* Módulos FASE 35: Gestão Orçamentária Corporativa, Budget vs Actual & Rolling Forecast */}
+        <Route path="orcamento-forecast" element={<BudgetForecastPage />} />
+        <Route path="financeiro/orcamento" element={<BudgetForecastPage />} />
+        <Route path="controladoria/budget" element={<BudgetForecastPage />} />
+
+        {/* Módulos FASE 36: Auditoria de Borderô Físico-Digital com Assinatura ICP-Brasil & ITI */}
+        <Route path="bordero-assinatura" element={<BorderoIcpSignaturePage />} />
+        <Route path="eventos/bordero-icp" element={<BorderoIcpSignaturePage />} />
+        <Route path="governanca/bordero-digital" element={<BorderoIcpSignaturePage />} />
+
+        {/* Módulos FASE 37: Central de Gestão & Apuração ECAD / Direitos Autorais */}
+        <Route path="ecad-direitos" element={<EcadCopyrightPage />} />
+        <Route path="financeiro/ecad" element={<EcadCopyrightPage />} />
+        <Route path="eventos/direitos-autorais" element={<EcadCopyrightPage />} />
+
+        {/* Módulos FASE 38: Prevenção à Lavagem de Dinheiro (PLD-FT), COAF & Bacen 3.978/2020 */}
+        <Route path="pld-compliance" element={<PldCoafCompliancePage />} />
+        <Route path="compliance/pld-coaf" element={<PldCoafCompliancePage />} />
+        <Route path="governanca/pld" element={<PldCoafCompliancePage />} />
+
+        {/* Módulos FASE 39: Liquidação Interbancária Contínua SPI / STR & Mensageria ISO 20022 */}
+        <Route path="iso20022-spi" element={<Iso20022SettlementPage />} />
+        <Route path="bancos/iso20022" element={<Iso20022SettlementPage />} />
+        <Route path="bancos/liquidacao-interbancaria" element={<Iso20022SettlementPage />} />
+
+        {/* Módulos FASE 40: Suíte Soberana de Auditoria Contínua & War Room da Diretoria / CFO */}
+        <Route path="war-room" element={<SovereignWarRoomPage />} />
+        <Route path="diretoria/war-room" element={<SovereignWarRoomPage />} />
+        <Route path="governanca/sovereign-kernel" element={<SovereignWarRoomPage />} />
 
 
 
