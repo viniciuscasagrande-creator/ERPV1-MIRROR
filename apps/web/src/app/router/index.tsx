@@ -105,6 +105,12 @@ import { PixAutomaticoPage } from '../../modules/pix-automatico/PixAutomaticoPag
 // FASE 32: Split Payment Tributário Inteligente no Checkout (PLP 68/2024 & Comitê Gestor IBS/CBS)
 import { TaxSplitCheckoutPage } from '../../modules/tax-split-checkout/TaxSplitCheckoutPage';
 
+// FASE 33: DRE & Balancete por Centro de Custo de Evento com Alocação Matricial e Custeio ABC
+import { EventCostCenterDrePage } from '../../modules/cost-center-dre/EventCostCenterDrePage';
+
+// FASE 34: Conciliação Bancária Autônoma Contínua via IA, Reconhecimento de Tarifas & Repasses D+0
+import { AiBankReconciliationPage } from '../../modules/ai-reconciliation/AiBankReconciliationPage';
+
 
 
 
@@ -325,6 +331,18 @@ export const AppRouter: React.FC = () => {
         <Route path="reforma-tributaria/split" element={<TaxSplitCheckoutPage />} />
         <Route path="fiscal/split-payment" element={<TaxSplitCheckoutPage />} />
         <Route path="checkout/split-tributario" element={<TaxSplitCheckoutPage />} />
+
+        {/* Módulos FASE 33: DRE & Balancete por Centro de Custo de Evento com Custeio ABC */}
+        <Route path="dre-evento" element={<EventCostCenterDrePage />} />
+        <Route path="contabilidade/dre-evento" element={<EventCostCenterDrePage />} />
+        <Route path="financeiro/centros-custo" element={<EventCostCenterDrePage />} />
+        <Route path="eventos/dre-gerencial" element={<EventCostCenterDrePage />} />
+
+        {/* Módulos FASE 34: Conciliação Bancária Autônoma Contínua via IA & Liquidação D+0 */}
+        <Route path="conciliacao-ia" element={<AiBankReconciliationPage />} />
+        <Route path="bancos/conciliacao-ia" element={<AiBankReconciliationPage />} />
+        <Route path="financeiro/conciliacao-autonoma" element={<AiBankReconciliationPage />} />
+        <Route path="bancos/reconciliation" element={<AiBankReconciliationPage />} />
 
 
 

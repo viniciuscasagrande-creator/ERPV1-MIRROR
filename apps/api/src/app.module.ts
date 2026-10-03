@@ -49,6 +49,8 @@ import { AiAutonomousClosingModule } from './modules/ai-autonomous-closing/ai-au
 import { ExecutiveBoardroomModule } from './modules/executive-boardroom/executive-boardroom.module';
 import { PixAutomaticoModule } from './modules/pix-automatico/pix-automatico.module';
 import { TaxSplitCheckoutModule } from './modules/tax-split-checkout/tax-split-checkout.module';
+import { EventCostCenterDreModule } from './modules/event-cost-center-dre/event-cost-center-dre.module';
+import { AiBankReconciliationModule } from './modules/ai-bank-reconciliation/ai-bank-reconciliation.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -108,6 +110,8 @@ import { PrismaModule } from './database/prisma.module';
     ExecutiveBoardroomModule,
     PixAutomaticoModule,
     TaxSplitCheckoutModule,
+    EventCostCenterDreModule,
+    AiBankReconciliationModule,
   ],
   providers: [
     PrismaService,

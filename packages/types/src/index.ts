@@ -45,6 +45,8 @@ export * from './ai-autonomous-closing.js';
 export * from './executive-boardroom.js';
 export * from './pix-automatico.js';
 export * from './tax-split-checkout.js';
+export * from './event-cost-center-dre.js';
+export * from './ai-bank-reconciliation.js';
 
 
 

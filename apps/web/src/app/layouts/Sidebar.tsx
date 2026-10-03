@@ -79,6 +79,7 @@ const menuItems: MenuItem[] = [
       { title: 'Visão Geral Eventos', path: '/eventos/lista' },
       { title: 'Vendas de Ingressos', path: '/eventos/vendas' },
       { title: 'Cancelamentos & Estornos', path: '/eventos/estornos' },
+      { title: 'DRE por Evento (ABC)', path: '/dre-evento', badge: 'Art. 187' },
     ],
   },
   {
@@ -93,6 +94,7 @@ const menuItems: MenuItem[] = [
       { title: 'Contas Bancárias', path: '/bancos/contas' },
       { title: 'Extratos & OFX', path: '/bancos/extratos' },
       { title: 'Conciliação Bancária', path: '/bancos/conciliacao' },
+      { title: 'Conciliação IA & D+0', path: '/conciliacao-ia', badge: 'Agentic' },
       { title: 'Gateways & Auditoria MDR', path: '/bancos/gateways' },
       { title: 'Open Finance & Pix (ITP)', path: '/open-finance', badge: 'SPI Bacen' },
       { title: 'IA Tesouraria & Yield', path: '/ai-tesouraria', badge: 'Preditiva' },
@@ -111,6 +113,7 @@ const menuItems: MenuItem[] = [
       { title: 'Razão Contábil', path: '/contabilidade/razao' },
       { title: 'Balancete', path: '/contabilidade/balancete' },
       { title: 'DRE Gerencial', path: '/contabilidade/dre' },
+      { title: 'DRE por Centro de Custo', path: '/dre-evento', badge: 'ABC' },
       { title: 'Consolidação IFRS & MEP', path: '/consolidacao-ifrs', badge: 'CPC 36' },
       { title: 'Sustentabilidade ESG & Borderô Verde', path: '/esg-sustentabilidade', badge: 'IFRS S1/S2' },
       { title: 'Fechamento & Travas', path: '/governanca/fechamento-mensal', badge: 'Travas' },

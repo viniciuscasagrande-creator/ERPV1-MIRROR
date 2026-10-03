@@ -119,6 +119,8 @@ diskingressos-erp/
 | **30** | **Central de Observabilidade Executiva, Digital Boardroom & DFP CVM / Big Four** | Cockpit Soberano C-Level & Conselho de Administração com Streaming de Telemetria Contábil, Geração Automatizada de Pacotes DFP / ITR com Hash SHA-256 para CVM EmpresasNet, Cobertura Integral das 5 Demonstrações (Balanço, DRE, DFC, DMPL e DVA) com Notas Explicativas Padronizadas (CPC 26, CVM 175, CVM 193) e Matriz de Riscos Corporativos (GRC / COSO ERM). |
 | **31** | **Pix Automático, Débito Recorrente BCB 430/431 & Smart Retries SPI** | Gestão de Mandatos Digitais Pré-Autorizados de Débito, Liquidação Instantânea Sub-Segundo no SPI (<1000ms), Split Quádruplo Automático no Banco Central (Disk 12%, Produtor 75%, FIDC 12%, ESG 1%), Motor de Smart Retries por IA em Janelas de Maior Liquidez e Conciliação Instantânea sem Gateway. |
 | **32** | **Split Payment Tributário Inteligente no Checkout (PLP 68/2024 & Comitê Gestor IBS/CBS)** | Retenção e Segregação Atômica do IVA Dual (CBS Federal + IBS Subnacional) no Momento da Liquidação Bancária no SPI, Isolamento Estrito de Base Própria (Comissões) vs Fiduciária de Repasse dos Produtores (Art. 52 PLP 68/2024), Alíquotas de Transição 2026 (0,9% CBS / 0,1% IBS) e Regime Reduzido de Eventos (3,52% CBS / 7,08% IBS), Acumulador de Créditos de Insumos da Não-Cumulatividade (Art. 28) e Emissão Automática de Protocolos Homologados pelo Comitê Gestor IBS. |
+| **33** | **DRE & Balancete por Centro de Custo de Evento com Custeio ABC** | Apuração Gerencial Vertical e Horizontal por Evento/Espetáculo (Art. 187 Lei 6.404/76 e NBC TG 26 / CPC 26), Segregação Matricial de Custos Diretos e Indiretos, Alocação Automatizada via Custeio Baseado em Atividades (ABC) com Direcionadores Operacionais (SAC, Cloud K8s, Gateway) e Imutabilidade Criptográfica SHA-256 para Big Four. |
+| **34** | **Conciliação Bancária Autônoma Contínua via IA & Liquidação D+0 com Escrow** | Agente Autônomo de Conciliação Bancária com IA em Tempo Real (Acurácia > 99,8%), Detecção e Escrituração Contábil Automática de Tarifas Bancárias Ocultas (PIX, TED, Float e Registradora CIP/CERC), Trava Paramétrica de Saldo Mínimo Escrow de Segurança (15%) para Risco de Chargeback e Liquidação Instantânea de Repasses D+0. |
 
 ---
 
@@ -129,12 +131,22 @@ diskingressos-erp/
 npx ts-node scripts/verify-fase32.ts
 ```
 
-### 2. Compilar Todos os Workspaces (Turborepo)
+### 2. Executar Testes de DRE por Centro de Custo & Custeio ABC (Fase 33)
+```bash
+npx ts-node scripts/verify-fase33.ts
+```
+
+### 3. Executar Testes de Conciliação Autônoma IA & Escrow D+0 (Fase 34)
+```bash
+npx ts-node scripts/verify-fase34.ts
+```
+
+### 4. Compilar Todos os Workspaces (Turborepo)
 ```bash
 npm run build
 ```
 
-### 3. Rodar o Ambiente Completo em Desenvolvimento
+### 5. Rodar o Ambiente Completo em Desenvolvimento
 ```bash
 npm run dev
 ```

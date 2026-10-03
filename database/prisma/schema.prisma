@@ -2782,6 +2782,131 @@ model TaxSplitFiscalParam {
   @@map("tax_split_fiscal_params")
 }
 
+// ==============================================================================
+// FASE 33: DRE & BALANCETE POR CENTRO DE CUSTO COM RATEIO MATRICIAL ABC
+// ==============================================================================
+
+model EventCostCenter {
+  id                            String   @id @default(uuid())
+  codigoCentroCusto             String   @unique @map("codigo_centro_custo") // CC-EVT-2026-0042
+  nomeCentroCusto               String   @map("nome_centro_custo")
+  eventoId                      String   @map("evento_id")
+  produtorId                    String   @map("produtor_id")
+  categoriaEspetaculo           String   @map("categoria_espetaculo") // FESTIVAL, SHOW_INTERNACIONAL, TEATRO, CORPORATIVO
+  statusCentroCusto             String   @default("ATIVO") @map("status_centro_custo")
+  saldoAtualContabilBrl         Decimal  @default(0.0) @db.Decimal(14, 2) @map("saldo_atual_contabil_brl")
+  criadoEm                      DateTime @default(now()) @map("criado_em")
+  atualizadoEm                  DateTime @default(now()) @updatedAt @map("atualizado_em")
+
+  allocations                   CostDriverAllocation[]
+  dreStatements                 EventDreStatement[]
+
+  @@index([eventoId])
+  @@index([produtorId])
+  @@map("event_cost_centers")
+}
+
+model CostDriverAllocation {
+  id                            String   @id @default(uuid())
+  centroCustoId                 String   @map("centro_custo_id")
+  codigoRateio                  String   @unique @map("codigo_rateio") // RAT-ABC-2026-0081
+  nomeAtividade                 String   @map("nome_atividade") // PROCESSAMENTO_NUVEM, SUPORTE_ATENDIMENTO, GATEWAY_RISCO, INFRAESTRUTURA_TI
+  direcionadorCustoNome         String   @map("direcionador_custo_nome") // HORAS_SUPORTE, QUANTIDADE_INGRESSOS, CONSUMO_CPU_RAM
+  quantidadeConsumida           Decimal  @db.Decimal(12, 4) @map("quantidade_consumida")
+  custoUnitarioBrl              Decimal  @db.Decimal(10, 4) @map("custo_unitario_brl")
+  custoTotalAlocadoBrl          Decimal  @db.Decimal(12, 2) @map("custo_total_alocado_brl")
+  mesCompetencia                String   @map("mes_competencia") // 2026-04
+  criadoEm                      DateTime @default(now()) @map("criado_em")
+
+  centroCusto                   EventCostCenter @relation(fields: [centroCustoId], references: [id], onDelete: Cascade)
+
+  @@index([centroCustoId])
+  @@index([mesCompetencia])
+  @@map("cost_driver_allocations")
+}
+
+model EventDreStatement {
+  id                            String   @id @default(uuid())
+  centroCustoId                 String   @map("centro_custo_id")
+  codigoDre                     String   @unique @map("codigo_dre") // DRE-EVT-2026-019
+  periodoCompetencia            String   @map("periodo_competencia")
+  receitaBrutaBilheteriaBrl     Decimal  @db.Decimal(14, 2) @map("receita_bruta_bilheteria_brl")
+  impostosDeducoesBrl           Decimal  @db.Decimal(14, 2) @map("impostos_deducoes_brl")
+  receitaLiquidaBilheteriaBrl   Decimal  @db.Decimal(14, 2) @map("receita_liquida_bilheteria_brl")
+  custosDiretosEspetaculoBrl    Decimal  @db.Decimal(14, 2) @map("custos_diretos_espetaculo_brl") // Rider, arena, geradores
+  margemContribuicaoBrl         Decimal  @db.Decimal(14, 2) @map("margem_contribuicao_brl")
+  custosIndiretosAbcBrl         Decimal  @db.Decimal(14, 2) @map("custos_indiretos_abc_brl") // Rateio ABC
+  resultadoOperacionalEbitdaBrl Decimal  @db.Decimal(14, 2) @map("resultado_operacional_ebitda_brl")
+  repasseLiquidoProdutorBrl     Decimal  @db.Decimal(14, 2) @map("repasse_liquido_produtor_brl")
+  lucroLiquidoPlataformaBrl     Decimal  @db.Decimal(14, 2) @map("lucro_liquido_plataforma_brl")
+  margemLiquidaPercent          Decimal  @db.Decimal(6, 2) @map("margem_liquida_percent")
+  auditHashSha256               String   @map("audit_hash_sha256")
+  geradoEm                      DateTime @default(now()) @map("gerado_em")
+
+  centroCusto                   EventCostCenter @relation(fields: [centroCustoId], references: [id], onDelete: Cascade)
+
+  @@index([centroCustoId])
+  @@index([periodoCompetencia])
+  @@map("event_dre_statements")
+}
+
+// ==============================================================================
+// FASE 34: CONCILIAÇÃO BANCÁRIA AUTÔNOMA IA, TARIFAS & REPASSE D+0 ESCROW
+// ==============================================================================
+
+model AiBankReconciliationRun {
+  id                            String   @id @default(uuid())
+  codigoCiclo                   String   @unique @map("codigo_ciclo") // REC-IA-2026-0941
+  bancoIspb                     String   @map("banco_ispb")
+  bancoNome                     String   @map("banco_nome")
+  contaBancariaId               String   @map("conta_bancaria_id")
+  totalTransacoesProcessadas    Int      @map("total_transacoes_processadas")
+  transacoesConciliadasAutomaticas Int    @map("transacoes_conciliadas_automaticas")
+  taxaAcuraciaPercent           Decimal  @db.Decimal(5, 2) @map("taxa_acuracia_percent")
+  volumeTotalConciliadoBrl      Decimal  @db.Decimal(14, 2) @map("volume_total_conciliado_brl")
+  divergenciasDetectadas        Int      @default(0) @map("divergencias_detectadas")
+  statusExecucao                String   @default("CONCLUIDO_COM_SUCESSO") @map("status_execucao")
+  tempoProcessamentoMs          Int      @map("tempo_processamento_ms")
+  hashIntegridadeAuditoria      String   @map("hash_integridade_auditoria")
+  executadoEm                   DateTime @default(now()) @map("executado_em")
+
+  @@index([bancoIspb])
+  @@index([contaBancariaId])
+  @@map("ai_bank_reconciliation_runs")
+}
+
+model BankFeeClassification {
+  id                            String   @id @default(uuid())
+  codigoTarifa                  String   @unique @map("codigo_tarifa") // TAR-IA-2026-1182
+  bancoIspb                     String   @map("banco_ispb")
+  descricaoExtratoOriginal      String   @map("descricao_extrato_original") // "TAR TED MESMO TITULO", "MDR DEBITO CIELO"
+  categoriaIdentificadaIa       String   @map("categoria_identificada_ia") // TARIFA_PIX, TARIFA_TED, FLOAT_ADQUIRENTE, CUSTODIA_RECEBIVEIS
+  valorTarifaBrl                Decimal  @db.Decimal(10, 2) @map("valor_tarifa_brl")
+  confiancaClassificacaoPercent Decimal  @db.Decimal(5, 2) @map("confianca_classificacao_percent")
+  contaContabilDebito           String   @map("conta_contabil_debito") // 3.1.2.04 - Despesas Bancárias
+  contaContabilCredito          String   @map("conta_contabil_credito") // 1.1.1.02 - Bancos Conta Movimento
+  statusEscrituracao            String   @default("ESCRITURADO_AUTOMATICO") @map("status_escrituracao")
+  dataLancamento                DateTime @default(now()) @map("data_lancamento")
+
+  @@index([categoriaIdentificadaIa])
+  @@map("bank_fee_classifications")
+}
+
+model EscrowSafetyThreshold {
+  id                            String   @id @default(uuid())
+  eventoId                      String   @unique @map("evento_id")
+  produtorId                    String   @map("produtor_id")
+  percentualRetencaoEscrow      Decimal  @db.Decimal(5, 2) @default(15.0) @map("percentual_retencao_escrow") // 15% reserva de contingência
+  saldoEscrowBloqueadoBrl       Decimal  @db.Decimal(12, 2) @map("saldo_escrow_bloqueado_brl")
+  saldoDisponivelLiquidacaoD0Brl Decimal @db.Decimal(12, 2) @map("saldo_disponivel_liquidacao_d0_brl")
+  statusLiquidacaoD0            String   @default("LIBERADO_SEGURO") @map("status_liquidacao_d0")
+  ultimaAtualizacao             DateTime @default(now()) @updatedAt @map("ultima_atualizacao")
+
+  @@index([produtorId])
+  @@map("escrow_safety_thresholds")
+}
+
+
 
 
 
