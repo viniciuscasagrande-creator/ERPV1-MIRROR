@@ -47,15 +47,18 @@ import { RwaDrexModule } from './modules/rwa-drex/rwa-drex.module';
 import { FidcEntertainmentModule } from './modules/fidc-entertainment/fidc-entertainment.module';
 import { AiAutonomousClosingModule } from './modules/ai-autonomous-closing/ai-autonomous-closing.module';
 import { ExecutiveBoardroomModule } from './modules/executive-boardroom/executive-boardroom.module';
+import { PixAutomaticoModule } from './modules/pix-automatico/pix-automatico.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { AuditInterceptor } from './common/interceptors/audit.interceptor';
+import { PrismaModule } from './database/prisma.module';
 
 @Module({
   imports: [
+    PrismaModule,
     AuthModule,
     UsersModule,
     RolesModule,
@@ -102,6 +105,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     FidcEntertainmentModule,
     AiAutonomousClosingModule,
     ExecutiveBoardroomModule,
+    PixAutomaticoModule,
   ],
   providers: [
     PrismaService,

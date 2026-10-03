@@ -4,8 +4,11 @@ import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(PrismaService.name);
+  private static connectionAttempted = false;
 
   async onModuleInit() {
+    if (PrismaService.connectionAttempted) return;
+    PrismaService.connectionAttempted = true;
     try {
       await this.$connect();
       this.logger.log('📦 Conexão com banco de dados estabelecida com sucesso.');

@@ -99,6 +99,9 @@ import { AiAutonomousClosingPage } from '../../modules/ai-autonomous-closing/AiA
 // FASE 30: Central de Observabilidade Executiva, Digital Boardroom & DFP CVM / Big Four
 import { ExecutiveBoardroomPage } from '../../modules/executive-boardroom/ExecutiveBoardroomPage';
 
+// FASE 31: Pix Automático, Débito Recorrente BCB 430/431 & Smart Retries SPI
+import { PixAutomaticoPage } from '../../modules/pix-automatico/PixAutomaticoPage';
+
 
 
 
@@ -308,6 +311,11 @@ export const AppRouter: React.FC = () => {
         <Route path="digital-boardroom" element={<ExecutiveBoardroomPage />} />
         <Route path="governanca/boardroom" element={<ExecutiveBoardroomPage />} />
         <Route path="dfp-cvm" element={<ExecutiveBoardroomPage />} />
+
+        {/* Módulos FASE 31: Pix Automático, Débito Recorrente BCB 430/431 & Smart Retries SPI */}
+        <Route path="pix-automatico" element={<PixAutomaticoPage />} />
+        <Route path="recorrencia-pix" element={<PixAutomaticoPage />} />
+        <Route path="financeiro/pix-automatico" element={<PixAutomaticoPage />} />
 
 
 

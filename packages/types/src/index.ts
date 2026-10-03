@@ -43,6 +43,7 @@ export * from './rwa-drex-tokenization.js';
 export * from './fidc-entertainment.js';
 export * from './ai-autonomous-closing.js';
 export * from './executive-boardroom.js';
+export * from './pix-automatico.js';
 
 
 

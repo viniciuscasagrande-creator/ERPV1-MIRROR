@@ -31,6 +31,7 @@ import {
   Briefcase,
   Bot,
   Presentation,
+  Zap,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -66,6 +67,7 @@ const menuItems: MenuItem[] = [
       { title: 'Assinaturas & Conta Azul', path: '/assinaturas', badge: 'Autentique' },
       { title: 'Antecipações & Travas', path: '/antecipacoes', badge: 'BCB' },
       { title: 'Split de Pagamento', path: '/split', badge: 'Nativo' },
+      { title: 'Pix Automático & Recorrência', path: '/pix-automatico', badge: 'BCB 430' },
     ],
   },
   {
@@ -251,6 +253,13 @@ const menuItems: MenuItem[] = [
     path: '/boardroom',
     badge: 'CVM DFP',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
+  },
+  {
+    title: 'Pix Automático (SPI)',
+    icon: Zap,
+    path: '/pix-automatico',
+    badge: 'BCB 430',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {
     title: 'Usuários & Permissões',

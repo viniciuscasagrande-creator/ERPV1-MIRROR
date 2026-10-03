@@ -1,5 +1,6 @@
-# 🎟️ DiskIngressos ERP Enterprise — Release v1.0 Final (10 Fases Concluídas)
+# 🎟️ DiskIngressos ERP Enterprise — Release v1.0 Final
 
+> **Link Oficial de Produção (Vercel):** [**https://erpv1mirror.vercel.app/**](https://erpv1mirror.vercel.app/)
 > **Sistema Integrado de Gestão Contábil, Financeira, Governança, Central de Fechamento por Evento e Portal Multi-Tenant do Produtor.**
 
 ---
@@ -116,6 +117,7 @@ diskingressos-erp/
 | **28** | **FIDC de Bilheteria & Entretenimento (Resolução CVM 175)** | Estruturação de Cotas Seniores, Mezanino e Subordinadas (First-loss piece 25%), Monitoramento de Índice de Subordinação Mínimo com Trava Regulatória, Cessão Fiduciária de Recebíveis com Registro CERC/B3, Marcação a Mercado Diária (MtM) e Escrituração Contábil Fiduciária. |
 | **29** | **Inteligência Regulamentar de IA Contábil & Copilot CFO** | Swarm de 5 Agentes Especialistas em Paralelo (Fiscal EC 132, DREX/SPI, IFRS/MEP, FIDC/RWA e Governança SoD), Fechamento Contábil Autônomo "Zero-Touch", Reconciliação Sub-Segundo de Centavos e Truncamento com Chain of Thought, AI Copilot CFO Interativo com Métricas Consolidadas e Radar Preditivo de Balanços. |
 | **30** | **Central de Observabilidade Executiva, Digital Boardroom & DFP CVM / Big Four** | Cockpit Soberano C-Level & Conselho de Administração com Streaming de Telemetria Contábil, Geração Automatizada de Pacotes DFP / ITR com Hash SHA-256 para CVM EmpresasNet, Cobertura Integral das 5 Demonstrações (Balanço, DRE, DFC, DMPL e DVA) com Notas Explicativas Padronizadas (CPC 26, CVM 175, CVM 193) e Matriz de Riscos Corporativos (GRC / COSO ERM). |
+| **31** | **Pix Automático, Débito Recorrente BCB 430/431 & Smart Retries SPI** | Gestão de Mandatos Digitais Pré-Autorizados de Débito, Liquidação Instantânea Sub-Segundo no SPI (<1000ms), Split Quádruplo Automático no Banco Central (Disk 12%, Produtor 75%, FIDC 12%, ESG 1%), Motor de Smart Retries por IA em Janelas de Maior Liquidez e Conciliação Instantânea sem Gateway. |
 
 ---
 

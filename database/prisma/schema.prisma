@@ -2638,6 +2638,81 @@ model CorporateRiskItem {
   @@map("corporate_risk_items")
 }
 
+// ============================================================================
+// FASE 31: PIX AUTOMÁTICO, DÉBITO RECORRENTE BCB 430/431 & SMART RETRIES SPI
+// ============================================================================
+
+model PixAutomaticoMandato {
+  id                            String   @id @default(uuid())
+  codigoMandato                 String   @unique @map("codigo_mandato") // MAN-PIX-2026-0001
+  clienteNome                   String   @map("cliente_nome")
+  clienteCpfCnpj                String   @map("cliente_cpf_cnpj")
+  chavePix                      String   @map("chave_pix")
+  ispbBancoParticipante         String   @map("ispb_banco_participante") // Ex: 60701190 (Itaú), 00000000 (Banco do Brasil)
+  bancoNome                     String   @map("banco_nome")
+  planoAssinaturaNome           String   @map("plano_assinatura_nome") // Passaporte Sunset Club 2026
+  valorLimitePorTransacaoBrl    Decimal  @db.Decimal(12, 2) @map("valor_limite_por_transacao_brl")
+  periodicidade                 String   @default("MENSAL") @map("periodicidade") // SEMANAL, MENSAL, TRIMESTRAL, ANUAL
+  statusMandato                 String   @default("ATIVO") @map("status_mandato") // PENDENTE_AUTORIZACAO, ATIVO, PAUSADO, CANCELADO_USUARIO, REVOGADO_PSP
+  diaVencimento                 Int      @map("dia_vencimento") // 1 a 31
+  canalAutorizacao              String   @default("APP_BANCARIO_QR") @map("canal_autorizacao")
+  autorizadoEm                  DateTime? @map("autorizado_em")
+  canceladoEm                   DateTime? @map("cancelado_em")
+  motivoCancelamento            String?  @map("motivo_cancelamento")
+  criadoEm                      DateTime @default(now()) @map("criado_em")
+
+  cobrancas                     PixAutomaticoCobranca[]
+
+  @@index([clienteCpfCnpj])
+  @@index([statusMandato])
+  @@map("pix_automatico_mandatos")
+}
+
+model PixAutomaticoCobranca {
+  id                            String   @id @default(uuid())
+  codigoCobranca                String   @unique @map("codigo_cobranca") // COB-PIX-2026-0042
+  mandatoId                     String   @map("mandato_id")
+  valorCobradoBrl               Decimal  @db.Decimal(12, 2) @map("valor_cobrado_brl")
+  competenciaMesAno             String   @map("competencia_mes_ano") // 2026-04
+  dataAgendada                  DateTime @map("data_agendada")
+  dataLiquidacaoSpi             DateTime? @map("data_liquidacao_spi")
+  endToEndIdBacen               String?  @map("end_to_end_id_bacen") // E00000000202604031400...
+  statusCobranca                String   @default("AGENDADA") @map("status_cobranca") // AGENDADA, PROCESSANDO_SPI, LIQUIDADA_SUCESSO, FALHA_SALDO_INSUFICIENTE, REJEITADA_PSP
+  tempoLiquidacaoMs             Int?     @map("tempo_liquidacao_ms") // Sub-segundo (ex: 640ms)
+  tentativasRealizadas          Int      @default(0) @map("tentativas_realizadas")
+  proximaRetentativaEm          DateTime? @map("proxima_retentativa_em")
+  
+  // Split Quádruplo Instantâneo no SPI
+  splitReceitaPropriaBrl        Decimal  @db.Decimal(12, 2) @map("split_receita_propria_brl")
+  splitRepasseProdutorBrl       Decimal  @db.Decimal(12, 2) @map("split_repasse_produtor_brl")
+  splitRetencaoFidcBrl          Decimal  @db.Decimal(12, 2) @map("split_retencao_fidc_brl")
+  splitCompensacaoEsgBrl        Decimal  @db.Decimal(12, 2) @map("split_compensacao_esg_brl")
+  
+  // Partidas Dobradas
+  lancamentoContabilRef         String?  @map("lancamento_contabil_ref")
+  criadoEm                      DateTime @default(now()) @map("criado_em")
+
+  mandato                       PixAutomaticoMandato @relation(fields: [mandatoId], references: [id])
+
+  @@index([mandatoId])
+  @@index([statusCobranca])
+  @@index([competenciaMesAno])
+  @@map("pix_automatico_cobrancas")
+}
+
+model PixAutomaticoRetryConfig {
+  id                            String   @id @default(uuid())
+  janelaHorariaIdealInicio      String   @default("06:00") @map("janela_horaria_ideal_inicio")
+  janelaHorariaIdealFim         String   @default("11:30") @map("janela_horaria_ideal_fim")
+  maxTentativasPermitidas       Int      @default(3) @map("max_tentativas_permitidas")
+  intervaloDiasRetentativa      Int      @default(2) @map("intervalo_dias_retentativa")
+  taxaRecuperacaoIaPercent      Decimal  @db.Decimal(5, 2) @map("taxa_recuperacao_ia_percent")
+  habilitarSmartRetry           Boolean  @default(true) @map("habilitar_smart_retry")
+  atualizadoEm                  DateTime @default(now()) @updatedAt @map("atualizado_em")
+
+  @@map("pix_automatico_retry_configs")
+}
+
 
 
 
