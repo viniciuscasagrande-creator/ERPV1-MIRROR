@@ -57,6 +57,9 @@ import { GovernancaSodPage } from '../../modules/governanca-sod/GovernancaSodPag
 // FASE 16: Assinaturas Digitais Jurídicas, Borderôs Eletrônicos & Conta Azul
 import { AssinaturasDigitaisPage } from '../../modules/assinaturas/AssinaturasDigitaisPage';
 
+// FASE 17: Antecipações Financeiras, Cessão de Recebíveis & Travas Bancárias
+import { AntecipacoesPage } from '../../modules/antecipacoes/AntecipacoesPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -174,6 +177,12 @@ export const AppRouter: React.FC = () => {
         <Route path="assinaturas" element={<AssinaturasDigitaisPage />} />
         <Route path="financeiro/assinaturas" element={<AssinaturasDigitaisPage />} />
         <Route path="integracoes/conta-azul" element={<AssinaturasDigitaisPage />} />
+
+        {/* Módulos FASE 17: Antecipações Financeiras, Cessão de Recebíveis & Travas Bancárias */}
+        <Route path="antecipacoes" element={<AntecipacoesPage />} />
+        <Route path="financeiro/antecipacoes" element={<AntecipacoesPage />} />
+        <Route path="cessao-recebiveis" element={<AntecipacoesPage />} />
+        <Route path="travas-bancarias" element={<AntecipacoesPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

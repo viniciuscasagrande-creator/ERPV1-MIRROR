@@ -21,6 +21,7 @@ import {
   Bell,
   HardDrive,
   ShieldAlert,
+  TrendingUp,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -54,6 +55,7 @@ const menuItems: MenuItem[] = [
       { title: 'Lotes CNAB 240', path: '/financeiro/cnab', badge: 'FEBRABAN' },
       { title: 'Alçadas & SoD', path: '/governanca/alcadas', badge: 'SoD' },
       { title: 'Assinaturas & Conta Azul', path: '/assinaturas', badge: 'Autentique' },
+      { title: 'Antecipações & Travas', path: '/antecipacoes', badge: 'BCB' },
     ],
   },
   {
@@ -145,6 +147,13 @@ const menuItems: MenuItem[] = [
     icon: FileCheck2,
     path: '/assinaturas',
     badge: 'Autentique',
+  },
+  {
+    title: 'Antecipações & Recebíveis',
+    icon: TrendingUp,
+    path: '/antecipacoes',
+    badge: 'BCB 4734',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {
     title: 'Usuários & Permissões',

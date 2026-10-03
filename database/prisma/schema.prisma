@@ -1378,3 +1378,94 @@ model ErpSyncQueue {
   @@map("erp_sync_queues")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 17: ANTECIPAÇÕES FINANCEIRAS, CESSÃO DE RECEBÍVEIS & TRAVAS BANCÁRIAS
+// Resolução BCB nº 4.734/2019 e Circular BCB nº 3.952/2019 (CERC, CIP, B3, TAG)
+// ------------------------------------------------------------------------------
+
+model AntecipacaoRecebivel {
+  id                   String                  @id @default(uuid())
+  codigoContrato       String                  @unique @map("codigo_contrato") // Ex: "ANT-2026-000101"
+  producerId           String                  @map("producer_id")
+  producerNome         String                  @map("producer_nome")
+  eventId              String                  @map("event_id")
+  eventNome            String                  @map("event_nome")
+  valorSolicitado      Decimal                 @db.Decimal(15, 2) @map("valor_solicitado")
+  taxaMensal           Decimal                 @db.Decimal(5, 2) @map("taxa_mensal") // Ex: 2.50%
+  prazoDias            Int                     @default(30) @map("prazo_dias")
+  custoFinanceiro      Decimal                 @db.Decimal(15, 2) @map("custo_financeiro")
+  taxaAdministrativa   Decimal                 @default(0.00) @db.Decimal(15, 2) @map("taxa_administrativa")
+  valorLiquidoLiberado Decimal                 @db.Decimal(15, 2) @map("valor_liquido_liberado")
+  saldoDevedor         Decimal                 @db.Decimal(15, 2) @map("saldo_devedor")
+  valorAmortizado      Decimal                 @default(0.00) @db.Decimal(15, 2) @map("valor_amortizado")
+  fundoReservaRetido   Decimal                 @default(0.00) @db.Decimal(15, 2) @map("fundo_reserva_retido") // Escrow de segurança (ex: 20%)
+  status               String                  @default("SOLICITADA") // RASCUNHO, SOLICITADA, EM_ANALISE, APROVADA, REJEITADA, LIBERADA, EM_AMORTIZACAO, QUITADA, INADIMPLENTE
+  dataSolicitacao      DateTime                @default(now()) @map("data_solicitacao")
+  dataAprovacao        DateTime?               @map("data_aprovacao")
+  dataLiquidacao       DateTime?               @map("data_liquidacao")
+  dataVencimento       DateTime                @map("data_vencimento")
+  registradora         String                  @default("CERC") // CERC, CIP, B3, TAG, INTERNA
+  protocoloRegistroUr  String?                 @map("protocolo_registro_ur")
+  statusTravaBancaria  String                  @default("PENDENTE") @map("status_trava_bancaria") // PENDENTE, REGISTRADA, ATIVA, LIBERADA
+  adquirentesTravadas  String?                 @map("adquirentes_travadas") // "CIELO, REDE, STONE, GETNET"
+  aprovadoPor          String?                 @map("aprovado_por")
+  motivoRejeicao       String?                 @map("motivo_rejeicao")
+  documentoAssinaturaId String?                @map("documento_assinatura_id")
+  observacoes          String?                 @db.Text
+  createdAt            DateTime                @default(now()) @map("created_at")
+  updatedAt            DateTime                @updatedAt @map("updated_at")
+
+  amortizacoes         AmortizacaoAntecipacao[]
+  travas               TravaDomicilioBancario[]
+
+  @@index([producerId])
+  @@index([eventId])
+  @@index([status])
+  @@index([dataVencimento])
+  @@map("antecipacoes_recebiveis")
+}
+
+model AmortizacaoAntecipacao {
+  id                String               @id @default(uuid())
+  antecipacaoId     String               @map("antecipacao_id")
+  antecipacao       AntecipacaoRecebivel @relation(fields: [antecipacaoId], references: [id], onDelete: Cascade)
+  repasseId         String?              @map("repasse_id")
+  valorAmortizado   Decimal              @db.Decimal(15, 2) @map("valor_amortizado")
+  saldoAnterior     Decimal              @db.Decimal(15, 2) @map("saldo_anterior")
+  saldoRestante     Decimal              @db.Decimal(15, 2) @map("saldo_restante")
+  dataAmortizacao   DateTime             @default(now()) @map("data_amortizacao")
+  origemAmortizacao String               @default("REPASSE_AUTOMATICO") @map("origem_amortizacao") // REPASSE_AUTOMATICO, RETENCAO_BILHETERIA, TRAVA_CRUZADA_OUTRO_EVENTO, LIQUIDACAO_AVULSA
+  observacao        String?              @db.Text
+  createdAt         DateTime             @default(now()) @map("created_at")
+
+  @@index([antecipacaoId])
+  @@index([repasseId])
+  @@index([dataAmortizacao])
+  @@map("amortizacoes_antecipacoes")
+}
+
+model TravaDomicilioBancario {
+  id                String               @id @default(uuid())
+  antecipacaoId     String               @map("antecipacao_id")
+  antecipacao       AntecipacaoRecebivel @relation(fields: [antecipacaoId], references: [id], onDelete: Cascade)
+  producerId        String               @map("producer_id")
+  adquirente        String               // CIELO, REDE, STONE, GETNET, PAGSEGURO
+  contaBancariaId   String?              @map("conta_bancaria_id")
+  banco             String
+  agencia           String
+  conta             String
+  registradora      String               @default("CERC") // CERC, CIP, B3, TAG
+  protocoloContrato String               @map("protocolo_contrato")
+  status            String               @default("ATIVA") // ATIVA, SUSPENSA, LIBERADA
+  dataEfetivacao    DateTime             @default(now()) @map("data_efetivacao")
+  dataLiberacao     DateTime?            @map("data_liberacao")
+  createdAt         DateTime             @default(now()) @map("created_at")
+
+  @@index([antecipacaoId])
+  @@index([producerId])
+  @@index([adquirente])
+  @@index([status])
+  @@map("travas_domicilio_bancario")
+}
+
+

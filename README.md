@@ -102,6 +102,7 @@ diskingressos-erp/
 | **14** | **Disaster Recovery & 5 Anos** | Retenção Contábil Legal (Lei 10.406/02 Art. 1.194 & LC 123/06 Art. 26), snapshots WORM, SHA-256 e testes de DR. |
 | **15** | **Governança & Alçadas (SoD)** | Matriz de alçadas multinível (Faixas A, B, C dupla chave CFO), segregação de funções e quarentena de dados bancários (48h). |
 | **16** | **Assinaturas & Conta Azul** | Assinaturas Digitais Jurídicas (Autentique/Clicksign/ICP-Brasil), Borderôs Eletrônicos Sequenciais (Produtor 1º, Disk 2º) e Integração Conta Azul. |
+| **17** | **Antecipações & Travas BCB** | Cessão Fiduciária de Recebíveis (Res. BCB 4.734 / Circ. 3.952), Margem Consignável (Fundo Escrow 25%), Travas em Adquirentes (Cielo/Stone/Rede na CERC/CIP) e Amortização Cascata. |
 
 ---
 

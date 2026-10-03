@@ -29,3 +29,4 @@ export * from './exportador.js';
 export * from './disaster-recovery.js';
 export * from './governance-sod.js';
 export * from './digital-signature.js';
+export * from './antecipacao.js';
