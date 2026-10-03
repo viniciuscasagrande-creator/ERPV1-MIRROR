@@ -1233,3 +1233,73 @@ model RestoreDrAuditLog {
   @@map("restore_dr_audit_logs")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 15: GOVERNANÇA FINANCEIRA, ALÇADAS MULTINÍVEL & SEGREGAÇÃO DE FUNÇÕES (SoD)
+// Compliance Corporativo, Cadeia de Custódia e Controle de Risco Patrimonial
+// ------------------------------------------------------------------------------
+
+model ApprovalAuthorityRule {
+  id                  String   @id @default(uuid())
+  tipoOperacao        String   @map("tipo_operacao") // REPASSE_PRODUTOR, ANTECIPACAO_RECEBIVEIS, LOTE_PAGAMENTO_CNAB, AJUSTE_LEDGER, DESVIO_TAXA_MDR
+  faixaNome           String   @map("faixa_nome") // FAIXA_A, FAIXA_B, FAIXA_C
+  descricao           String
+  valorMinimo         Decimal  @default(0.00) @db.Decimal(15, 2) @map("valor_minimo")
+  valorMaximo         Decimal? @db.Decimal(15, 2) @map("valor_maximo") // null = sem teto
+  perfilMinimo        String   @map("perfil_minimo") // ANALISTA_SENIOR, GERENTE_FINANCEIRO, DIRETOR_CFO
+  requerDuplaAprovacao Boolean @default(false) @map("requer_dupla_aprovacao")
+  ativo               Boolean  @default(true)
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@index([tipoOperacao])
+  @@index([faixaNome])
+  @@map("approval_authority_rules")
+}
+
+model ApprovalRequest {
+  id                      String    @id @default(uuid())
+  codigo                  String    @unique // Ex: "APV-2026-000412"
+  tipoOperacao            String    @map("tipo_operacao") // REPASSE_PRODUTOR, ANTECIPACAO, LOTE_CNAB, AJUSTE_LEDGER, DADOS_BANCARIOS
+  referenciaId            String?   @map("referencia_id")
+  referenciaDescricao     String?   @map("referencia_descricao")
+  valor                   Decimal   @default(0.00) @db.Decimal(15, 2)
+  solicitadoPorId         String    @map("solicitado_por_id")
+  solicitadoPorNome       String    @map("solicitado_por_nome")
+  status                  String    @default("PENDENTE") // PENDENTE, APROVADO, REJEITADO, CANCELADO
+  alcadaExigida           String    @map("alcada_exigida") // FAIXA_A, FAIXA_B, FAIXA_C
+  aprovador1Id            String?   @map("aprovador_1_id")
+  aprovador1Nome          String?   @map("aprovador_1_nome")
+  aprovado1Em             DateTime? @map("aprovado_1_em")
+  aprovador2Id            String?   @map("aprovador_2_id")
+  aprovador2Nome          String?   @map("aprovador_2_nome")
+  aprovado2Em             DateTime? @map("aprovado_2_em")
+  motivoRejeicao          String?   @map("motivo_rejeicao")
+  justificativaSolicitacao String   @db.Text @map("justificativa_solicitacao")
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  @@index([tipoOperacao])
+  @@index([status])
+  @@index([solicitadoPorId])
+  @@map("approval_requests")
+}
+
+model SensitiveOperationAudit {
+  id                 String    @id @default(uuid())
+  codigoOperacao     String    @unique @map("codigo_operacao") // Ex: "SENS-2026-08-001"
+  tipoOperacao       String    @map("tipo_operacao") // ALTERACAO_DADOS_BANCARIOS, AJUSTE_LEDGER, REABERTURA_BORDERO, DESVIO_MDR, QUARENTENA_PIX
+  titulo             String
+  executadoPor       String    @map("executado_por")
+  perfilExecutante   String    @map("perfil_executante")
+  justificativa      String    @db.Text
+  statusQuarentena   String    @default("LIBERADO") @map("status_quarentena") // EM_QUARENTENA_48H, APROVADO_DIRETORIA, REJEITADO, LIBERADO
+  quarentenaExpiraEm DateTime? @map("quarentena_expira_em")
+  detalhesPayload    String?   @db.Text @map("detalhes_payload")
+  ipOrigem           String?   @map("ip_origem")
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  @@index([tipoOperacao])
+  @@index([statusQuarentena])
+  @@map("sensitive_operation_audits")
+}
+

@@ -20,6 +20,7 @@ import {
   ExternalLink,
   Bell,
   HardDrive,
+  ShieldAlert,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -51,6 +52,7 @@ const menuItems: MenuItem[] = [
       { title: 'Repasses', path: '/financeiro/repasses' },
       { title: 'Fluxo de Caixa', path: '/financeiro/fluxo-caixa' },
       { title: 'Lotes CNAB 240', path: '/financeiro/cnab', badge: 'FEBRABAN' },
+      { title: 'Alçadas & SoD', path: '/governanca/alcadas', badge: 'SoD' },
     ],
   },
   {
@@ -129,6 +131,13 @@ const menuItems: MenuItem[] = [
     path: '/disaster-recovery',
     badge: 'WORM',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.CONTABILIDADE],
+  },
+  {
+    title: 'Governança & SoD',
+    icon: ShieldAlert,
+    path: '/governanca/alcadas',
+    badge: 'Alçadas',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {
     title: 'Usuários & Permissões',

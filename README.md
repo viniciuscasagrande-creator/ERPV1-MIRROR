@@ -100,6 +100,7 @@ diskingressos-erp/
 | **12** | **Notificações & Webhooks** | Mensageria real-time WebSocket, disparo de webhooks autenticados HMAC-SHA256 e trilha de eventos. |
 | **13** | **Exportadores Contábeis** | Layouts oficiais Domínio Sistemas, Fortes Contábil, Questor e planilhas estruturadas. |
 | **14** | **Disaster Recovery & 5 Anos** | Retenção Contábil Legal (Lei 10.406/02 Art. 1.194 & LC 123/06 Art. 26), snapshots WORM, SHA-256 e testes de DR. |
+| **15** | **Governança & Alçadas (SoD)** | Matriz de alçadas multinível (Faixas A, B, C dupla chave CFO), segregação de funções e quarentena de dados bancários (48h). |
 
 ---
 

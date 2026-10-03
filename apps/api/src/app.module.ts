@@ -31,6 +31,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { WebhooksModule } from './modules/webhooks/webhooks.module';
 import { ExportadorModule } from './modules/exportador/exportador.module';
 import { DisasterRecoveryModule } from './modules/disaster-recovery/disaster-recovery.module';
+import { GovernanceSodModule } from './modules/governance-sod/governance-sod.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -70,6 +71,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     WebhooksModule,
     ExportadorModule,
     DisasterRecoveryModule,
+    GovernanceSodModule,
   ],
   providers: [
     PrismaService,

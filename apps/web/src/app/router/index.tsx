@@ -51,6 +51,9 @@ import { ExportadorPage } from '../../modules/exportador/ExportadorPage';
 // FASE 14: Disaster Recovery, Backup & Retenção Contábil Legal (5 Anos)
 import { DisasterRecoveryPage } from '../../modules/disaster-recovery/DisasterRecoveryPage';
 
+// FASE 15: Governança Financeira, Matriz de Alçadas & SoD
+import { GovernancaSodPage } from '../../modules/governanca-sod/GovernancaSodPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -158,6 +161,11 @@ export const AppRouter: React.FC = () => {
         <Route path="disaster-recovery" element={<DisasterRecoveryPage />} />
         <Route path="governanca/disaster-recovery" element={<DisasterRecoveryPage />} />
         <Route path="backup" element={<DisasterRecoveryPage />} />
+
+        {/* Módulos FASE 15: Governança Financeira, Matriz de Alçadas & SoD */}
+        <Route path="governanca/alcadas" element={<GovernancaSodPage />} />
+        <Route path="governanca-financeira" element={<GovernancaSodPage />} />
+        <Route path="financeiro/alcadas" element={<GovernancaSodPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />
