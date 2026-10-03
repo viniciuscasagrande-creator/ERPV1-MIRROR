@@ -28,6 +28,7 @@ import {
   Layers,
   Leaf,
   Coins,
+  Briefcase,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -92,6 +93,7 @@ const menuItems: MenuItem[] = [
       { title: 'IA Tesouraria & Yield', path: '/ai-tesouraria', badge: 'Preditiva' },
       { title: 'Câmbio FX & Multi-Moeda', path: '/global-fx', badge: 'PTAX' },
       { title: 'Tokenização RWA & DREX', path: '/rwa-drex', badge: 'DREX' },
+      { title: 'FIDC de Bilheteria & Cotas', path: '/fidc-bilheteria', badge: 'CVM 175' },
     ],
   },
   {
@@ -224,6 +226,13 @@ const menuItems: MenuItem[] = [
     path: '/rwa-drex',
     badge: 'CVM 88',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'FIDC de Bilheteria',
+    icon: Briefcase,
+    path: '/fidc-bilheteria',
+    badge: 'CVM 175',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO, PerfilUsuario.CONTABILIDADE],
   },
   {
     title: 'Usuários & Permissões',

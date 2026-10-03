@@ -90,6 +90,10 @@ import { EsgSustainabilityPage } from '../../modules/esg-sustainability/EsgSusta
 // FASE 27: Tokenização RWA, Recebíveis DREX & Smart Contracts
 import { RwaDrexPage } from '../../modules/rwa-drex/RwaDrexPage';
 
+// FASE 28: FIDC de Bilheteria & Entretenimento (Res. CVM 175)
+import { FidcEntertainmentPage } from '../../modules/fidc-entertainment/FidcEntertainmentPage';
+
+
 
 
 import { useAuthStore } from '../../stores/auth.store';
@@ -280,6 +284,13 @@ export const AppRouter: React.FC = () => {
         <Route path="mercado-secundario" element={<RwaDrexPage />} />
         <Route path="financeiro/rwa" element={<RwaDrexPage />} />
         <Route path="financeiro/drex" element={<RwaDrexPage />} />
+
+        {/* Módulos FASE 28: FIDC de Bilheteria & Entretenimento (Res. CVM 175) */}
+        <Route path="fidc-bilheteria" element={<FidcEntertainmentPage />} />
+        <Route path="fundos-investimento" element={<FidcEntertainmentPage />} />
+        <Route path="fidc" element={<FidcEntertainmentPage />} />
+        <Route path="financeiro/fidc" element={<FidcEntertainmentPage />} />
+
 
 
 

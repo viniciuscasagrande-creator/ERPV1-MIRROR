@@ -2394,6 +2394,105 @@ model RwaAccountingRegister {
   @@map("rwa_accounting_registers")
 }
 
+// ============================================================================
+// FASE 28: FIDC de Bilheteria & Entretenimento (Resolução CVM 175 - Anexo II)
+// Cotas Seniores, Mezanino, Subordinadas e Cessão de Recebíveis de Eventos
+// ============================================================================
+
+model FidcFundStructure {
+  id                            String   @id @default(uuid())
+  codigoFundo                   String   @unique @map("codigo_fundo") // Ex: "FIDC-ENTRET-2026-01"
+  razaoSocialFundo              String   @map("razao_social_fundo")
+  cnpjFundo                     String   @unique @map("cnpj_fundo")
+  administradorFiduciario       String   @map("administrador_fiduciario")
+  custodiante                   String   @map("custodiante")
+  gestorCarteira                String   @map("gestor_carteira")
+  patrimonioLiquidoTotalBrl     Decimal  @db.Decimal(15, 2) @map("patrimonio_liquido_total_brl")
+  valorCotasSenioresBrl         Decimal  @db.Decimal(15, 2) @map("valor_cotas_seniores_brl")
+  valorCotasMezaninoBrl         Decimal  @db.Decimal(15, 2) @map("valor_cotas_mezanino_brl")
+  valorCotasSubordinadasBrl     Decimal  @db.Decimal(15, 2) @map("valor_cotas_subordinadas_brl")
+  indiceSubordinacaoAtualPercent Decimal @db.Decimal(5, 2) @map("indice_subordinacao_atual_percent")
+  indiceSubordinacaoMinimoPercent Decimal @default(25.00) @db.Decimal(5, 2) @map("indice_subordinacao_minimo_percent")
+  metaRentabilidadeSenior       String   @map("meta_rentabilidade_senior") // Ex: "100% CDI + 2.80% a.a."
+  statusFundo                   String   @default("ATIVO_OPERACIONAL") @map("status_fundo") // ATIVO_OPERACIONAL, EM_CAPTACAO, LIQUIDACAO_ENCERRADA
+  dataConstituicao              DateTime @default(now()) @map("data_constituicao")
+  criadoEm                      DateTime @default(now()) @map("criado_em")
+  atualizadoEm                  DateTime @updatedAt @map("atualizado_em")
+
+  assignments                   FidcReceivableAssignment[]
+  valuations                    FidcDailyQuotaValuation[]
+  movements                     FidcAccountingMovement[]
+
+  @@index([statusFundo])
+  @@map("fidc_fund_structures")
+}
+
+model FidcReceivableAssignment {
+  id                            String   @id @default(uuid())
+  codigoCessao                  String   @unique @map("codigo_cessao") // Ex: "CES-FIDC-2026-0042"
+  fundId                        String   @map("fund_id")
+  eventoId                      String   @map("evento_id")
+  produtorId                    String   @map("produtor_id")
+  borderoFechamentoId           String   @map("bordero_fechamento_id")
+  valorNominalRecebiveisBrl     Decimal  @db.Decimal(15, 2) @map("valor_nominal_recebiveis_brl")
+  taxaDescontoAnualPercent      Decimal  @db.Decimal(5, 2) @map("taxa_desconto_anual_percent")
+  valorPresenteAquisicaoBrl     Decimal  @db.Decimal(15, 2) @map("valor_presente_aquisicao_brl")
+  prazoMedioDias                Int      @map("prazo_medio_dias")
+  fundoReservaRetidoBrl         Decimal  @db.Decimal(15, 2) @map("fundo_reserva_retido_brl")
+  statusCessao                  String   @default("HOMOLOGADA_CERC") @map("status_cessao") // HOMOLOGADA_CERC, LIQUIDADA_BORDERO, INADIMPLENTE_SUBORDINADA
+  registroRegistradora          String   @default("CERC_REGISTRADORA") @map("registro_registradora")
+  numeroContratoB3              String?  @map("numero_contrato_b3")
+  dataCessao                    DateTime @default(now()) @map("data_cessao")
+  dataVencimento                DateTime @map("data_vencimento")
+
+  fund                          FidcFundStructure @relation(fields: [fundId], references: [id])
+
+  @@index([fundId])
+  @@index([eventoId])
+  @@index([produtorId])
+  @@index([statusCessao])
+  @@map("fidc_receivable_assignments")
+}
+
+model FidcDailyQuotaValuation {
+  id                            String   @id @default(uuid())
+  fundId                        String   @map("fund_id")
+  dataCompetencia               DateTime @map("data_competencia")
+  valorPatrimonioLiquidoBrl     Decimal  @db.Decimal(15, 2) @map("valor_patrimonio_liquido_brl")
+  valorCotaSeniorBrl            Decimal  @db.Decimal(15, 6) @map("valor_cota_senior_brl")
+  valorCotaMezaninoBrl          Decimal  @db.Decimal(15, 6) @map("valor_cota_mezanino_brl")
+  valorCotaSubordinadaBrl       Decimal  @db.Decimal(15, 6) @map("valor_cota_subordinada_brl")
+  rentabilidadeAcumuladaSeniorPercent Decimal @db.Decimal(5, 2) @map("rentabilidade_acumulada_senior_percent")
+  indiceInadimplenciaPercent    Decimal  @default(0.00) @db.Decimal(5, 2) @map("indice_inadimplencia_percent")
+  indiceSubordinacaoRealPercent Decimal  @db.Decimal(5, 2) @map("indice_subordinacao_real_percent")
+  enquadradoRegulatorio         Boolean  @default(true) @map("enquadrado_regulatorio")
+  criadoEm                      DateTime @default(now()) @map("criado_em")
+
+  fund                          FidcFundStructure @relation(fields: [fundId], references: [id])
+
+  @@index([fundId, dataCompetencia])
+  @@map("fidc_daily_quota_valuations")
+}
+
+model FidcAccountingMovement {
+  id                            String   @id @default(uuid())
+  codigoLancamento              String   @unique @map("codigo_lancamento") // Ex: "MOV-FIDC-2026-001"
+  fundId                        String   @map("fund_id")
+  tipoMovimento                 String   @map("tipo_movimento") // AQUISICAO_DIREITOS, AMORTIZACAO_SENIOR, RESGATE_SUBORDINADA, TAXA_GESTAO_ADMIN
+  valorBrl                      Decimal  @db.Decimal(15, 2) @map("valor_brl")
+  contaDebito                   String   @map("conta_debito")
+  contaCredito                  String   @map("conta_credito")
+  historicoCvm175               String   @map("historico_cvm175")
+  dataLancamento                DateTime @default(now()) @map("data_lancamento")
+
+  fund                          FidcFundStructure @relation(fields: [fundId], references: [id])
+
+  @@index([fundId])
+  @@index([tipoMovimento])
+  @@map("fidc_accounting_movements")
+}
+
+
 
 
 

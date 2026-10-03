@@ -44,6 +44,7 @@ import { GlobalFxModule } from './modules/global-fx/global-fx.module';
 import { ConsolidationIfrsModule } from './modules/consolidation-ifrs/consolidation-ifrs.module';
 import { EsgSustainabilityModule } from './modules/esg-sustainability/esg-sustainability.module';
 import { RwaDrexModule } from './modules/rwa-drex/rwa-drex.module';
+import { FidcEntertainmentModule } from './modules/fidc-entertainment/fidc-entertainment.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -96,6 +97,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     ConsolidationIfrsModule,
     EsgSustainabilityModule,
     RwaDrexModule,
+    FidcEntertainmentModule,
   ],
   providers: [
     PrismaService,
