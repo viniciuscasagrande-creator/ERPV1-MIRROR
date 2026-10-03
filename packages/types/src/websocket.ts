@@ -29,6 +29,9 @@ export enum SocketEvent {
 
   // Central de Fechamento
   CHECKLIST_GATE_UPDATED = 'checklist.gate.updated',
+
+  // Notificações & Alertas
+  NOTIFICATION_CREATED = 'notification.created',
 }
 
 /**

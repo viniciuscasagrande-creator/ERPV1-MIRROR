@@ -198,4 +198,20 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(SocketRooms.producer(payload.producerId)).emit(SocketEvent.PRODUCER_SETTLEMENT_UPDATED, payload);
     this.server.to(SocketRooms.event(payload.eventId)).emit(SocketEvent.SETTLEMENT_UPDATED, payload);
   }
+
+  emitNotificationCreated(payload: any) {
+    this.logger.log(`📢 [Socket.IO] Disparando ${SocketEvent.NOTIFICATION_CREATED} (${payload.titulo})`);
+    if (this.server) {
+      if (payload.userId) {
+        this.server.emit(SocketEvent.NOTIFICATION_CREATED, payload);
+      } else if (payload.producerId) {
+        this.server.to(SocketRooms.producer(payload.producerId)).emit(SocketEvent.NOTIFICATION_CREATED, payload);
+      } else {
+        // Broadcast geral para administradores e financeiro
+        this.server.to(SocketRooms.admin()).emit(SocketEvent.NOTIFICATION_CREATED, payload);
+        this.server.to(SocketRooms.financeiro()).emit(SocketEvent.NOTIFICATION_CREATED, payload);
+      }
+    }
+  }
 }
+

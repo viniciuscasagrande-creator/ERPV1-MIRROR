@@ -18,6 +18,7 @@ import {
   ChevronRight,
   SlidersHorizontal,
   ExternalLink,
+  Bell,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -130,6 +131,12 @@ const menuItems: MenuItem[] = [
     icon: ExternalLink,
     path: '/portal-produtor/dashboard',
     badge: 'Externo',
+  },
+  {
+    title: 'Notificações & Webhooks',
+    icon: Bell,
+    path: '/notificacoes',
+    badge: 'Live',
   },
   {
     title: 'Configurações',

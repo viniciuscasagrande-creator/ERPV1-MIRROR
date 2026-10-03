@@ -1106,3 +1106,62 @@ model CnabBatch {
   @@map("cnab_batches")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 12: NOTIFICAÇÕES EM TEMPO REAL & WEBHOOKS DE EVENTOS FINANCEIROS
+// ------------------------------------------------------------------------------
+
+model AppNotification {
+  id           String    @id @default(uuid())
+  userId       String?   @map("user_id")
+  producerId   String?   @map("producer_id")
+  tipo         String    // FECHAMENTO_EVENTO, REPASSE_LIBERADO, DIVERGENCIA_MDR, TRAVA_CONTABIL, LOTE_CNAB, SISTEMA
+  titulo       String
+  mensagem     String
+  severidade   String    @default("INFO") // INFO, SUCCESS, WARNING, CRITICAL
+  lida         Boolean   @default(false)
+  linkAcao     String?   @map("link_acao")
+  metadata     Json?
+  criadoEm     DateTime  @default(now()) @map("criado_em")
+
+  @@index([userId, lida])
+  @@index([producerId])
+  @@index([tipo])
+  @@map("app_notifications")
+}
+
+model WebhookSubscription {
+  id            String    @id @default(uuid())
+  nome          String
+  url           String
+  secret        String    // HMAC-SHA256 signature key
+  ativo         Boolean   @default(true)
+  eventos       String[]  // ['evento.fechado', 'repasse.liquidado', 'mdr.divergencia', 'competencia.fechada']
+  ultimoDisparo DateTime? @map("ultimo_disparo")
+  ultimoStatus  Int?      @map("ultimo_status")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  logs          WebhookDeliveryLog[]
+
+  @@index([ativo])
+  @@map("webhook_subscriptions")
+}
+
+model WebhookDeliveryLog {
+  id             String              @id @default(uuid())
+  subscriptionId String              @map("subscription_id")
+  subscription   WebhookSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  evento         String
+  payload        Json
+  statusCode     Int?                @map("status_code")
+  sucesso        Boolean             @default(false)
+  resposta       String?             @db.Text
+  tentativas     Int                 @default(1)
+  createdAt      DateTime            @default(now()) @map("created_at")
+
+  @@index([subscriptionId])
+  @@index([evento])
+  @@index([sucesso])
+  @@map("webhook_delivery_logs")
+}
+

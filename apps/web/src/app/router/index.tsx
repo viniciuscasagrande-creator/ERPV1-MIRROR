@@ -42,6 +42,9 @@ import { DocumentosGedPage } from '../../modules/ged/DocumentosGedPage';
 import { CnabPage } from '../../modules/financeiro/CnabPage';
 import { ConfiguracoesPage } from '../../modules/configuracoes/ConfiguracoesPage';
 
+// FASE 12: Notificações em Tempo Real & Webhooks
+import { NotificacoesPage } from '../../modules/notificacoes/NotificacoesPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -186,6 +189,9 @@ export const AppRouter: React.FC = () => {
             </RoleRoute>
           }
         />
+
+        {/* Módulo FASE 12: Notificações em Tempo Real & Webhooks */}
+        <Route path="notificacoes" element={<NotificacoesPage />} />
 
         {/* Fallback para rotas em estruturação (Fases 3 a 10) */}
         <Route
