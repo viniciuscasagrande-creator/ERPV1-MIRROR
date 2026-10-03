@@ -84,6 +84,10 @@ import { GlobalFxPage } from '../../modules/global-fx/GlobalFxPage';
 // FASE 25: Consolidação IFRS / CPC 36, Equivalência Patrimonial & Balanço Global
 import { ConsolidationIfrsPage } from '../../modules/consolidation-ifrs/ConsolidationIfrsPage';
 
+// FASE 26: Governança ESG, Pegada de Carbono & Borderô Verde
+import { EsgSustainabilityPage } from '../../modules/esg-sustainability/EsgSustainabilityPage';
+
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -258,6 +262,14 @@ export const AppRouter: React.FC = () => {
         <Route path="demonstracoes-consolidadas" element={<ConsolidationIfrsPage />} />
         <Route path="contabilidade/consolidacao" element={<ConsolidationIfrsPage />} />
         <Route path="contabilidade/mep" element={<ConsolidationIfrsPage />} />
+
+        {/* Módulos FASE 26: Governança ESG, Pegada de Carbono & Borderô Verde */}
+        <Route path="esg-sustentabilidade" element={<EsgSustainabilityPage />} />
+        <Route path="pegada-carbono" element={<EsgSustainabilityPage />} />
+        <Route path="bordero-verde" element={<EsgSustainabilityPage />} />
+        <Route path="sustentabilidade" element={<EsgSustainabilityPage />} />
+        <Route path="governanca/esg" element={<EsgSustainabilityPage />} />
+
 
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}

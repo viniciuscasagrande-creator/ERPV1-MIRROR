@@ -26,6 +26,7 @@ import {
   BrainCircuit,
   Globe2,
   Layers,
+  Leaf,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -102,6 +103,7 @@ const menuItems: MenuItem[] = [
       { title: 'Balancete', path: '/contabilidade/balancete' },
       { title: 'DRE Gerencial', path: '/contabilidade/dre' },
       { title: 'Consolidação IFRS & MEP', path: '/consolidacao-ifrs', badge: 'CPC 36' },
+      { title: 'Sustentabilidade ESG & Borderô Verde', path: '/esg-sustentabilidade', badge: 'IFRS S1/S2' },
       { title: 'Fechamento & Travas', path: '/governanca/fechamento-mensal', badge: 'Travas' },
       { title: 'Exportações & Integrações', path: '/contabilidade/exportador', badge: 'Domínio' },
       { title: 'Disaster Recovery (DR)', path: '/disaster-recovery', badge: '5 Anos' },
@@ -206,6 +208,13 @@ const menuItems: MenuItem[] = [
     path: '/consolidacao-ifrs',
     badge: 'CPC 36',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.CONTABILIDADE],
+  },
+  {
+    title: 'Sustentabilidade & ESG',
+    icon: Leaf,
+    path: '/esg-sustentabilidade',
+    badge: 'Net Zero',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {
     title: 'Usuários & Permissões',
