@@ -1559,5 +1559,121 @@ model PaymentSplitTransaction {
   @@map("payment_split_transactions")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 19: SOCIEDADES EM CONTA DE PARTICIPAÇÃO (SCP) & INVESTIDORES
+// Aportes de Capital, Hurdle Waterfall & Distribuição de Dividendos (CC 991-996 & Lei 9.249/95)
+// ------------------------------------------------------------------------------
+
+model ScpContract {
+  id                   String                    @id @default(uuid())
+  codigoScp            String                    @unique @map("codigo_scp") // Ex: "SCP-2026-001"
+  nomeProjeto          String                    @map("nome_projeto") // Ex: "Festival de Inverno Curitiba 2026 - SCP"
+  eventId              String                    @map("event_id")
+  eventNome            String                    @map("event_nome")
+  producerId           String                    @map("producer_id")
+  socioOstensivo       String                    @map("socio_ostensivo") // Razão Social do Sócio Ostensivo (Produtora ou Disk)
+  cnpjScp              String?                   @map("cnpj_scp") // CNPJ próprio da SCP na Receita Federal (IN RFB 2.119/22)
+  metaCaptacao         Decimal                   @db.Decimal(15, 2) @map("meta_captacao") // Meta total de captação
+  valorCaptado         Decimal                   @default(0.00) @db.Decimal(15, 2) @map("valor_captado")
+  modalidadePartilha   String                    @default("HURDLE_WATERFALL") @map("modalidade_partilha") // LUCRO_LIQUIDO, HURDLE_WATERFALL, RECEITA_BRUTA
+  hurdleRatePercent    Decimal                   @default(12.00) @db.Decimal(5, 2) @map("hurdle_rate_percent") // Taxa mínima de retorno preferencial (%)
+  upsideSharePercent   Decimal                   @default(25.00) @db.Decimal(5, 2) @map("upside_share_percent") // Participação no lucro residual (%)
+  regimeTributario     String                    @default("LUCRO_PRESUMIDO_ISENTO") @map("regime_tributario") // LUCRO_PRESUMIDO_ISENTO, MUTUO_IRRF_REGRESSIVO
+  status               String                    @default("EM_CAPTACAO") // EM_CAPTACAO, ATIVO, EM_APURACAO, LIQUIDADO, ENCERRADO
+  dataInicio           DateTime                  @default(now()) @map("data_inicio")
+  dataEncerramento     DateTime?                 @map("data_encerramento")
+  createdAt            DateTime                  @default(now()) @map("created_at")
+  updatedAt            DateTime                  @updatedAt @map("updated_at")
+
+  quotas               ScpQuotaShare[]
+  distribuicoes        ScpDividendDistribution[]
+
+  @@index([eventId])
+  @@index([producerId])
+  @@index([status])
+  @@map("scp_contracts")
+}
+
+model ScpInvestor {
+  id                   String                    @id @default(uuid())
+  nomeOuRazaoSocial    String                    @map("nome_ou_razao_social")
+  tipoPessoa           String                    @default("PJ") @map("tipo_pessoa") // PF, PJ
+  documentoFiscal      String                    @unique @map("documento_fiscal") // CPF ou CNPJ
+  email                String
+  telefone             String?
+  tipoInvestidor       String                    @default("ANJO") @map("tipo_investidor") // ANJO, CO_PRODUTOR, FUNDO_INVESTIMENTO, FAMILY_OFFICE
+  banco                String
+  agencia              String
+  conta                String
+  tipoChavePix         String?                   @map("tipo_chave_pix")
+  chavePix             String?                   @map("chave_pix")
+  statusKyc            String                    @default("APROVADO") @map("status_kyc") // PENDENTE, EM_ANALISE, APROVADO, REJEITADO
+  limiteAporte         Decimal                   @default(500000.00) @db.Decimal(15, 2) @map("limite_aporte")
+  createdAt            DateTime                  @default(now()) @map("created_at")
+  updatedAt            DateTime                  @updatedAt @map("updated_at")
+
+  quotas               ScpQuotaShare[]
+  distribuicoes        ScpDividendDistribution[]
+
+  @@index([statusKyc])
+  @@index([tipoInvestidor])
+  @@map("scp_investors")
+}
+
+model ScpQuotaShare {
+  id                   String                    @id @default(uuid())
+  codigoAporte         String                    @unique @map("codigo_aporte") // Ex: "APT-2026-0041"
+  contractId           String                    @map("contract_id")
+  contract             ScpContract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  investorId           String                    @map("investor_id")
+  investor             ScpInvestor               @relation(fields: [investorId], references: [id], onDelete: Restrict)
+  valorAportado        Decimal                   @db.Decimal(15, 2) @map("valor_aportado")
+  percentualParticipacao Decimal                 @db.Decimal(5, 2) @map("percentual_participacao") // % do investidor na SCP
+  dataAporte           DateTime                  @default(now()) @map("data_aporte")
+  status               String                    @default("INTEGRALIZADO") // INTEGRALIZADO, PENDENTE_COMPROVANTE, RESCINDIDO
+  comprovanteUrl       String?                   @map("comprovante_url")
+  createdAt            DateTime                  @default(now()) @map("created_at")
+  updatedAt            DateTime                  @updatedAt @map("updated_at")
+
+  @@index([contractId])
+  @@index([investorId])
+  @@index([status])
+  @@map("scp_quota_shares")
+}
+
+model ScpDividendDistribution {
+  id                   String                    @id @default(uuid())
+  codigoDistribuicao   String                    @unique @map("codigo_distribuicao") // Ex: "DIV-2026-0012"
+  contractId           String                    @map("contract_id")
+  contract             ScpContract               @relation(fields: [contractId], references: [id], onDelete: Restrict)
+  investorId           String                    @map("investor_id")
+  investor             ScpInvestor               @relation(fields: [investorId], references: [id], onDelete: Restrict)
+  eventId              String                    @map("event_id")
+  eventNome            String                    @map("event_nome")
+  dreReceitaBruta      Decimal                   @db.Decimal(15, 2) @map("dre_receita_bruta")
+  dreCustosOperacionais Decimal                  @db.Decimal(15, 2) @map("dre_custos_operacionais")
+  dreLucroLiquido      Decimal                   @db.Decimal(15, 2) @map("dre_lucro_liquido")
+  valorAporteDevolvido Decimal                   @default(0.00) @db.Decimal(15, 2) @map("valor_aporte_devolvido") // Retorno do capital (Payback)
+  valorLucroDistribuido Decimal                  @default(0.00) @db.Decimal(15, 2) @map("valor_lucro_distribuido") // Dividendo / Lucro
+  aliquotaIrrf         Decimal                   @default(0.00) @db.Decimal(5, 2) @map("aliquota_irrf") // 0.00% (Lei 9.249/95) ou 15.00%
+  valorIrrfRetido      Decimal                   @default(0.00) @db.Decimal(15, 2) @map("valor_irrf_retido")
+  valorLiquidoPago     Decimal                   @db.Decimal(15, 2) @map("valor_liquido_pago")
+  roiEfetivoPercent    Decimal                   @default(0.00) @db.Decimal(5, 2) @map("roi_efetivo_percent") // ROI % sobre o capital
+  status               String                    @default("CALCULADO") // CALCULADO, APROVADO_CFO, LIQUIDADO, PENDENTE_AUDITORIA
+  dataAprovacao        DateTime?                 @map("data_aprovacao")
+  dataLiquidacao       DateTime?                 @map("data_liquidacao")
+  metodoLiquidacao     String?                   @map("metodo_liquidacao") // PIX, TED
+  comprovantePagamento String?                   @map("comprovante_pagamento")
+  createdAt            DateTime                  @default(now()) @map("created_at")
+  updatedAt            DateTime                  @updatedAt @map("updated_at")
+
+  @@index([contractId])
+  @@index([investorId])
+  @@index([eventId])
+  @@index([status])
+  @@map("scp_dividend_distributions")
+}
+
+
 
 

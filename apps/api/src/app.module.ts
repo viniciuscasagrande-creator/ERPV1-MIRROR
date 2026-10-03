@@ -35,6 +35,7 @@ import { GovernanceSodModule } from './modules/governance-sod/governance-sod.mod
 import { DigitalSignatureModule } from './modules/digital-signature/digital-signature.module';
 import { AntecipacoesModule } from './modules/antecipacoes/antecipacoes.module';
 import { SplitPaymentModule } from './modules/split-payment/split-payment.module';
+import { ScpInvestorsModule } from './modules/scp-investors/scp-investors.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -78,6 +79,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     DigitalSignatureModule,
     AntecipacoesModule,
     SplitPaymentModule,
+    ScpInvestorsModule,
   ],
   providers: [
     PrismaService,

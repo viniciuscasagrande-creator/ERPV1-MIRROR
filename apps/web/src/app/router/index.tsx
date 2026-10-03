@@ -63,6 +63,9 @@ import { AntecipacoesPage } from '../../modules/antecipacoes/AntecipacoesPage';
 // FASE 18: Split de Pagamento Nativo em Gateway & Subadquirência
 import { SplitPaymentPage } from '../../modules/split/SplitPaymentPage';
 
+// FASE 19: Sociedades em Conta de Participação (SCP) & Investidores
+import { ScpInvestorsPage } from '../../modules/scp/ScpInvestorsPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -191,6 +194,12 @@ export const AppRouter: React.FC = () => {
         <Route path="split" element={<SplitPaymentPage />} />
         <Route path="financeiro/split" element={<SplitPaymentPage />} />
         <Route path="gateways/split" element={<SplitPaymentPage />} />
+
+        {/* Módulos FASE 19: Sociedades em Conta de Participação (SCP) & Investidores */}
+        <Route path="scp" element={<ScpInvestorsPage />} />
+        <Route path="scp-investidores" element={<ScpInvestorsPage />} />
+        <Route path="investidores" element={<ScpInvestorsPage />} />
+        <Route path="financeiro/investidores" element={<ScpInvestorsPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

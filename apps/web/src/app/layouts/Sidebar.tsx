@@ -165,6 +165,13 @@ const menuItems: MenuItem[] = [
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {
+    title: 'Investidores & SCP',
+    icon: Landmark,
+    path: '/scp',
+    badge: 'CC 991',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO, PerfilUsuario.CONTABILIDADE],
+  },
+  {
     title: 'Usuários & Permissões',
     icon: Users,
     path: '/usuarios',
