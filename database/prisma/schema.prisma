@@ -2571,6 +2571,73 @@ model AiPredictiveBalanceInsight {
   @@map("ai_predictive_balance_insights")
 }
 
+// ============================================================================
+// FASE 30: CENTRAL DE OBSERVABILIDADE EXECUTIVA, DIGITAL BOARDROOM & DFP CVM / BIG FOUR
+// ============================================================================
+
+model ExecutiveBoardroomMetric {
+  id                            String   @id @default(uuid())
+  periodoReferencia             String   @unique @map("periodo_referencia") // AAAA-MM ou LTM
+  ebitdaLtmBrl                  Decimal  @db.Decimal(18, 2) @map("ebitda_ltm_brl")
+  margemEbitdaPercent           Decimal  @db.Decimal(5, 2) @map("margem_ebitda_percent")
+  receitaLiquidaLtmBrl          Decimal  @db.Decimal(18, 2) @map("receita_liquida_ltm_brl")
+  liquidezCorrente              Decimal  @db.Decimal(5, 2) @map("liquidez_corrente")
+  liquidezSeca                  Decimal  @db.Decimal(5, 2) @map("liquidez_seca")
+  patrimonioLiquidoConsolidadoBrl Decimal @db.Decimal(18, 2) @map("patrimonio_liquido_consolidado_brl")
+  tvlTokensDrexBrl              Decimal  @db.Decimal(18, 2) @map("tvl_tokens_drex_brl")
+  indiceSubordinacaoFidcPercent Decimal  @db.Decimal(5, 2) @map("indice_subordinacao_fidc_percent")
+  saldoCompensacaoEsgTco2       Decimal  @db.Decimal(10, 2) @map("saldo_compensacao_esg_tco2")
+  scoreGovernancaGrc            Decimal  @db.Decimal(5, 2) @map("score_governanca_grc")
+  atualizadoEm                  DateTime @default(now()) @updatedAt @map("atualizado_em")
+
+  @@map("executive_boardroom_metrics")
+}
+
+model DfpAuditPackage {
+  id                            String   @id @default(uuid())
+  codigoPacote                  String   @unique @map("codigo_pacote") // DFP-2025-ANUAL, ITR-2026-1T
+  tipoDemonstracao              String   @map("tipo_demonstracao") // DFP_ANUAL, ITR_TRIMESTRAL
+  exercicioAno                  Int      @map("exercicio_ano")
+  periodoTrimestre              Int?     @map("periodo_trimestre") // 1, 2, 3, 4
+  statusAuditoria               String   @default("EM_REVISAO") @map("status_auditoria") // EM_REVISAO, PARECER_EMITIDO_SEM_RESSALVAS, HOMOLOGADO_CVM
+  auditorResponsavel            String   @map("auditor_responsavel") // Ex: PricewaterhouseCoopers (PwC) / Deloitte
+  responsavelTecnicoCrc         String   @map("responsavel_tecnico_crc")
+  hashIntegridadeSha256         String   @map("hash_integridade_sha256")
+  balancoPatrimonialAtivoJson   String   @db.Text @map("balanco_patrimonial_ativo_json")
+  balancoPatrimonialPassivoJson  String   @db.Text @map("balanco_patrimonial_passivo_json")
+  dreConsolidadaJson            String   @db.Text @map("dre_consolidada_json")
+  dfcFluxoCaixaJson             String   @db.Text @map("dfc_fluxo_caixa_json")
+  dmplMutacoesPlJson            String   @db.Text @map("dmpl_mutacoes_pl_json")
+  dvaValorAdicionadoJson        String   @db.Text @map("dva_valor_adicionado_json")
+  notasExplicativasTexto        String   @db.Text @map("notas_explicativas_texto")
+  parecerAuditoresTexto         String   @db.Text @map("parecer_auditores_texto")
+  dataGeracao                   DateTime @default(now()) @map("data_geracao")
+  homologadoEm                  DateTime? @map("homologado_em")
+
+  @@index([exercicioAno])
+  @@index([statusAuditoria])
+  @@map("dfp_audit_packages")
+}
+
+model CorporateRiskItem {
+  id                            String   @id @default(uuid())
+  codigoRisco                   String   @unique @map("codigo_risco") // RSK-REG-01, RSK-LIQ-02
+  categoria                     String   @map("categoria") // REGULATORIO, LIQUIDEZ, OPERACIONAL, TRIBUTARIO, CIBERNETICO
+  titulo                        String   @map("titulo")
+  descricaoRisco                String   @db.Text @map("descricao_risco")
+  probabilidade                 String   @map("probabilidade") // BAIXA, MEDIA, ALTA
+  impactoFinanceiro             String   @map("impacto_financeiro") // BAIXO, MEDIO, ALTO, CATASTROFICO
+  nivelRisco                    String   @map("nivel_risco") // BAIXO, MODERADO, ELEVADO, CRITICO
+  estrategiaMitigacao           String   @db.Text @map("estrategia_mitigacao")
+  responsavelAlcada             String   @map("responsavel_alcada")
+  statusMonitoramento           String   @default("ATIVO") @map("status_monitoramento") // ATIVO, MITIGADO, SOB_CONTROLE
+  atualizadoEm                  DateTime @default(now()) @updatedAt @map("atualizado_em")
+
+  @@index([categoria])
+  @@index([nivelRisco])
+  @@map("corporate_risk_items")
+}
+
 
 
 

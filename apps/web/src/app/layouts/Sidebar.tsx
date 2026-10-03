@@ -30,6 +30,7 @@ import {
   Coins,
   Briefcase,
   Bot,
+  Presentation,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -111,6 +112,7 @@ const menuItems: MenuItem[] = [
       { title: 'Sustentabilidade ESG & Borderô Verde', path: '/esg-sustentabilidade', badge: 'IFRS S1/S2' },
       { title: 'Fechamento & Travas', path: '/governanca/fechamento-mensal', badge: 'Travas' },
       { title: 'Fechamento Zero-Touch IA', path: '/fechamento-ia', badge: 'Swarm' },
+      { title: 'Demonstrações DFP / CVM', path: '/boardroom', badge: 'Big Four' },
       { title: 'Exportações & Integrações', path: '/contabilidade/exportador', badge: 'Domínio' },
       { title: 'Disaster Recovery (DR)', path: '/disaster-recovery', badge: '5 Anos' },
     ],
@@ -242,6 +244,13 @@ const menuItems: MenuItem[] = [
     path: '/fechamento-ia',
     badge: 'Zero-Touch',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.CONTABILIDADE],
+  },
+  {
+    title: 'Digital Boardroom C-Level',
+    icon: Presentation,
+    path: '/boardroom',
+    badge: 'CVM DFP',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
   },
   {
     title: 'Usuários & Permissões',

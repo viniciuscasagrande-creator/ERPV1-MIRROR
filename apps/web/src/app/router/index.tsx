@@ -96,6 +96,9 @@ import { FidcEntertainmentPage } from '../../modules/fidc-entertainment/FidcEnte
 // FASE 29: Inteligência Regulamentar de IA Contábil, Fechamento Zero-Touch & Copilot CFO
 import { AiAutonomousClosingPage } from '../../modules/ai-autonomous-closing/AiAutonomousClosingPage';
 
+// FASE 30: Central de Observabilidade Executiva, Digital Boardroom & DFP CVM / Big Four
+import { ExecutiveBoardroomPage } from '../../modules/executive-boardroom/ExecutiveBoardroomPage';
+
 
 
 
@@ -299,6 +302,12 @@ export const AppRouter: React.FC = () => {
         <Route path="ai-copilot" element={<AiAutonomousClosingPage />} />
         <Route path="zero-touch" element={<AiAutonomousClosingPage />} />
         <Route path="contabilidade/fechamento-ia" element={<AiAutonomousClosingPage />} />
+
+        {/* Módulos FASE 30: Central de Observabilidade Executiva, Digital Boardroom & DFP CVM / Big Four */}
+        <Route path="boardroom" element={<ExecutiveBoardroomPage />} />
+        <Route path="digital-boardroom" element={<ExecutiveBoardroomPage />} />
+        <Route path="governanca/boardroom" element={<ExecutiveBoardroomPage />} />
+        <Route path="dfp-cvm" element={<ExecutiveBoardroomPage />} />
 
 
 
