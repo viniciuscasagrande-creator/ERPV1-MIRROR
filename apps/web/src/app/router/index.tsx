@@ -45,6 +45,9 @@ import { ConfiguracoesPage } from '../../modules/configuracoes/ConfiguracoesPage
 // FASE 12: Notificações em Tempo Real & Webhooks
 import { NotificacoesPage } from '../../modules/notificacoes/NotificacoesPage';
 
+// FASE 13: Exportadores Avançados & Integrações Externas
+import { ExportadorPage } from '../../modules/exportador/ExportadorPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -145,6 +148,8 @@ export const AppRouter: React.FC = () => {
         <Route path="contabilidade/dre" element={<DreOficialPage />} />
         <Route path="contabilidade/fechamento" element={<FechamentoMensalPage />} />
         <Route path="governanca/fechamento-mensal" element={<FechamentoMensalPage />} />
+        <Route path="contabilidade/exportador" element={<ExportadorPage />} />
+        <Route path="exportador" element={<ExportadorPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

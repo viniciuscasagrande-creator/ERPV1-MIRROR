@@ -25,3 +25,4 @@ export * from './cnab.js';
 export * from './settings.js';
 export * from './notifications.js';
 export * from './webhooks.js';
+export * from './exportador.js';

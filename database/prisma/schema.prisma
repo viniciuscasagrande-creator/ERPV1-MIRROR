@@ -1165,3 +1165,27 @@ model WebhookDeliveryLog {
   @@map("webhook_delivery_logs")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 13: EXPORTADORES AVANÇADOS & INTEGRAÇÕES CONTÁBEIS EXTERNAS
+// (Domínio Sistemas, Fortes Contábil, Questor, Planilhas Estruturadas)
+// ------------------------------------------------------------------------------
+
+model AccountingExportBatch {
+  id              String   @id @default(uuid())
+  codigoLote      String   @unique @map("codigo_lote") // Ex: "EXP-DOMINIO-2026-08-001"
+  sistemaDestino  String   @map("sistema_destino") // DOMINIO_SISTEMAS, FORTES_CONTABIL, QUESTOR, CSV_EXCEL
+  tipoDado        String   @map("tipo_dado") // LANCAMENTOS_DIARIO, PLANO_CONTAS, BALANCETE, REPASSES, RETENCOES
+  periodoInicio   DateTime @map("periodo_inicio")
+  periodoFim      DateTime @map("periodo_fim")
+  totalRegistros  Int      @default(0) @map("total_registros")
+  valorTotal      Decimal  @default(0.00) @db.Decimal(15, 2) @map("valor_total")
+  conteudoArquivo String   @db.Text @map("conteudo_arquivo")
+  nomeArquivo     String   @map("nome_arquivo")
+  geradoPor       String?  @map("gerado_por")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([sistemaDestino])
+  @@index([periodoInicio, periodoFim])
+  @@map("accounting_export_batches")
+}
+

@@ -88,6 +88,7 @@ const menuItems: MenuItem[] = [
       { title: 'Balancete', path: '/contabilidade/balancete' },
       { title: 'DRE Gerencial', path: '/contabilidade/dre' },
       { title: 'Fechamento & Travas', path: '/governanca/fechamento-mensal', badge: 'Travas' },
+      { title: 'Exportações & Integrações', path: '/contabilidade/exportador', badge: 'Domínio' },
     ],
   },
   {

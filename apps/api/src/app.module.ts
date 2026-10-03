@@ -29,6 +29,7 @@ import { CnabModule } from './modules/cnab/cnab.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { WebhooksModule } from './modules/webhooks/webhooks.module';
+import { ExportadorModule } from './modules/exportador/exportador.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -66,6 +67,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     SettingsModule,
     NotificationsModule,
     WebhooksModule,
+    ExportadorModule,
   ],
   providers: [
     PrismaService,
