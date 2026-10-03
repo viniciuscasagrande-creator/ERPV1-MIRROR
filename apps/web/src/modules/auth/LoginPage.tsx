@@ -77,7 +77,7 @@ export const LoginPage: React.FC = () => {
         expiresIn: 86400,
       };
 
-      setAuth(mockUser, mockTokens);
+      setAuth(mockUser, mockTokens, true);
 
       if (isProdutor) {
         navigate('/portal-produtor/dashboard');

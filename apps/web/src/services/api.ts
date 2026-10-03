@@ -55,6 +55,19 @@ api.interceptors.response.use(
       !originalRequest.url?.includes('/auth/login') &&
       !originalRequest.url?.includes('/auth/refresh')
     ) {
+      const authState = useAuthStore.getState();
+      const currentRefresh = authState.tokens?.refreshToken;
+      const isDemo =
+        authState.isDemoMode ||
+        authState.tokens?.accessToken?.startsWith('demo_mock_') ||
+        currentRefresh?.startsWith('demo_mock_');
+
+      // Se for modo demonstração ou visualização local, NUNCA expulsa o usuário da tela
+      if (isDemo) {
+        console.warn('⚠️ Requisição 401 interceptada, mas a sessão em modo demonstração/local foi preservada.');
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -68,9 +81,6 @@ api.interceptors.response.use(
 
       originalRequest._retry = true;
       isRefreshing = true;
-
-      const authState = useAuthStore.getState();
-      const currentRefresh = authState.tokens?.refreshToken;
 
       if (!currentRefresh) {
         authState.logout();
@@ -90,7 +100,10 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshErr) {
         processQueue(refreshErr, null);
-        authState.logout();
+        // Só desloga se for de fato um refresh com backend online que rejeitou
+        if (!isDemo) {
+          authState.logout();
+        }
         return Promise.reject(refreshErr);
       } finally {
         isRefreshing = false;
