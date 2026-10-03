@@ -127,22 +127,32 @@ diskingressos-erp/
 | **38** | **Prevenção à Lavagem de Dinheiro (PLD-FT), COAF & Monitoramento Bacen** | Conformidade Circular BCB 3.978/2020 e Lei 9.613/98, Radar Comportamental Anti-Smurfing e Compras Fracionadas, Triagem Automatizada de Pessoas Politicamente Expostas (PEP), Quarentena Preventiva e Comunicação SISCOAF. |
 | **39** | **Liquidação Interbancária Contínua SPI / STR & Mensageria ISO 20022** | Conectividade Nativa com a Rede RSFN via Mensageria Padronizada ISO 20022 (pacs.008, pacs.004, camt.053), Liquidação Bruta em Tempo Real (LBTR) Sub-segundo no SPI e Conciliação Atômica Interbancária sem Risco de Fila. |
 | **40** | **Suíte Soberana de Auditoria Contínua & War Room da Diretoria / CFO** | War Room Supremo C-Level com *Zero-Trust Financial Kernel*, Validação Contínua de 480 Regras Contábeis em Todas as 40 Fases, Árvore Criptográfica Merkle Patricia Tree (MPT), *Kill-Switch Patrimonial* e Dossiê ISAE 3402 / SOC 1 Type II para Big Four. |
+| **41** | **Motor de Precificação Dinâmica & Yield Management com IA** | Algoritmos Preditivos de Elasticidade de Demanda (Prophet-LSTM), Surge Pricing por Lote, Travas Tarifárias Anti-Abusividade e Trilha Imutável de Auditoria. |
+| **42** | **Gestão de Royalties & Direitos de Artistas Internacionais** | Retenção Tributária Withholding Tax (IRRF 15%/25% + CIDE 10%), Tratados de Bitributação (DTA), DARFs 0422/8741 e Liquidação Cambial SWIFT / Bacen. |
+| **43** | **Hub de Fidelidade, Cashback & Passivo Circulante CPC 47 / IFRS 15** | Alocação do Preço da Transação para Obrigações de Desempenho Não Cumpridas, Taxa Estimada de Expiração (Breakage Rate Atuarial) e Reconhecimento Diferido. |
+| **44** | **Gestão Contábil de PDVs Físicos, Totens & Sangria com Custódia** | Fechamento Auditado de Turnos de Caixas, Conciliação Multimeios (Espécie, TEF, Pix), Sangrias Lacradas com GTV e Custódia por Transportadora de Valores (Brinks/Prosegur). |
+| **45** | **Central de Seguros de Ingressos & Sinistros (SUSEP Circular 621/2021)** | Ticket Refund Insurance, Emissão Automática de Apólices SUSEP, Regulação de Sinistros por Força Maior/Médico, Repartição de Comissões de Corretagem (DiskSeg 20%) e Monitoramento de Loss Ratio. |
 
 ---
 
 ## 🛠️ Como Executar e Testar
 
-### 1. Executar Bateria de Testes de Auditoria e Hardening (Fases 32 a 40)
+### 1. Executar Bateria de Testes de Auditoria e Hardening (Fases 32 a 45)
 ```bash
-npx ts-node scripts/verify-fase32.ts
-npx ts-node scripts/verify-fase33.ts
-npx ts-node scripts/verify-fase34.ts
-npx ts-node scripts/verify-fase35.ts
-npx ts-node scripts/verify-fase36.ts
-npx ts-node scripts/verify-fase37.ts
-npx ts-node scripts/verify-fase38.ts
-npx ts-node scripts/verify-fase39.ts
-npx ts-node scripts/verify-fase40.ts
+npx tsx scripts/verify-fase32.ts
+npx tsx scripts/verify-fase33.ts
+npx tsx scripts/verify-fase34.ts
+npx tsx scripts/verify-fase35.ts
+npx tsx scripts/verify-fase36.ts
+npx tsx scripts/verify-fase37.ts
+npx tsx scripts/verify-fase38.ts
+npx tsx scripts/verify-fase39.ts
+npx tsx scripts/verify-fase40.ts
+npx tsx scripts/verify-fase41.ts
+npx tsx scripts/verify-fase42.ts
+npx tsx scripts/verify-fase43.ts
+npx tsx scripts/verify-fase44.ts
+npx tsx scripts/verify-fase45.ts
 ```
 
 ### 2. Compilar Todos os Workspaces (Turborepo)

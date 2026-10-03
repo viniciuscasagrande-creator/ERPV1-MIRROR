@@ -53,6 +53,11 @@ export * from './ecad-copyright.js';
 export * from './pld-coaf-compliance.js';
 export * from './iso20022-settlement.js';
 export * from './sovereign-audit-war-room.js';
+export * from './dynamic-pricing.js';
+export * from './artist-royalties-withholding.js';
+export * from './loyalty-ifrs15.js';
+export * from './pos-cashier-reconciliation.js';
+export * from './ticket-insurance-susep.js';
 
 
 

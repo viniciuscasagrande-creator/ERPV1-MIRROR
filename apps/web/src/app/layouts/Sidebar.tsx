@@ -33,6 +33,7 @@ import {
   Presentation,
   Zap,
   Receipt,
+  Store,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -179,6 +180,41 @@ const menuItems: MenuItem[] = [
     path: '/war-room',
     badge: 'ISAE 3402',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
+  },
+  {
+    title: 'Precificação Dinâmica & IA',
+    icon: TrendingUp,
+    path: '/precificacao-dinamica',
+    badge: 'Surge IA',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Royalties Internacionais',
+    icon: Globe2,
+    path: '/royalties-artistas',
+    badge: 'WHT/SWIFT',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Fidelidade & CPC 47',
+    icon: Coins,
+    path: '/fidelidade-pontos',
+    badge: 'IFRS 15',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.CONTABILIDADE],
+  },
+  {
+    title: 'PDV Físico & Custódia',
+    icon: Store,
+    path: '/pos-pdv',
+    badge: 'Custódia',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Seguros & Sinistros',
+    icon: ShieldCheck,
+    path: '/seguro-ingressos',
+    badge: 'SUSEP',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {
     title: 'Disaster Recovery (5 Anos)',

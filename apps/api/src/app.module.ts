@@ -57,6 +57,11 @@ import { EcadCopyrightModule } from './modules/ecad-copyright/ecad-copyright.mod
 import { PldCoafComplianceModule } from './modules/pld-coaf-compliance/pld-coaf-compliance.module';
 import { Iso20022SettlementModule } from './modules/iso20022-settlement/iso20022-settlement.module';
 import { SovereignAuditWarRoomModule } from './modules/sovereign-audit-war-room/sovereign-audit-war-room.module';
+import { DynamicPricingModule } from './modules/dynamic-pricing/dynamic-pricing.module';
+import { ArtistRoyaltiesModule } from './modules/artist-royalties/artist-royalties.module';
+import { LoyaltyIfrs15Module } from './modules/loyalty-ifrs15/loyalty-ifrs15.module';
+import { PosCashierModule } from './modules/pos-cashier/pos-cashier.module';
+import { TicketInsuranceModule } from './modules/ticket-insurance/ticket-insurance.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -124,6 +129,11 @@ import { PrismaModule } from './database/prisma.module';
     PldCoafComplianceModule,
     Iso20022SettlementModule,
     SovereignAuditWarRoomModule,
+    DynamicPricingModule,
+    ArtistRoyaltiesModule,
+    LoyaltyIfrs15Module,
+    PosCashierModule,
+    TicketInsuranceModule,
   ],
   providers: [
     PrismaService,

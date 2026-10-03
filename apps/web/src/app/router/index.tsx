@@ -129,6 +129,21 @@ import { Iso20022SettlementPage } from '../../modules/iso20022-settlement/Iso200
 // FASE 40: Suíte Soberana de Auditoria Contínua & War Room da Diretoria / CFO
 import { SovereignWarRoomPage } from '../../modules/sovereign-war-room/SovereignWarRoomPage';
 
+// FASE 41: Motor de Precificação Dinâmica & Yield Management com IA
+import { DynamicPricingPage } from '../../modules/dynamic-pricing/DynamicPricingPage';
+
+// FASE 42: Gestão de Royalties & Direitos de Imagem de Artistas Internacionais
+import { ArtistRoyaltiesPage } from '../../modules/artist-royalties/ArtistRoyaltiesPage';
+
+// FASE 43: Hub de Fidelidade, Cashback & Passivo Circulante CPC 47 / IFRS 15
+import { LoyaltyIfrs15Page } from '../../modules/loyalty-ifrs15/LoyaltyIfrs15Page';
+
+// FASE 44: Gestão Contábil de PDVs Físicos, Totens & Sangria de Caixa com Custódia
+import { PosCashierPage } from '../../modules/pos-cashier/PosCashierPage';
+
+// FASE 45: Central de Seguros de Ingressos, Proteção de Reembolso & Sinistros SUSEP
+import { TicketInsurancePage } from '../../modules/ticket-insurance/TicketInsurancePage';
+
 
 
 
@@ -391,6 +406,31 @@ export const AppRouter: React.FC = () => {
         <Route path="war-room" element={<SovereignWarRoomPage />} />
         <Route path="diretoria/war-room" element={<SovereignWarRoomPage />} />
         <Route path="governanca/sovereign-kernel" element={<SovereignWarRoomPage />} />
+
+        {/* Módulos FASE 41: Motor de Precificação Dinâmica & Yield Management com IA */}
+        <Route path="precificacao-dinamica" element={<DynamicPricingPage />} />
+        <Route path="eventos/precificacao-dinamica" element={<DynamicPricingPage />} />
+        <Route path="vendas/yield-management" element={<DynamicPricingPage />} />
+
+        {/* Módulos FASE 42: Gestão de Royalties & Direitos Internacionais */}
+        <Route path="royalties-artistas" element={<ArtistRoyaltiesPage />} />
+        <Route path="financeiro/royalties" element={<ArtistRoyaltiesPage />} />
+        <Route path="internacional/withholding-tax" element={<ArtistRoyaltiesPage />} />
+
+        {/* Módulos FASE 43: Hub de Fidelidade, Cashback & Passivo Circulante CPC 47 / IFRS 15 */}
+        <Route path="fidelidade-pontos" element={<LoyaltyIfrs15Page />} />
+        <Route path="contabilidade/ifrs15-fidelidade" element={<LoyaltyIfrs15Page />} />
+        <Route path="marketing/fidelidade" element={<LoyaltyIfrs15Page />} />
+
+        {/* Módulos FASE 44: Gestão Contábil de PDVs Físicos, Totens & Sangria com Custódia */}
+        <Route path="pos-pdv" element={<PosCashierPage />} />
+        <Route path="financeiro/pdv-sangria" element={<PosCashierPage />} />
+        <Route path="pdv/fechamento-caixa" element={<PosCashierPage />} />
+
+        {/* Módulos FASE 45: Central de Seguros de Ingressos & Sinistros SUSEP */}
+        <Route path="seguro-ingressos" element={<TicketInsurancePage />} />
+        <Route path="financeiro/seguros" element={<TicketInsurancePage />} />
+        <Route path="susep/sinistros" element={<TicketInsurancePage />} />
 
 
 
