@@ -23,6 +23,7 @@ import {
   ShieldAlert,
   TrendingUp,
   Split,
+  BrainCircuit,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -84,6 +85,7 @@ const menuItems: MenuItem[] = [
       { title: 'Conciliação Bancária', path: '/bancos/conciliacao' },
       { title: 'Gateways & Auditoria MDR', path: '/bancos/gateways' },
       { title: 'Open Finance & Pix (ITP)', path: '/open-finance', badge: 'SPI Bacen' },
+      { title: 'IA Tesouraria & Yield', path: '/ai-tesouraria', badge: 'Preditiva' },
     ],
   },
   {
@@ -172,6 +174,13 @@ const menuItems: MenuItem[] = [
     path: '/scp',
     badge: 'CC 991',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO, PerfilUsuario.CONTABILIDADE],
+  },
+  {
+    title: 'IA Preditiva & Yield',
+    icon: BrainCircuit,
+    path: '/ai-tesouraria',
+    badge: 'IA v2.4',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {
     title: 'Usuários & Permissões',

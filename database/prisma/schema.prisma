@@ -1869,6 +1869,90 @@ model RealtimeReconciliationLog {
   @@map("realtime_reconciliation_logs")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 22: MOTOR DE IA PARA FLUXO DE CAIXA PREDITIVO, PRECIFICAÇÃO DINÂMICA & SCORE
+// Curva de Vendas, Yield Management de Lotes, Credit Scoring e Cash Sweep (CDI)
+// ------------------------------------------------------------------------------
+
+model AiCashFlowForecast {
+  id                        String   @id @default(uuid())
+  codigoPrevisao            String   @unique @map("codigo_previsao") // Ex: "PRV-2026-001"
+  horizonteDias             Int      @default(30) @map("horizonte_dias") // 30, 60, 90 dias
+  dataInicio                DateTime @map("data_inicio")
+  dataFim                   DateTime @map("data_fim")
+  saldoInicial              Decimal  @db.Decimal(15, 2) @map("saldo_inicial")
+  receitaPrevistaTotal      Decimal  @db.Decimal(15, 2) @map("receita_prevista_total")
+  despesaPrevistaTotal      Decimal  @db.Decimal(15, 2) @map("despesa_prevista_total")
+  saldoProjetadoFinal       Decimal  @db.Decimal(15, 2) @map("saldo_projetado_final")
+  gapLiquidezIdentificado   Boolean  @default(false) @map("gap_liquidez_identificado")
+  dataGapPrevista           DateTime? @map("data_gap_prevista")
+  valorGapPrevisto          Decimal  @default(0.00) @db.Decimal(15, 2) @map("valor_gap_previsto")
+  probabilidadeConfianca    Decimal  @default(94.50) @db.Decimal(5, 2) @map("probabilidade_confianca") // % acurácia IA
+  acoesRecomendadas         String   @map("acoes_recomendadas") // JSON ou texto com ações
+  geradoEm                  DateTime @default(now()) @map("gerado_em")
+
+  @@index([gapLiquidezIdentificado])
+  @@map("ai_cash_flow_forecasts")
+}
+
+model DynamicPricingRule {
+  id                        String   @id @default(uuid())
+  eventId                   String   @map("event_id")
+  eventNome                 String   @map("event_nome")
+  loteId                    String   @map("lote_id")
+  loteNome                  String   @map("lote_nome")
+  precoOriginal             Decimal  @db.Decimal(10, 2) @map("preco_original")
+  precoSugeridoIa           Decimal  @db.Decimal(10, 2) @map("preco_sugerido_ia")
+  velocidadeVendasHora      Int      @map("velocidade_vendas_hora") // Ingressos/hora
+  percentualOcupacao        Decimal  @db.Decimal(5, 2) @map("percentual_ocupacao")
+  elasticidadePrecoDemanda  Decimal  @db.Decimal(5, 2) @map("elasticidade_preco_demanda")
+  motivoRecomendacao        String   @map("motivo_recomendacao")
+  status                    String   @default("SUGERIDO") // SUGERIDO, APLICADO, REJEITADO
+  aplicadoEm                DateTime? @map("aplicado_em")
+  createdAt                 DateTime @default(now()) @map("created_at")
+
+  @@index([eventId])
+  @@index([status])
+  @@map("dynamic_pricing_rules")
+}
+
+model ProducerCreditScore {
+  id                        String   @id @default(uuid())
+  producerId                String   @unique @map("producer_id")
+  producerNome              String   @map("producer_nome")
+  documentoFiscal           String   @map("documento_fiscal")
+  scorePontuacao            Int      @map("score_pontuacao") // 0 a 1000
+  rating                    String   @default("AA") // AAA, AA, A, B, C
+  limiteAntecipacaoMaximo   Decimal  @db.Decimal(15, 2) @map("limite_antecipacao_maximo")
+  percentualMaximoRecebiveis Decimal  @db.Decimal(5, 2) @map("percentual_maximo_recebiveis") // Ex: 50% ou 75%
+  historicoEventosRealizados Int     @map("historico_eventos_realizados")
+  taxaOcupacaoMediaPercent  Decimal  @db.Decimal(5, 2) @map("taxa_ocupacao_media_percent")
+  indiceChargebackPercent   Decimal  @db.Decimal(5, 2) @map("indice_chargeback_percent")
+  status                    String   @default("HOMOLOGADO") // HOMOLOGADO, EM_REVISAO, BLOQUEADO
+  ultimaAnaliseEm           DateTime @default(now()) @map("ultima_analise_em")
+
+  @@index([rating])
+  @@index([status])
+  @@map("producer_credit_scores")
+}
+
+model TreasuryCashSweep {
+  id                        String   @id @default(uuid())
+  codigoAplicacao           String   @unique @map("codigo_aplicacao") // Ex: "SWP-2026-001"
+  contaBancariaId           String   @map("conta_bancaria_id")
+  bancoNome                 String   @map("banco_nome")
+  saldoAplicado             Decimal  @db.Decimal(15, 2) @map("saldo_aplicado")
+  taxaRendimentoPercentCdi  Decimal  @default(100.00) @db.Decimal(5, 2) @map("taxa_rendimento_percent_cdi")
+  rendimentoAcumulado       Decimal  @default(0.00) @db.Decimal(10, 2) @map("rendimento_acumulado")
+  status                    String   @default("APLICADO") // APLICADO, RESGATADO_AUTOMATICO
+  dataAplicacao             DateTime @default(now()) @map("data_aplicacao")
+  dataResgate               DateTime? @map("data_resgate")
+
+  @@index([status])
+  @@map("treasury_cash_sweeps")
+}
+
+
 
 
 

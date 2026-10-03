@@ -72,6 +72,9 @@ import { TaxReformPage } from '../../modules/tax-reform/TaxReformPage';
 // FASE 21: Tesouraria Descentralizada, Open Finance Brasil (ITP) & Pix Cobrança
 import { OpenFinancePixPage } from '../../modules/open-finance/OpenFinancePixPage';
 
+// FASE 22: Motor de Inteligência Artificial para Fluxo Preditivo & Yield Management
+import { AiTreasuryPage } from '../../modules/ai-treasury/AiTreasuryPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -218,6 +221,13 @@ export const AppRouter: React.FC = () => {
         <Route path="pix-cobranca" element={<OpenFinancePixPage />} />
         <Route path="financeiro/open-finance" element={<OpenFinancePixPage />} />
         <Route path="financeiro/pix-cobranca" element={<OpenFinancePixPage />} />
+
+        {/* Módulos FASE 22: Motor de Inteligência Artificial para Fluxo Preditivo & Yield Management */}
+        <Route path="ai-tesouraria" element={<AiTreasuryPage />} />
+        <Route path="ia-tesouraria" element={<AiTreasuryPage />} />
+        <Route path="fluxo-preditivo" element={<AiTreasuryPage />} />
+        <Route path="yield-management" element={<AiTreasuryPage />} />
+        <Route path="financeiro/ai-tesouraria" element={<AiTreasuryPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />
