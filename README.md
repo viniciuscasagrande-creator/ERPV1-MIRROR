@@ -81,7 +81,7 @@ diskingressos-erp/
 
 ---
 
-## 📋 Resumo das 10 Fases Implementadas
+## 📋 Resumo das Fases Implementadas (Release Enterprise)
 
 | Fase | Título | Entregas Principais |
 | :---: | :--- | :--- |
@@ -96,6 +96,10 @@ diskingressos-erp/
 | **8** | **Portal do Produtor** | Acesso externo restrito multi-tenant (`User.producerId`), borderôs analíticos, comprovantes bancários e NFS-e. |
 | **9** | **Governança & Travas** | Controle de períodos contábeis, trava de competência (`checkCompetenciaAberta`) e checklist 5/5 de fechamento. |
 | **10** | **Hardening & Release** | Testes de integração E2E (100% aprovados), build monorepo em 15s e visualização local ativada. |
+| **11** | **GED & CNAB 240** | Repositório digital GED, remessa/retorno bancário CNAB 240 FEBRABAN e configurações do sistema. |
+| **12** | **Notificações & Webhooks** | Mensageria real-time WebSocket, disparo de webhooks autenticados HMAC-SHA256 e trilha de eventos. |
+| **13** | **Exportadores Contábeis** | Layouts oficiais Domínio Sistemas, Fortes Contábil, Questor e planilhas estruturadas. |
+| **14** | **Disaster Recovery & 5 Anos** | Retenção Contábil Legal (Lei 10.406/02 Art. 1.194 & LC 123/06 Art. 26), snapshots WORM, SHA-256 e testes de DR. |
 
 ---
 

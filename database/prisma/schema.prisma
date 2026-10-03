@@ -1189,3 +1189,47 @@ model AccountingExportBatch {
   @@map("accounting_export_batches")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 14: DISASTER RECOVERY, BACKUP AUTOMATIZADO & RETENÇÃO CONTÁBIL (5 ANOS)
+// Lei Federal 10.406/2002 Art. 1.194 & Lei Complementar 123/2006 Art. 26
+// ------------------------------------------------------------------------------
+
+model BackupSnapshot {
+  id              String   @id @default(uuid())
+  codigoSnapshot  String   @unique @map("codigo_snapshot") // Ex: "BKP-SNAP-2026-08-31-001"
+  tipo            String   // COMPLETO, INCREMENTAL, CONTABIL_LEGAL, FISCAL_SPED
+  tamanhoBytes    BigInt   @default(0) @map("tamanho_bytes")
+  status          String   @default("CONCLUIDO") // EM_EXECUCAO, CONCLUIDO, FALHA, RESTAURADO
+  checksumSha256  String   @map("checksum_sha256")
+  armazenamento   String   @default("S3_COMPLIANT_COLD") // S3_COMPLIANT_COLD, LOCAL_ENCRYPTED, GLACIER
+  retencaoAte     DateTime @map("retencao_ate") // 5 anos no futuro
+  totalTabelas    Int      @default(0) @map("total_tabelas")
+  totalLinhas     Int      @default(0) @map("total_linhas")
+  criadoPor       String?  @map("criado_por")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  restoreLogs     RestoreDrAuditLog[]
+
+  @@index([tipo])
+  @@index([status])
+  @@index([retencaoAte])
+  @@map("backup_snapshots")
+}
+
+model RestoreDrAuditLog {
+  id              String          @id @default(uuid())
+  snapshotId      String          @map("snapshot_id")
+  snapshot        BackupSnapshot  @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  solicitadoPor   String          @map("solicitado_por")
+  motivo          String
+  resultado       String          // SUCESSO, REJEITADO, EM_EXECUCAO
+  ambienteDestino String          // SANDBOX_AUDITORIA, HOMOLOGACAO, PRODUCAO
+  duracaoSegundos Int             @default(0) @map("duracao_segundos")
+  ipOrigem        String?         @map("ip_origem")
+  createdAt       DateTime        @default(now()) @map("created_at")
+
+  @@index([snapshotId])
+  @@index([resultado])
+  @@map("restore_dr_audit_logs")
+}
+

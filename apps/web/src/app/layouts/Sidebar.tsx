@@ -19,6 +19,7 @@ import {
   SlidersHorizontal,
   ExternalLink,
   Bell,
+  HardDrive,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -89,6 +90,7 @@ const menuItems: MenuItem[] = [
       { title: 'DRE Gerencial', path: '/contabilidade/dre' },
       { title: 'Fechamento & Travas', path: '/governanca/fechamento-mensal', badge: 'Travas' },
       { title: 'Exportações & Integrações', path: '/contabilidade/exportador', badge: 'Domínio' },
+      { title: 'Disaster Recovery (DR)', path: '/disaster-recovery', badge: '5 Anos' },
     ],
   },
   {
@@ -120,6 +122,13 @@ const menuItems: MenuItem[] = [
     icon: ShieldCheck,
     path: '/auditoria',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
+  },
+  {
+    title: 'Disaster Recovery (5 Anos)',
+    icon: HardDrive,
+    path: '/disaster-recovery',
+    badge: 'WORM',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.CONTABILIDADE],
   },
   {
     title: 'Usuários & Permissões',
