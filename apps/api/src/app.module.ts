@@ -37,6 +37,7 @@ import { AntecipacoesModule } from './modules/antecipacoes/antecipacoes.module';
 import { SplitPaymentModule } from './modules/split-payment/split-payment.module';
 import { ScpInvestorsModule } from './modules/scp-investors/scp-investors.module';
 import { TaxReformModule } from './modules/tax-reform/tax-reform.module';
+import { OpenFinanceModule } from './modules/open-finance/open-finance.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -82,6 +83,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     SplitPaymentModule,
     ScpInvestorsModule,
     TaxReformModule,
+    OpenFinanceModule,
   ],
   providers: [
     PrismaService,

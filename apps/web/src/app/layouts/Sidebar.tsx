@@ -83,6 +83,7 @@ const menuItems: MenuItem[] = [
       { title: 'Extratos & OFX', path: '/bancos/extratos' },
       { title: 'Conciliação Bancária', path: '/bancos/conciliacao' },
       { title: 'Gateways & Auditoria MDR', path: '/bancos/gateways' },
+      { title: 'Open Finance & Pix (ITP)', path: '/open-finance', badge: 'SPI Bacen' },
     ],
   },
   {

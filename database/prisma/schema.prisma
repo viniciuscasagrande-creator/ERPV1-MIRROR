@@ -1770,6 +1770,106 @@ model TaxApuracaoMensal {
   @@map("tax_apuracoes_mensais")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 21: TESOURARIA DESCENTRALIZADA, OPEN FINANCE BRASIL (ITP) & PIX COBRANÇA
+// Pix Dinâmico SPI, Iniciação de Pagamento (Res. 109/21) & Conciliação Preditiva
+// ------------------------------------------------------------------------------
+
+model OpenFinanceConsent {
+  id                   String                    @id @default(uuid())
+  consentId            String                    @unique @map("consent_id") // ID do consentimento FAPI (urn:banco:...)
+  userId               String                    @map("user_id")
+  producerId           String?                   @map("producer_id")
+  instituicao          String                    // ITAU, BRADESCO, BANCO_DO_BRASIL, SANTANDER, NUBANK, INTER
+  nomeTitular          String                    @map("nome_titular")
+  documentoTitular     String                    @map("documento_titular")
+  status               String                    @default("AWAITING_AUTHORISATION") // AWAITING_AUTHORISATION, AUTHORISED, REJECTED, REVOKED
+  escopos              String                    @default("payments") // payments, accounts
+  dataValidade         DateTime                  @map("data_validade")
+  autorizadoEm         DateTime?                 @map("autorizado_em")
+  revogadoEm           DateTime?                 @map("revogado_em")
+  createdAt            DateTime                  @default(now()) @map("created_at")
+  updatedAt            DateTime                  @updatedAt @map("updated_at")
+
+  paymentOrders        OpenFinancePaymentOrder[]
+
+  @@index([userId])
+  @@index([producerId])
+  @@index([status])
+  @@map("open_finance_consents")
+}
+
+model PixCobrancaDynamic {
+  id                    String                    @id @default(uuid())
+  txid                  String                    @unique // Identificador único da transação Pix (26-35 chars)
+  endToEndId            String?                   @unique @map("end_to_end_id") // Identificador único ponta-a-ponta gerado pelo SPI
+  eventId               String                    @map("event_id")
+  eventNome             String                    @map("event_nome")
+  producerId            String                    @map("producer_id")
+  valorTotal            Decimal                   @db.Decimal(15, 2) @map("valor_total")
+  valorSplitProdutor    Decimal                   @db.Decimal(15, 2) @map("valor_split_produtor")
+  valorSplitDisk        Decimal                   @db.Decimal(15, 2) @map("valor_split_disk")
+  chavePixRecebedor     String                    @map("chave_pix_recebedor")
+  qrCodePayload         String                    @map("qr_code_payload") // EMVco Copia e Cola
+  qrCodeImageUrl        String?                   @map("qr_code_image_url")
+  status                String                    @default("ATIVA") // ATIVA, CONCLUIDA, EXPIRADA
+  dataCriacao           DateTime                  @default(now()) @map("data_criacao")
+  dataExpiracao         DateTime                  @map("data_expiracao")
+  liquidadoEm           DateTime?                 @map("liquidado_em")
+
+  reconciliations       RealtimeReconciliationLog[]
+
+  @@index([eventId])
+  @@index([producerId])
+  @@index([status])
+  @@index([endToEndId])
+  @@map("pix_cobrancas_dynamic")
+}
+
+model OpenFinancePaymentOrder {
+  id                    String                    @id @default(uuid())
+  codigoOrdem           String                    @unique @map("codigo_ordem") // Ex: "ITP-2026-0042"
+  consentId             String                    @map("consent_id")
+  consent               OpenFinanceConsent        @relation(fields: [consentId], references: [id], onDelete: Restrict)
+  eventId               String?                   @map("event_id")
+  tipoFinalidade        String                    @map("tipo_finalidade") // REPASSE_PRODUTOR, DIVIDENDO_SCP, ANTECIPACAO, FORNECEDOR
+  bancoOrigem           String                    @map("banco_origem")
+  bancoDestino          String                    @map("banco_destino")
+  chavePixDestino       String                    @map("chave_pix_destino")
+  valor                 Decimal                   @db.Decimal(15, 2)
+  status                String                    @default("INICIADO") // INICIADO, AGUARDANDO_AUTORIZACAO, PROCESSANDO, LIQUIDADO, REJEITADO
+  endToEndId            String?                   @map("end_to_end_id")
+  iniciadoPor           String                    @map("iniciado_por")
+  liquidadoEm           DateTime?                 @map("liquidado_em")
+  createdAt             DateTime                  @default(now()) @map("created_at")
+  updatedAt             DateTime                  @updatedAt @map("updated_at")
+
+  @@index([consentId])
+  @@index([status])
+  @@map("open_finance_payment_orders")
+}
+
+model RealtimeReconciliationLog {
+  id                    String                    @id @default(uuid())
+  codigoConciliacao     String                    @unique @map("codigo_conciliacao") // Ex: "REC-RT-2026-0091"
+  cobrancaPixId         String?                   @map("cobranca_pix_id")
+  cobrancaPix           PixCobrancaDynamic?       @relation(fields: [cobrancaPixId], references: [id], onDelete: SetNull)
+  endToEndId            String                    @map("end_to_end_id")
+  valorEsperado         Decimal                   @db.Decimal(15, 2) @map("valor_esperado")
+  valorRecebido         Decimal                   @db.Decimal(15, 2) @map("valor_recebido")
+  diferencaCentavos     Decimal                   @default(0.00) @db.Decimal(10, 2) @map("diferenca_centavos")
+  metodoMatch           String                    @map("metodo_match") // EXATO_TXID, E2E_PREDITIVO_IA, MANUAL_AUDITADO
+  tempoProcessamentoMs  Int                       @map("tempo_processamento_ms") // Latência da conciliação em ms (ex: 85ms)
+  statusConciliacao     String                    @default("CONCILIADO_SUCESSO") // CONCILIADO_SUCESSO, DIVERGENCIA_PENDENTE, AJUSTE_TOLERANCIA
+  webhookOrigemIp       String?                   @map("webhook_origem_ip")
+  conciliadoEm          DateTime                  @default(now()) @map("conciliado_em")
+
+  @@index([endToEndId])
+  @@index([statusConciliacao])
+  @@map("realtime_reconciliation_logs")
+}
+
+
 
 
 

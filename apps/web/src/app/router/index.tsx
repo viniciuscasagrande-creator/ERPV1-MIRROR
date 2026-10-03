@@ -69,6 +69,9 @@ import { ScpInvestorsPage } from '../../modules/scp/ScpInvestorsPage';
 // FASE 20: Hub de Inteligência Tributária & Reforma Tributária 2026
 import { TaxReformPage } from '../../modules/tax-reform/TaxReformPage';
 
+// FASE 21: Tesouraria Descentralizada, Open Finance Brasil (ITP) & Pix Cobrança
+import { OpenFinancePixPage } from '../../modules/open-finance/OpenFinancePixPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -209,6 +212,12 @@ export const AppRouter: React.FC = () => {
         <Route path="tax-reform" element={<TaxReformPage />} />
         <Route path="fiscal/reforma" element={<TaxReformPage />} />
         <Route path="fiscal/iva-dual" element={<TaxReformPage />} />
+
+        {/* Módulos FASE 21: Tesouraria Descentralizada, Open Finance Brasil (ITP) & Pix Cobrança */}
+        <Route path="open-finance" element={<OpenFinancePixPage />} />
+        <Route path="pix-cobranca" element={<OpenFinancePixPage />} />
+        <Route path="financeiro/open-finance" element={<OpenFinancePixPage />} />
+        <Route path="financeiro/pix-cobranca" element={<OpenFinancePixPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />
