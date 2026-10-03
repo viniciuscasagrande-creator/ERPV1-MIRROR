@@ -39,4 +39,6 @@ export * from './audit-compliance.js';
 export * from './global-fx.js';
 export * from './consolidation-ifrs.js';
 export * from './esg-sustainability.js';
+export * from './rwa-drex-tokenization.js';
+
 

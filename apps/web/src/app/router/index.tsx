@@ -87,6 +87,10 @@ import { ConsolidationIfrsPage } from '../../modules/consolidation-ifrs/Consolid
 // FASE 26: Governança ESG, Pegada de Carbono & Borderô Verde
 import { EsgSustainabilityPage } from '../../modules/esg-sustainability/EsgSustainabilityPage';
 
+// FASE 27: Tokenização RWA, Recebíveis DREX & Smart Contracts
+import { RwaDrexPage } from '../../modules/rwa-drex/RwaDrexPage';
+
+
 
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
@@ -269,6 +273,14 @@ export const AppRouter: React.FC = () => {
         <Route path="bordero-verde" element={<EsgSustainabilityPage />} />
         <Route path="sustentabilidade" element={<EsgSustainabilityPage />} />
         <Route path="governanca/esg" element={<EsgSustainabilityPage />} />
+
+        {/* Módulos FASE 27: Tokenização RWA, Recebíveis DREX & Smart Contracts */}
+        <Route path="rwa-drex" element={<RwaDrexPage />} />
+        <Route path="tokenizacao" element={<RwaDrexPage />} />
+        <Route path="mercado-secundario" element={<RwaDrexPage />} />
+        <Route path="financeiro/rwa" element={<RwaDrexPage />} />
+        <Route path="financeiro/drex" element={<RwaDrexPage />} />
+
 
 
 

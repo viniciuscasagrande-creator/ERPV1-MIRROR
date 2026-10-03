@@ -27,6 +27,7 @@ import {
   Globe2,
   Layers,
   Leaf,
+  Coins,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -90,6 +91,7 @@ const menuItems: MenuItem[] = [
       { title: 'Open Finance & Pix (ITP)', path: '/open-finance', badge: 'SPI Bacen' },
       { title: 'IA Tesouraria & Yield', path: '/ai-tesouraria', badge: 'Preditiva' },
       { title: 'Câmbio FX & Multi-Moeda', path: '/global-fx', badge: 'PTAX' },
+      { title: 'Tokenização RWA & DREX', path: '/rwa-drex', badge: 'DREX' },
     ],
   },
   {
@@ -214,6 +216,13 @@ const menuItems: MenuItem[] = [
     icon: Leaf,
     path: '/esg-sustentabilidade',
     badge: 'Net Zero',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Tokenização RWA & DREX',
+    icon: Coins,
+    path: '/rwa-drex',
+    badge: 'CVM 88',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {

@@ -2299,6 +2299,102 @@ model EsgReportIfrs {
   @@map("esg_reports_ifrs")
 }
 
+// ============================================================================
+// FASE 27: Tokenização de Ativos de Bilheteria (RWA), Recebíveis em DREX &
+// Smart Contracts de Liquidação Condicional (CVM Res. 88 & Res. 175)
+// ============================================================================
+
+model RwaTicketTokenPool {
+  id                    String   @id @default(uuid())
+  codigoTokenPool       String   @unique @map("codigo_token_pool") // Ex: "RWA-DREX-2026-001"
+  nomePool              String   @map("nome_pool")
+  eventoId              String   @map("evento_id")
+  produtorId            String   @map("produtor_id")
+  tipoAtivoTokenizado   String   @map("tipo_ativo_tokenizado") // LOTE_INGRESSOS, RECEBIVEL_FUTURO, COTA_PATROCINIO
+  padraoToken           String   @map("padrao_token") // DREX_PILOT, ERC3643_PERMISSIONED, ERC1155_HYBRID
+  contractAddress       String   @map("contract_address")
+  networkChain          String   @default("BACEN_DREX_HYPERLEDGER") @map("network_chain")
+  totalTokensEmitidos   Int      @map("total_tokens_emitidos")
+  tokensDisponiveis     Int      @map("tokens_disponiveis")
+  tokensLiquidados      Int      @default(0) @map("tokens_liquidados")
+  valorFaceUnitarioBrl  Decimal  @db.Decimal(10, 2) @map("valor_face_unitario_brl")
+  valorCaptadoBrl       Decimal  @db.Decimal(15, 2) @map("valor_captado_brl")
+  taxaRetornoAnualPercent Decimal @default(0.00) @db.Decimal(5, 2) @map("taxa_retorno_anual_percent")
+  statusPool            String   @default("ATIVO_LANCADO") @map("status_pool") // EM_CAPTACAO, ATIVO_LANCADO, LIQUIDADO_TOTAL, CANCELADO
+  dataEmissao           DateTime @default(now()) @map("data_emissao")
+  dataMaturidade        DateTime @map("data_maturidade")
+
+  triggers              SmartContractEscrowTrigger[]
+  secondaryTrades       SecondaryMarketTrade[]
+  accountingRegisters   RwaAccountingRegister[]
+
+  @@index([eventoId])
+  @@index([produtorId])
+  @@index([statusPool])
+  @@map("rwa_ticket_token_pools")
+}
+
+model SmartContractEscrowTrigger {
+  id                    String   @id @default(uuid())
+  tokenPoolId           String   @map("token_pool_id")
+  eventoId              String   @map("evento_id")
+  faseEvento            String   @map("fase_evento") // SOUNDCHECK_HOMOLOGADO, ABERTURA_PORTOES, INICIO_SHOW, ENCERRAMENTO_VALIDADO
+  percentualLiberacao   Decimal  @db.Decimal(5, 2) @map("percentual_liberacao")
+  valorLiberadoBrl      Decimal  @db.Decimal(15, 2) @map("valor_liberado_brl")
+  oracleStatus          String   @default("PENDENTE") @map("oracle_status") // PENDENTE, VERIFICADO_ORACULO, LIQUIDADO_DREX
+  txHashBlockchain      String?  @map("tx_hash_blockchain")
+  dataLiberacao         DateTime? @map("data_liberacao")
+  criadoEm              DateTime @default(now()) @map("criado_em")
+
+  tokenPool             RwaTicketTokenPool @relation(fields: [tokenPoolId], references: [id])
+
+  @@index([tokenPoolId])
+  @@index([oracleStatus])
+  @@map("smart_contract_escrow_triggers")
+}
+
+model SecondaryMarketTrade {
+  id                    String   @id @default(uuid())
+  codigoOperacao        String   @unique @map("codigo_operacao") // Ex: "SEC-TRADE-2026-9812"
+  tokenPoolId           String   @map("token_pool_id")
+  ticketId              String   @map("ticket_id")
+  compradorWallet       String   @map("comprador_wallet")
+  vendedorWallet        String   @map("vendedor_wallet")
+  precoFaceOriginalBrl  Decimal  @db.Decimal(10, 2) @map("preco_face_original_brl")
+  precoRevendaBrl       Decimal  @db.Decimal(10, 2) @map("preco_revenda_brl")
+  agioPercentual        Decimal  @db.Decimal(5, 2) @map("agio_percentual")
+  taxaRoyaltyProdutorBrl Decimal @db.Decimal(10, 2) @map("taxa_royalty_produtor_brl") // Ex: 5%
+  taxaPlataformaDiskBrl Decimal  @db.Decimal(10, 2) @map("taxa_plataforma_disk_brl") // Ex: 2.5%
+  txHashDrex            String   @map("tx_hash_drex")
+  statusTrade           String   @default("CONFIRMADO") @map("status_trade") // CONFIRMADO, LIQUIDADO, FALHA_TRAVA_CAMBISMO
+  executadoEm           DateTime @default(now()) @map("executado_em")
+
+  tokenPool             RwaTicketTokenPool @relation(fields: [tokenPoolId], references: [id])
+
+  @@index([tokenPoolId])
+  @@index([statusTrade])
+  @@map("secondary_market_trades")
+}
+
+model RwaAccountingRegister {
+  id                    String   @id @default(uuid())
+  codigoLancamento      String   @unique @map("codigo_lancamento") // Ex: "OCPC10-2026-001"
+  tokenPoolId           String   @map("token_pool_id")
+  tipoLancamento        String   @map("tipo_lancamento") // CAPTACAO_INICIAL, LIBERACAO_ESCROW, LIQUIDACAO_INVESTIDOR, ROYALTY_SECUNDARIO
+  valorBrl              Decimal  @db.Decimal(15, 2) @map("valor_brl")
+  contaDebito           String   @map("conta_debito")
+  contaCredito          String   @map("conta_credito")
+  historicoOcpc10       String   @map("historico_ocpc10")
+  dataRegistro          DateTime @default(now()) @map("data_registro")
+
+  tokenPool             RwaTicketTokenPool @relation(fields: [tokenPoolId], references: [id])
+
+  @@index([tokenPoolId])
+  @@index([tipoLancamento])
+  @@map("rwa_accounting_registers")
+}
+
+
 
 
 
