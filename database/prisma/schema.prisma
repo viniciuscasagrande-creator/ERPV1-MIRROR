@@ -1952,6 +1952,90 @@ model TreasuryCashSweep {
   @@map("treasury_cash_sweeps")
 }
 
+// ============================================================================
+// FASE 23: AUDITORIA CONTÍNUA COM IA, ANTIFRAUDE SENTINEL & COMPLIANCE LGPD
+// Lei 13.709/18 (LGPD), Resoluções CVM e Normas de Auditoria Contábil NBC TA
+// ============================================================================
+
+model AiFraudDetectionLog {
+  id                    String   @id @default(uuid())
+  codigoTransacao       String   @unique @map("codigo_transacao")
+  vendaId               String?  @map("venda_id")
+  eventoId              String   @map("evento_id")
+  compradorDocumento    String   @map("comprador_documento") // CPF/Passaporte anonimizável
+  ipOrigem              String   @map("ip_origem")
+  geolocalizacaoIp      String   @map("geolocalizacao_ip") // Cidade, UF, País
+  deviceFingerprint     String   @map("device_fingerprint")
+  valorTransacao        Decimal  @db.Decimal(12, 2) @map("valor_transacao")
+  tempoPreenchimentoSeg Int      @map("tempo_preenchimento_seg")
+  scoreProbabilidadeBot Decimal  @db.Decimal(5, 2) @map("score_probabilidade_bot") // 0.00% a 100.00%
+  scoreRiscoFraude      Decimal  @db.Decimal(5, 2) @map("score_risco_fraude") // 0.00% a 100.00%
+  fatoresAlerta         String[] @map("fatores_alerta")
+  statusFraude          String   @default("QUARENTENA") // APROVADO, QUARENTENA, BLOQUEADO, ANALISE_MANUAL
+  decisaoIa             String   @map("decisao_ia")
+  analisadoPor          String?  @map("analisado_por")
+  resolvidoEm           DateTime? @map("resolvido_em")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  @@index([eventoId])
+  @@index([statusFraude])
+  @@index([scoreRiscoFraude])
+  @@map("ai_fraud_detection_logs")
+}
+
+model ContinuousAuditAnomaly {
+  id                    String   @id @default(uuid())
+  codigoAnomalia        String   @unique @map("codigo_anomalia") // Ex: "ANO-2026-0042"
+  tipoAnomalia          String   @map("tipo_anomalia") // DIVERGENCIA_GATEWAY_BORDERO, PARTILHA_TAXA_IRREGULAR, TENTATIVA_LANCAMENTO_PERIODO_FECHADO, DESVIO_SALDO_CONCILIACAO
+  severidade            String   @default("ALTA") // BAIXA, MEDIA, ALTA, CRITICA
+  eventoId              String?  @map("evento_id")
+  eventoNome            String?  @map("evento_nome")
+  valorDivergencia      Decimal  @default(0.00) @db.Decimal(12, 2) @map("valor_divergencia")
+  descricaoDiagnostico  String   @map("descricao_diagnostico")
+  acaoCorretivaSugerida String   @map("acao_corretiva_sugerida")
+  status                String   @default("PENDENTE") // PENDENTE, RECONHECIDO, CORRIGIDO, FALSO_POSITIVO
+  detectadoEm           DateTime @default(now()) @map("detectado_em")
+  reconhecidoPor        String?  @map("reconhecido_por")
+  reconhecidoEm         DateTime? @map("reconhecido_em")
+
+  @@index([tipoAnomalia])
+  @@index([severidade])
+  @@index([status])
+  @@map("continuous_audit_anomalies")
+}
+
+model LgpdComplianceRequest {
+  id                    String   @id @default(uuid())
+  protocoloAtendimento  String   @unique @map("protocolo_atendimento") // Ex: "LGPD-2026-0012"
+  titularNome           String   @map("titular_nome")
+  titularEmail          String   @map("titular_email")
+  titularCpf            String   @map("titular_cpf")
+  tipoSolicitacao       String   @map("tipo_solicitacao") // ACESSO, ANONIMIZACAO, PORTABILIDADE, REVOGACAO_CONSENTIMENTO
+  prazoLimiteResposta   DateTime @map("prazo_limite_resposta") // 15 dias úteis (Art. 19, II da LGPD)
+  status                String   @default("EM_ANALISE") // PENDENTE, EM_ANALISE, CONCLUIDA, REJEITADA_PRAZO_LEGAL
+  justificativaLegal    String?  @map("justificativa_legal") // Exceção legal: guarda fiscal 5 anos (Art. 16, I da LGPD)
+  atendidoPor           String?  @map("atendido_por") // DPO responsável
+  dataSolicitacao       DateTime @default(now()) @map("data_solicitacao")
+  dataConclusao         DateTime? @map("data_conclusao")
+
+  @@index([titularCpf])
+  @@index([status])
+  @@map("lgpd_compliance_requests")
+}
+
+model LgpdDataAnonymizationLog {
+  id                    String   @id @default(uuid())
+  titularCpfHashSha256  String   @map("titular_cpf_hash_sha256")
+  camposAnonimizados    String[] @map("campos_anonimizados") // nome, email, telefone, ip_historico
+  camposRetidosDeverLegal String[] @map("campos_retidos_dever_legal") // comprovantes fiscais, valor bilheteria, DARF/DAM retido
+  fundamentoLegalRetencao String @default("Art. 16, I da LGPD c/ Art. 1.194 CC") @map("fundamento_legal_retencao")
+  executadoPorDpo       String   @map("executado_por_dpo")
+  dataAnonimizacao      DateTime @default(now()) @map("data_anonimizacao")
+
+  @@index([titularCpfHashSha256])
+  @@map("lgpd_data_anonymization_logs")
+}
+
 
 
 

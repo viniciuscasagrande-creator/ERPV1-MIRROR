@@ -39,6 +39,7 @@ import { ScpInvestorsModule } from './modules/scp-investors/scp-investors.module
 import { TaxReformModule } from './modules/tax-reform/tax-reform.module';
 import { OpenFinanceModule } from './modules/open-finance/open-finance.module';
 import { AiTreasuryModule } from './modules/ai-treasury/ai-treasury.module';
+import { AuditComplianceModule } from './modules/audit-compliance/audit-compliance.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -86,6 +87,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     TaxReformModule,
     OpenFinanceModule,
     AiTreasuryModule,
+    AuditComplianceModule,
   ],
   providers: [
     PrismaService,

@@ -108,6 +108,7 @@ diskingressos-erp/
 | **20** | **Reforma Tributária 2026 (IVA Dual & Split)** | IVA Dual (CBS 3,52% + IBS 7,08% c/ 60% redução p/ eventos - Art. 138 PLP 68/24), Split Tributário Instantâneo no Checkout (Art. 49), Não-Cumulatividade Plena (Créditos de Rider/Palco) e DFe. |
 | **21** | **Open Finance (ITP) & Pix SPI Real-Time** | Iniciação de Pagamentos (Res. BCB 109/21), Pix Cobrança Dinâmico com Split SPI, Conciliação Preditiva Sub-segundo (Bacen mTLS) e Escrituração Contábil Automática. |
 | **22** | **IA Tesouraria, Yield Management & Credit Scoring** | Modelagem Estocástica de Fluxo de Caixa a 90 Dias com Alerta de Gaps, Precificação Dinâmica de Ingressos por Elasticidade de Demanda, Credit Scoring Soberano de Produtores (AAA a C) e Cash Sweep Automático em 100% CDI. |
+| **23** | **Auditoria Contínua com IA, Antifraude Sentinel & LGPD** | Detecção Comportamental de Bots Cambistas em Milissegundos, Quarentena Preventiva de Ingressos, Reconciliação Contínua de Divergências Gateway vs Borderô, Gestão de Direitos dos Titulares (LGPD Art. 18) e Anonimização Segura com Preservação de Guarda Fiscal de 5 Anos (Art. 16, I). |
 
 ---
 

@@ -75,6 +75,9 @@ import { OpenFinancePixPage } from '../../modules/open-finance/OpenFinancePixPag
 // FASE 22: Motor de Inteligência Artificial para Fluxo Preditivo & Yield Management
 import { AiTreasuryPage } from '../../modules/ai-treasury/AiTreasuryPage';
 
+// FASE 23: Auditoria Contínua com IA, Antifraude Sentinel & Compliance LGPD/CVM
+import { AuditCompliancePage } from '../../modules/audit-compliance/AuditCompliancePage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -228,6 +231,13 @@ export const AppRouter: React.FC = () => {
         <Route path="fluxo-preditivo" element={<AiTreasuryPage />} />
         <Route path="yield-management" element={<AiTreasuryPage />} />
         <Route path="financeiro/ai-tesouraria" element={<AiTreasuryPage />} />
+
+        {/* Módulos FASE 23: Auditoria Contínua com IA, Antifraude Sentinel & Compliance LGPD/CVM */}
+        <Route path="auditoria-ia" element={<AuditCompliancePage />} />
+        <Route path="antifraude-sentinel" element={<AuditCompliancePage />} />
+        <Route path="compliance-lgpd" element={<AuditCompliancePage />} />
+        <Route path="governanca/compliance-lgpd" element={<AuditCompliancePage />} />
+        <Route path="auditoria/continua" element={<AuditCompliancePage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

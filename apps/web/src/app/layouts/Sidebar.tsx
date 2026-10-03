@@ -135,6 +135,13 @@ const menuItems: MenuItem[] = [
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
   },
   {
+    title: 'Auditoria IA & LGPD',
+    icon: ShieldAlert,
+    path: '/auditoria-ia',
+    badge: 'Sentinel',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA],
+  },
+  {
     title: 'Disaster Recovery (5 Anos)',
     icon: HardDrive,
     path: '/disaster-recovery',
