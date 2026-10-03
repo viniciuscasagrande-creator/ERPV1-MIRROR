@@ -67,6 +67,9 @@ import { DebtRecoveryModule } from './modules/debt-recovery/debt-recovery.module
 import { SponsorshipBarterModule } from './modules/sponsorship-barter/sponsorship-barter.module';
 import { TourFleetModule } from './modules/tour-fleet/tour-fleet.module';
 import { SoxIpoModule } from './modules/sox-ipo/sox-ipo.module';
+import { ProducerHubModule } from './modules/producer-hub/producer-hub.module';
+import { MarketingModule } from './modules/marketing/marketing.module';
+import { RemarketingModule } from './modules/remarketing/remarketing.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -144,6 +147,9 @@ import { PrismaModule } from './database/prisma.module';
     SponsorshipBarterModule,
     TourFleetModule,
     SoxIpoModule,
+    ProducerHubModule,
+    MarketingModule,
+    RemarketingModule,
   ],
   providers: [
     PrismaService,

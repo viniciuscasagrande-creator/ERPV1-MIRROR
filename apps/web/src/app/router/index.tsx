@@ -8,6 +8,8 @@ import { AuditPage } from '../../modules/audit/AuditPage';
 import { EventosPage } from '../../modules/eventos/EventosPage';
 import { CentralFechamentoPage } from '../../modules/eventos/CentralFechamentoPage';
 import { ProdutoresPage } from '../../modules/produtores/ProdutoresPage';
+import { MarketingPage } from '../../modules/marketing/MarketingPage';
+import { RemarketingPage } from '../../modules/remarketing/RemarketingPage';
 import { VendasPage } from '../../modules/vendas/VendasPage';
 import { ContasReceberPage } from '../../modules/financeiro/ContasReceberPage';
 import { ContasPagarPage } from '../../modules/financeiro/ContasPagarPage';
@@ -232,11 +234,16 @@ export const AppRouter: React.FC = () => {
         <Route index element={<RootRedirect />} />
         <Route path="dashboard" element={<DashboardPage />} />
 
-        {/* Módulos FASE 2: Operações Core, Eventos & Produtores */}
+        {/* Módulos FASE 2 & HUB 360: Operações Core, Eventos & Produtores */}
         <Route path="eventos/lista" element={<EventosPage />} />
         <Route path="eventos/central-fechamento" element={<CentralFechamentoPage />} />
         <Route path="eventos/vendas" element={<VendasPage />} />
         <Route path="produtores" element={<ProdutoresPage />} />
+        <Route path="produtores/contratos" element={<ProdutoresPage />} />
+        <Route path="produtores/antecipacoes" element={<ProdutoresPage />} />
+        <Route path="produtores/borderos" element={<ProdutoresPage />} />
+        <Route path="produtores/escrow" element={<ProdutoresPage />} />
+        <Route path="produtores/compliance" element={<ProdutoresPage />} />
 
         {/* Módulos FASE 3: Financeiro, Tesouraria & Repasses */}
         <Route path="financeiro/receitas" element={<VendasPage />} />
@@ -471,6 +478,21 @@ export const AppRouter: React.FC = () => {
         <Route path="governanca-sox" element={<SoxIpoPage />} />
         <Route path="diretoria/ipo-sox" element={<SoxIpoPage />} />
         <Route path="compliance/sox-404" element={<SoxIpoPage />} />
+
+        {/* Central de Marketing Digital & Crescimento */}
+        <Route path="marketing" element={<MarketingPage />} />
+        <Route path="marketing/campanhas" element={<MarketingPage />} />
+        <Route path="marketing/pixel" element={<MarketingPage />} />
+        <Route path="marketing/cupons" element={<MarketingPage />} />
+        <Route path="marketing/promoters" element={<MarketingPage />} />
+        <Route path="marketing/atribuicao" element={<MarketingPage />} />
+
+        {/* Motor de Remarketing & Recuperação de Carrinho */}
+        <Route path="remarketing" element={<RemarketingPage />} />
+        <Route path="remarketing/carrinho-abandonado" element={<RemarketingPage />} />
+        <Route path="remarketing/segmentacao-rfm" element={<RemarketingPage />} />
+        <Route path="remarketing/gatilhos" element={<RemarketingPage />} />
+        <Route path="remarketing/reengajamento" element={<RemarketingPage />} />
 
 
 

@@ -38,6 +38,8 @@ import {
   Gavel,
   Award,
   Truck,
+  Megaphone,
+  Repeat,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -93,7 +95,38 @@ const menuItems: MenuItem[] = [
   {
     title: 'Produtores',
     icon: Building2,
-    path: '/produtores',
+    badge: 'Hub 360°',
+    subItems: [
+      { title: 'Visão 360° Produtores', path: '/produtores' },
+      { title: 'Contratos & Regras', path: '/produtores/contratos' },
+      { title: 'Antecipações & Travas', path: '/produtores/antecipacoes', badge: 'CERC' },
+      { title: 'Borderôs & Fechamentos', path: '/produtores/borderos', badge: 'ICP' },
+      { title: 'Extrato de Escrow', path: '/produtores/escrow', badge: 'Garantia' },
+      { title: 'Score de Crédito & CND', path: '/produtores/compliance', badge: 'Serasa' },
+    ],
+  },
+  {
+    title: 'Marketing Digital',
+    icon: Megaphone,
+    badge: 'Growth',
+    subItems: [
+      { title: 'Campanhas Ads Multi-Canal', path: '/marketing/campanhas', badge: 'ROAS' },
+      { title: 'Pixel & CAPI Server-Side', path: '/marketing/pixel', badge: 'Meta' },
+      { title: 'Cupons & Descontos', path: '/marketing/cupons' },
+      { title: 'Promoters & Afiliados', path: '/marketing/promoters', badge: 'Pix' },
+      { title: 'Atribuição Multi-Toque', path: '/marketing/atribuicao', badge: 'IA' },
+    ],
+  },
+  {
+    title: 'Remarketing',
+    icon: Repeat,
+    badge: '32.1%',
+    subItems: [
+      { title: 'Carrinho Abandonado', path: '/remarketing/carrinho-abandonado', badge: 'Whats' },
+      { title: 'Segmentação RFM (LTV)', path: '/remarketing/segmentacao-rfm', badge: 'Clusters' },
+      { title: 'Gatilhos & Webhooks', path: '/remarketing/gatilhos', badge: 'Auto' },
+      { title: 'Reengajamento Pós-Evento', path: '/remarketing/reengajamento' },
+    ],
   },
   {
     title: 'Bancos & Tesouraria',

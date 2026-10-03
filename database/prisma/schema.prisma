@@ -3618,6 +3618,201 @@ model IpoDualListingReadinessEvaluation {
   @@map("ipo_dual_listing_readiness_evaluations")
 }
 
+// ==========================================
+// HUB 360 DO PRODUTOR (DISKINGRESSOS ENTERPRISE)
+// ==========================================
+
+model ProducerCommercialContract {
+  id                         String    @id @default(uuid())
+  producerId                 String    @map("producer_id")
+  numeroContrato             String    @unique @map("numero_contrato") // Ex: "CTR-PROD-2026-088"
+  razaoSocial                String    @map("razao_social")
+  cnpj                       String    @map("cnpj")
+  taxaComissaoPadrao         Decimal   @db.Decimal(5, 2) @map("taxa_comissao_padrao") // ex: 10.00%
+  taxaMdrGateway             Decimal   @db.Decimal(5, 2) @map("taxa_mdr_gateway") // ex: 2.85%
+  retencaoSegurancaPercent   Decimal   @default(15.00) @db.Decimal(5, 2) @map("retencao_seguranca_percent") // Escrow
+  prazoLiquidacaoDias        Int       @default(2) @map("prazo_liquidacao_dias") // D+2 após evento
+  limiteAdiantamentoGlobal   Decimal   @db.Decimal(15, 2) @map("limite_adiantamento_global")
+  saldoAdiantadoAtual        Decimal   @default(0.00) @db.Decimal(15, 2) @map("saldo_adiantado_atual")
+  statusContrato             String    @default("VIGENTE") @map("status_contrato") // VIGENTE, EM_RENOVACAO, SUSPENSO
+  statusComplianceCnd        String    @default("REGULAR") @map("status_compliance_cnd") // REGULAR, PENDENTE, RESTRITO
+  scoreCredito               Int       @default(850) @map("score_credito")
+  dataInicio                 DateTime  @map("data_inicio")
+  dataTermino                DateTime  @map("data_termino")
+  createdAt                  DateTime  @default(now()) @map("created_at")
+  updatedAt                  DateTime  @updatedAt @map("updated_at")
+
+  @@map("producer_commercial_contracts")
+}
+
+model ProducerEscrowLedger {
+  id                         String    @id @default(uuid())
+  producerId                 String    @map("producer_id")
+  eventId                    String?   @map("event_id")
+  tipoMovimento              String    @map("tipo_movimento") // RETENCAO_BILHETERIA, LIBERACAO_ESCROW, DEDUCAO_CHARGEBACK, REPASSE_ANTECIPADO
+  descricao                  String    @map("descricao")
+  valorCredito               Decimal   @default(0.00) @db.Decimal(15, 2) @map("valor_credito")
+  valorDebito                Decimal   @default(0.00) @db.Decimal(15, 2) @map("valor_debito")
+  saldoGarantiaApos          Decimal   @db.Decimal(15, 2) @map("saldo_garantia_apos")
+  referenciaDocumento        String?   @map("referencia_documento") // Ex: "BOR-2026-904"
+  dataMovimento              DateTime  @default(now()) @map("data_movimento")
+
+  @@index([producerId])
+  @@map("producer_escrow_ledgers")
+}
+
+// ==========================================
+// CENTRAL DE MARKETING DIGITAL & CRESCIMENTO
+// ==========================================
+
+model MarketingCampaign {
+  id                         String    @id @default(uuid())
+  codigoCampanha             String    @unique @map("codigo_campanha") // Ex: "CMP-META-LOTE1-VILLAMIX"
+  nomeCampanha               String    @map("nome_campanha")
+  canal                      String    @map("canal") // META_ADS, GOOGLE_ADS, TIKTOK_ADS, EMAIL_MARKETING, PUSH_NOTIFICATION
+  eventId                    String?   @map("event_id")
+  nomeEvento                 String    @map("nome_evento")
+  status                     String    @default("ATIVA") @map("status") // ATIVA, PAUSADA, CONCLUIDA, OTIMIZANDO
+  orcamentoTotal             Decimal   @db.Decimal(15, 2) @map("orcamento_total")
+  valorInvestido             Decimal   @default(0.00) @db.Decimal(15, 2) @map("valor_investido")
+  impressoes                 Int       @default(0) @map("impressoes")
+  cliques                    Int       @default(0) @map("cliques")
+  ingressosVendidos          Int       @default(0) @map("ingressos_vendidos")
+  receitaGerada              Decimal   @default(0.00) @db.Decimal(15, 2) @map("receita_gerada")
+  roasCalculado              Decimal   @default(0.00) @db.Decimal(8, 2) @map("roas_calculado") // ex: 8.4x
+  cpaMedio                   Decimal   @default(0.00) @db.Decimal(10, 2) @map("cpa_medio")
+  utmSource                  String    @map("utm_source")
+  utmMedium                  String    @map("utm_medium")
+  utmCampaign                String    @map("utm_campaign")
+  dataInicio                 DateTime  @map("data_inicio")
+  dataFim                    DateTime? @map("data_fim")
+  createdAt                  DateTime  @default(now()) @map("created_at")
+  updatedAt                  DateTime  @updatedAt @map("updated_at")
+
+  @@map("marketing_campaigns")
+}
+
+model MarketingCoupon {
+  id                         String    @id @default(uuid())
+  codigoCupom                String    @unique @map("codigo_cupom") // Ex: "VIPDISK20"
+  descricao                  String    @map("descricao")
+  eventId                    String?   @map("event_id")
+  nomeEvento                 String?   @map("nome_evento")
+  tipoDesconto               String    @map("tipo_desconto") // PERCENTUAL, VALOR_FIXO, ISENCAO_TAXA
+  valorDesconto              Decimal   @db.Decimal(10, 2) @map("valor_desconto")
+  limiteUsosGlobal           Int       @default(1000) @map("limite_usos_global")
+  usosAtuais                 Int       @default(0) @map("usos_atuais")
+  limitePorCpf               Int       @default(1) @map("limite_por_cpf")
+  valorMinimoPedido          Decimal   @default(0.00) @db.Decimal(10, 2) @map("valor_minimo_pedido")
+  receitaTotalGerada         Decimal   @default(0.00) @db.Decimal(15, 2) @map("receita_total_gerada")
+  descontoTotalConcedido     Decimal   @default(0.00) @db.Decimal(15, 2) @map("desconto_total_concedido")
+  status                     String    @default("ATIVO") @map("status") // ATIVO, ESGOTADO, EXPIRADO, PAUSADO
+  validoAte                  DateTime  @map("valido_ate")
+  createdAt                  DateTime  @default(now()) @map("created_at")
+  updatedAt                  DateTime  @updatedAt @map("updated_at")
+
+  @@map("marketing_coupons")
+}
+
+model MarketingPromoterAffiliate {
+  id                         String    @id @default(uuid())
+  codigoPromoter             String    @unique @map("codigo_promoter") // Ex: "PRM-LUCAS-VIP"
+  nomePromoter               String    @map("nome_promoter")
+  email                      String    @map("email")
+  telefoneWhatsapp           String    @map("telefone_whatsapp")
+  chavePix                   String    @map("chave_pix")
+  tipoComissao               String    @default("PERCENTUAL") @map("tipo_comissao") // PERCENTUAL, FIXO_POR_INGRESSO
+  taxaComissao               Decimal   @db.Decimal(5, 2) @map("taxa_comissao") // ex: 5.00%
+  slugLink                   String    @unique @map("slug_link") // ex: "lucasvip"
+  ingressosVendidos          Int       @default(0) @map("ingressos_vendidos")
+  volumeVendasBRL            Decimal   @default(0.00) @db.Decimal(15, 2) @map("volume_vendas_brl")
+  comissaoTotalAcumulada     Decimal   @default(0.00) @db.Decimal(15, 2) @map("comissao_total_acumulada")
+  comissaoPaga               Decimal   @default(0.00) @db.Decimal(15, 2) @map("comissao_paga")
+  comissaoPendente           Decimal   @default(0.00) @db.Decimal(15, 2) @map("comissao_pendente")
+  status                     String    @default("ATIVO") @map("status") // ATIVO, SUSPENSO
+  createdAt                  DateTime  @default(now()) @map("created_at")
+  updatedAt                  DateTime  @updatedAt @map("updated_at")
+
+  @@map("marketing_promoter_affiliates")
+}
+
+model MarketingPixelCapiLog {
+  id                         String    @id @default(uuid())
+  eventIdTrace               String    @unique @map("event_id_trace") // UUID do checkout
+  plataformaDestino          String    @map("plataforma_destino") // META_CAPI, GOOGLE_ENHANCED, TIKTOK_EVENTS
+  tipoEvento                 String    @map("tipo_evento") // Purchase, InitiateCheckout, AddToCart, ViewContent
+  valorTransacao             Decimal   @db.Decimal(10, 2) @map("valor_transacao")
+  moeda                      String    @default("BRL") @map("moeda")
+  statusEnvio                String    @default("ENVIADO_SUCESSO") @map("status_envio")
+  deduplicacaoScore          Decimal   @default(9.20) @db.Decimal(4, 2) @map("deduplicacao_score")
+  respostaPayloadHash        String    @map("resposta_payload_hash")
+  timestampEvento            DateTime  @default(now()) @map("timestamp_evento")
+
+  @@index([plataformaDestino])
+  @@map("marketing_pixel_capi_logs")
+}
+
+// ==========================================
+// REMARKETING & MOTOR DE RECUPERAÇÃO DE VENDAS
+// ==========================================
+
+model AbandonedCartRecovery {
+  id                         String    @id @default(uuid())
+  checkoutSessionId          String    @unique @map("checkout_session_id")
+  clienteNome                String    @map("cliente_nome")
+  clienteEmail               String    @map("cliente_email")
+  clienteTelefone            String    @map("cliente_telefone")
+  eventoId                   String    @map("evento_id")
+  nomeEvento                 String    @map("nome_evento")
+  setorLote                  String    @map("setor_lote")
+  quantidadeIngressos        Int       @map("quantidade_ingressos")
+  valorTotal                 Decimal   @db.Decimal(10, 2) @map("valor_total")
+  estagioAbandono            String    @map("estagio_abandono") // SELECAO_ASSENTO, IDENTIFICACAO, PAGAMENTO_PENDENTE, RECUSADO_ANTIFRAUDE
+  statusRecuperacao          String    @default("ABANDONADO_RECENTE") @map("status_recuperacao") // ABANDONADO_RECENTE, GATILHO_WHATSAPP_ENVIADO, GATILHO_SMS_ENVIADO, RECUPERADO, EXPIRADO
+  dataAbandono               DateTime  @default(now()) @map("data_abandono")
+  dataRecuperacao            DateTime? @map("data_recuperacao")
+  cupomIncentivo             String?   @map("cupom_incentivo")
+  canalRecuperacao           String?   @map("canal_recuperacao") // WHATSAPP, SMS, EMAIL, PUSH
+  urlRecuperacaoCheckout     String    @map("url_recuperacao_checkout")
+
+  @@index([statusRecuperacao])
+  @@map("abandoned_cart_recoveries")
+}
+
+model RfmCustomerSegment {
+  id                         String    @id @default(uuid())
+  clienteCpf                 String    @unique @map("cliente_cpf")
+  clienteNome                String    @map("cliente_nome")
+  clienteEmail               String    @map("cliente_email")
+  recenciaDias               Int       @map("recencia_dias") // Dias desde a última compra
+  frequenciaEventos          Int       @map("frequencia_eventos") // Total de eventos comprados
+  valorMonetarioTotal        Decimal   @db.Decimal(15, 2) @map("valor_monetario_total") // LTV
+  clusterRfm                 String    @map("cluster_rfm") // CHAMPIONS, LOYAL, AT_RISK, ABOUT_TO_SLEEP, HIBERNATING
+  scoreRfmPontuacao          Decimal   @db.Decimal(4, 2) @map("score_rfm_pontuacao") // ex: 9.80 / 10
+  audienciaMetaCustomSync    Boolean   @default(true) @map("audiencia_meta_custom_sync")
+  audienciaGoogleMatchSync   Boolean   @default(true) @map("audiencia_google_match_sync")
+  ultimaAtualizacao          DateTime  @default(now()) @map("ultima_atualizacao")
+
+  @@index([clusterRfm])
+  @@map("rfm_customer_segments")
+}
+
+model RemarketingTriggerAutomation {
+  id                         String    @id @default(uuid())
+  nomeRegra                  String    @map("nome_regra")
+  gatilhoEvento              String    @map("gatilho_evento") // CARRINHO_ABANDONADO_15M, RECUSA_CARTAO_MIGRA_PIX, VIRADA_LOTE_IMINENTE, REENGAJAMENTO_POS_SHOW
+  tempoEsperaMinutos         Int       @default(15) @map("tempo_espera_minutos")
+  canalEnvio                 String    @map("canal_envio") // WHATSAPP_API, SMS_GATEWAY, EMAIL_SMTP
+  templateMensagem           String    @map("template_mensagem")
+  ativo                      Boolean   @default(true) @map("ativo")
+  totalDisparos              Int       @default(0) @map("total_disparos")
+  totalConvertidos           Int       @default(0) @map("total_convertidos")
+  taxaConversaoPercent       Decimal   @default(0.00) @db.Decimal(5, 2) @map("taxa_conversao_percent")
+  createdAt                  DateTime  @default(now()) @map("created_at")
+
+  @@map("remarketing_trigger_automations")
+}
+
 
 
 

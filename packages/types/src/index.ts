@@ -63,7 +63,6 @@ export * from './debt-recovery-ifrs9.js';
 export * from './sponsorship-barter-ifrs15.js';
 export * from './tour-fleet-ifrs16.js';
 export * from './sox-ipo-governance.js';
-
-
-
-
+export * from './producer-management-hub.js';
+export * from './marketing-growth-engine.js';
+export * from './remarketing-abandoned-cart.js';
