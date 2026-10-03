@@ -54,6 +54,9 @@ import { DisasterRecoveryPage } from '../../modules/disaster-recovery/DisasterRe
 // FASE 15: Governança Financeira, Matriz de Alçadas & SoD
 import { GovernancaSodPage } from '../../modules/governanca-sod/GovernancaSodPage';
 
+// FASE 16: Assinaturas Digitais Jurídicas, Borderôs Eletrônicos & Conta Azul
+import { AssinaturasDigitaisPage } from '../../modules/assinaturas/AssinaturasDigitaisPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -166,6 +169,11 @@ export const AppRouter: React.FC = () => {
         <Route path="governanca/alcadas" element={<GovernancaSodPage />} />
         <Route path="governanca-financeira" element={<GovernancaSodPage />} />
         <Route path="financeiro/alcadas" element={<GovernancaSodPage />} />
+
+        {/* Módulos FASE 16: Assinaturas Digitais Jurídicas & Conta Azul */}
+        <Route path="assinaturas" element={<AssinaturasDigitaisPage />} />
+        <Route path="financeiro/assinaturas" element={<AssinaturasDigitaisPage />} />
+        <Route path="integracoes/conta-azul" element={<AssinaturasDigitaisPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

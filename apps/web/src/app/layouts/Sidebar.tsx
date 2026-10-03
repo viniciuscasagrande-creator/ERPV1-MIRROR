@@ -53,6 +53,7 @@ const menuItems: MenuItem[] = [
       { title: 'Fluxo de Caixa', path: '/financeiro/fluxo-caixa' },
       { title: 'Lotes CNAB 240', path: '/financeiro/cnab', badge: 'FEBRABAN' },
       { title: 'Alçadas & SoD', path: '/governanca/alcadas', badge: 'SoD' },
+      { title: 'Assinaturas & Conta Azul', path: '/assinaturas', badge: 'Autentique' },
     ],
   },
   {
@@ -138,6 +139,12 @@ const menuItems: MenuItem[] = [
     path: '/governanca/alcadas',
     badge: 'Alçadas',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Assinaturas & Borderôs',
+    icon: FileCheck2,
+    path: '/assinaturas',
+    badge: 'Autentique',
   },
   {
     title: 'Usuários & Permissões',

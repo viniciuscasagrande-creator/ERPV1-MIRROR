@@ -1303,3 +1303,78 @@ model SensitiveOperationAudit {
   @@map("sensitive_operation_audits")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 16: ASSINATURAS DIGITAIS JURÍDICAS, BORDERÔS ELETRÔNICOS & CONTA AZUL
+// Medida Provisória 2.200-2/2001 & Lei Federal 14.063/2020 (Autentique / Clicksign)
+// ------------------------------------------------------------------------------
+
+model DigitalSignatureDocument {
+  id                   String   @id @default(uuid())
+  codigoDocumento      String   @unique @map("codigo_documento") // Ex: "DOC-SIG-2026-000312"
+  titulo               String
+  tipoDocumento        String   @map("tipo_documento") // BORDERO_FECHAMENTO, TERMO_REPASSE, CONTRATO_ANTECIPACAO, CONTRATO_PRESTACAO_SERVICOS
+  referenciaId         String?  @map("referencia_id")
+  producerId           String?  @map("producer_id")
+  producerNome         String?  @map("producer_nome")
+  provedor             String   @default("AUTENTIQUE") // AUTENTIQUE, CLICKSIGN, DOCUSIGN, INTERNAL_ICP_BRASIL
+  externalDocumentId   String?  @map("external_document_id")
+  status               String   @default("AGUARDANDO_PRODUTOR") // RASCUNHO, ENVIADO, AGUARDANDO_PRODUTOR, AGUARDANDO_DISKINGRESSOS, CONCLUIDO_ASSINADO, REJEITADO, CANCELADO
+  urlDocumentoOriginal String?  @map("url_documento_original")
+  urlDocumentoAssinado String?  @map("url_documento_assinado")
+  checksumSha256       String   @map("checksum_sha256")
+  valorTotal           Decimal  @default(0.00) @db.Decimal(15, 2) @map("valor_total")
+  criadoPor            String   @map("criado_por")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  signatarios          DigitalSignatureSigner[]
+  syncIntegracoes      ErpSyncQueue[]
+
+  @@index([tipoDocumento])
+  @@index([status])
+  @@index([producerId])
+  @@map("digital_signature_documents")
+}
+
+model DigitalSignatureSigner {
+  id                 String                   @id @default(uuid())
+  documentId         String                   @map("document_id")
+  document           DigitalSignatureDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  nome               String
+  email              String
+  cpfCnpj            String?                  @map("cpf_cnpj")
+  tipoSignatario     String                   @map("tipo_signatario") // PRODUTOR_1_ORDEM, DISKINGRESSOS_2_ORDEM, TESTEMUNHA
+  ordemAssinatura    Int                      @map("ordem_assinatura") // 1: Produtor primeiro, 2: Disk por último
+  status             String                   @default("PENDENTE") // PENDENTE, ASSINADO, REJEITADO
+  assinadoEm         DateTime?                @map("assinado_em")
+  ipAssinatura       String?                  @map("ip_assinatura")
+  metodoAutenticacao String?                  @map("metodo_autenticacao") // EMAIL_OTP, SMS_TOKEN, CERTIFICADO_A1_ICP
+  createdAt          DateTime                 @default(now()) @map("created_at")
+
+  @@index([documentId])
+  @@index([email])
+  @@index([status])
+  @@map("digital_signature_signers")
+}
+
+model ErpSyncQueue {
+  id                 String                    @id @default(uuid())
+  documentId         String?                   @map("document_id")
+  document           DigitalSignatureDocument? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  sistemaDestino     String                    @default("CONTA_AZUL") @map("sistema_destino") // CONTA_AZUL, OMIE, SENIOR, SANKHYA
+  entidade           String                    // CONTAS_A_PAGAR, CONTAS_A_RECEBER, CLIENTE_PRODUTOR
+  referenciaExterna  String?                   @map("referencia_externa")
+  status             String                    @default("PENDENTE") // PENDENTE, PROCESSANDO, SINCRONIZADO, DIVERGENTE, ERRO, AGUARDANDO_REPROCESSAMENTO
+  tentativas         Int                       @default(0)
+  ultimoErro         String?                   @map("ultimo_erro")
+  payloadEnvio       String?                   @db.Text @map("payload_envio")
+  respostaPayload    String?                   @db.Text @map("resposta_payload")
+  sincronizadoEm     DateTime?                 @map("sincronizado_em")
+  createdAt          DateTime                  @default(now()) @map("created_at")
+  updatedAt          DateTime                  @updatedAt @map("updated_at")
+
+  @@index([sistemaDestino])
+  @@index([status])
+  @@map("erp_sync_queues")
+}
+
