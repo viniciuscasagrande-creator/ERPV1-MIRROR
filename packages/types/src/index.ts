@@ -32,3 +32,4 @@ export * from './digital-signature.js';
 export * from './antecipacao.js';
 export * from './split-payment.js';
 export * from './scp-investors.js';
+export * from './tax-reform.js';

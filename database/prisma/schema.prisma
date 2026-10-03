@@ -1674,6 +1674,103 @@ model ScpDividendDistribution {
   @@map("scp_dividend_distributions")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 20: HUB DE INTELIGÊNCIA TRIBUTÁRIA & REFORMA TRIBUTÁRIA 2026
+// IVA Dual (CBS/IBS), Split Tributário no Checkout & Créditos (EC 132/23 & PLP 68/24)
+// ------------------------------------------------------------------------------
+
+model TaxReformConfig {
+  id                        String   @id @default(uuid())
+  vigenciaAno               Int      @default(2026) @map("vigencia_ano")
+  cbsAliquotaPadraoPercent  Decimal  @default(8.80) @db.Decimal(5, 2) @map("cbs_aliquota_padrao_percent")
+  ibsAliquotaPadraoPercent  Decimal  @default(17.70) @db.Decimal(5, 2) @map("ibs_aliquota_padrao_percent")
+  reducaoEventosPercent     Decimal  @default(60.00) @db.Decimal(5, 2) @map("reducao_eventos_percent") // Redução de 60% para eventos culturais e shows
+  cbsAliquotaEventosPercent Decimal  @default(3.52) @db.Decimal(5, 2) @map("cbs_aliquota_eventos_percent") // 8.80% * (1 - 0.60) = 3.52%
+  ibsAliquotaEventosPercent Decimal  @default(7.08) @db.Decimal(5, 2) @map("ibs_aliquota_eventos_percent") // 17.70% * (1 - 0.60) = 7.08%
+  aliquotaTeste2026Ativa    Boolean  @default(true) @map("aliquota_teste_2026_ativa") // 0.9% CBS + 0.1% IBS em 2026
+  splitTributarioAtivo      Boolean  @default(true) @map("split_tributario_ativo") // Retenção automática no checkout
+  ambienteHomologacao       Boolean  @default(true) @map("ambiente_homologacao")
+  createdAt                 DateTime @default(now()) @map("created_at")
+  updatedAt                 DateTime @updatedAt @map("updated_at")
+
+  @@map("tax_reform_configs")
+}
+
+model TaxSplitCheckout {
+  id                        String   @id @default(uuid())
+  codigoTransacao           String   @unique @map("codigo_transacao") // Ex: "SPL-TAX-2026-0001"
+  paymentId                 String?  @map("payment_id")
+  eventId                   String   @map("event_id")
+  eventNome                 String   @map("event_nome")
+  valorBrutoTransacao       Decimal  @db.Decimal(15, 2) @map("valor_bruto_transacao")
+  baseCalculoTributavel     Decimal  @db.Decimal(15, 2) @map("base_calculo_tributavel")
+  aliquotaCbsEfetivaPercent Decimal  @db.Decimal(5, 2) @map("aliquota_cbs_efetiva_percent")
+  valorCbsRetido            Decimal  @db.Decimal(10, 2) @map("valor_cbs_retido")
+  aliquotaIbsEfetivaPercent Decimal  @db.Decimal(5, 2) @map("aliquota_ibs_efetiva_percent")
+  valorIbsRetido            Decimal  @db.Decimal(10, 2) @map("valor_ibs_retido")
+  totalSplitTributario      Decimal  @db.Decimal(10, 2) @map("total_split_tributario")
+  valorLiquidoRecebedor     Decimal  @db.Decimal(15, 2) @map("valor_liquido_recebedor")
+  status                    String   @default("RETIDO_NO_GATEWAY") // RETIDO_NO_GATEWAY, RECOLHIDO_COMITE_GESTOR, ESTORNADO
+  idComiteGestor            String?  @map("id_comite_gestor") // ID de liquidação na câmara de compensação tributária
+  createdAt                 DateTime @default(now()) @map("created_at")
+
+  @@index([eventId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("tax_split_checkouts")
+}
+
+model TaxCreditApropriacao {
+  id                   String   @id @default(uuid())
+  codigoCredito        String   @unique @map("codigo_credito") // Ex: "CRD-2026-0042"
+  eventId              String   @map("event_id")
+  eventNome            String   @map("event_nome")
+  numeroNfOrigem       String   @map("numero_nf_origem")
+  chaveNfe             String?  @map("chave_nfe")
+  fornecedorCnpj       String   @map("fornecedor_cnpj")
+  fornecedorNome       String   @map("fornecedor_nome")
+  categoriaDespesa     String   @map("categoria_despesa") // SOM_ILUMINACAO, ESTRUTURA_PALCO, SEGURANCA, PUBLICIDADE, LOCACAO_ESPACO
+  valorTotalNf         Decimal  @db.Decimal(15, 2) @map("valor_total_nf")
+  baseCalculoCredito   Decimal  @db.Decimal(15, 2) @map("base_calculo_credito")
+  cbsCreditoApurado    Decimal  @db.Decimal(10, 2) @map("cbs_credito_apurado")
+  ibsCreditoApurado    Decimal  @db.Decimal(10, 2) @map("ibs_credito_apurado")
+  totalCreditoApurado  Decimal  @db.Decimal(10, 2) @map("total_credito_apurado")
+  status               String   @default("HOMOLOGADO") // HOMOLOGADO, PENDENTE_VALIDACAO, REJEITADO
+  homologadoEm         DateTime @default(now()) @map("homologado_em")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  @@index([eventId])
+  @@index([fornecedorCnpj])
+  @@index([status])
+  @@map("tax_credit_apropriacoes")
+}
+
+model TaxApuracaoMensal {
+  id                     String   @id @default(uuid())
+  competencia            String   @unique // Ex: "2026-03"
+  receitaBrutaIngressos  Decimal  @db.Decimal(15, 2) @map("receita_bruta_ingressos")
+  receitaPropriaTaxas    Decimal  @db.Decimal(15, 2) @map("receita_propria_taxas") // Comissões e conveniência da DiskIngressos
+  totalDebitoCbs         Decimal  @db.Decimal(15, 2) @map("total_debito_cbs")
+  totalDebitoIbs         Decimal  @db.Decimal(15, 2) @map("total_debito_ibs")
+  totalCreditoCbs        Decimal  @db.Decimal(15, 2) @map("total_credito_cbs")
+  totalCreditoIbs        Decimal  @db.Decimal(15, 2) @map("total_credito_ibs")
+  saldoPagarCbs          Decimal  @db.Decimal(15, 2) @map("saldo_pagar_cbs")
+  saldoPagarIbs          Decimal  @db.Decimal(15, 2) @map("saldo_pagar_ibs")
+  totalIvaDualPagar      Decimal  @db.Decimal(15, 2) @map("total_iva_dual_pagar")
+  impostoRegimeAntigo    Decimal  @db.Decimal(15, 2) @map("imposto_regime_antigo") // PIS/COFINS (3.65%) + ISS Curitiba (5.00%) = 8.65%
+  diferencaEconomia      Decimal  @db.Decimal(15, 2) @map("diferenca_economia")
+  splitTributarioJaPago  Decimal  @db.Decimal(15, 2) @map("split_tributario_ja_pago")
+  saldoResidualGuia      Decimal  @db.Decimal(15, 2) @map("saldo_residual_guia")
+  statusApuracao         String   @default("ABERTA") // ABERTA, FECHADA, TRANSMITIDA_COMITE
+  dfeUnificadoChave      String?  @map("dfe_unificado_chave")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@index([statusApuracao])
+  @@map("tax_apuracoes_mensais")
+}
+
+
 
 
 

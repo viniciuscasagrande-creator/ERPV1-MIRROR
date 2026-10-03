@@ -66,6 +66,9 @@ import { SplitPaymentPage } from '../../modules/split/SplitPaymentPage';
 // FASE 19: Sociedades em Conta de Participação (SCP) & Investidores
 import { ScpInvestorsPage } from '../../modules/scp/ScpInvestorsPage';
 
+// FASE 20: Hub de Inteligência Tributária & Reforma Tributária 2026
+import { TaxReformPage } from '../../modules/tax-reform/TaxReformPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -200,6 +203,12 @@ export const AppRouter: React.FC = () => {
         <Route path="scp-investidores" element={<ScpInvestorsPage />} />
         <Route path="investidores" element={<ScpInvestorsPage />} />
         <Route path="financeiro/investidores" element={<ScpInvestorsPage />} />
+
+        {/* Módulos FASE 20: Hub de Inteligência Tributária & Reforma Tributária 2026 */}
+        <Route path="reforma-tributaria" element={<TaxReformPage />} />
+        <Route path="tax-reform" element={<TaxReformPage />} />
+        <Route path="fiscal/reforma" element={<TaxReformPage />} />
+        <Route path="fiscal/iva-dual" element={<TaxReformPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

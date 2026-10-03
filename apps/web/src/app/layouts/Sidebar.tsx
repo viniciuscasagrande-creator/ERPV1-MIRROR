@@ -107,6 +107,7 @@ const menuItems: MenuItem[] = [
       { title: 'Notas Fiscais (NFS-e)', path: '/fiscal/notas', badge: 'NFS-e' },
       { title: 'Apuração & Guias DAM/DARF', path: '/fiscal/apuracao' },
       { title: 'EFD-Reinf & SPED', path: '/fiscal/sped' },
+      { title: 'Reforma Tributária 2026', path: '/reforma-tributaria', badge: 'EC 132' },
     ],
   },
   {

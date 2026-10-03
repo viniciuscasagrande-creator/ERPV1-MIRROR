@@ -105,6 +105,7 @@ diskingressos-erp/
 | **17** | **Antecipações & Travas BCB** | Cessão Fiduciária de Recebíveis (Res. BCB 4.734 / Circ. 3.952), Margem Consignável (Fundo Escrow 25%), Travas em Adquirentes (Cielo/Stone/Rede na CERC/CIP) e Amortização Cascata. |
 | **18** | **Split de Pagamento & Subadquirência** | Divisão primária em checkout na adquirente (Cielo, Stone, Rede, PagBank), Subcontas KYC, mitigação de bitributação (LC 116/03 & IN RFB 2.179) e estorno pro-rata. |
 | **19** | **Sociedades em Conta de Participação (SCP)** | Aportes de Risco, Hurdle Waterfall (Payback 100% + taxa preferencial + upside), Gestão de Sócios Participantes (CC arts. 991-996), Isenção Tributária (Lei 9.249/95 Art. 10) e Liquidação Pix. |
+| **20** | **Reforma Tributária 2026 (IVA Dual & Split)** | IVA Dual (CBS 3,52% + IBS 7,08% c/ 60% redução p/ eventos - Art. 138 PLP 68/24), Split Tributário Instantâneo no Checkout (Art. 49), Não-Cumulatividade Plena (Créditos de Rider/Palco) e DFe. |
 
 ---
 
