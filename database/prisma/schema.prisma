@@ -1468,4 +1468,96 @@ model TravaDomicilioBancario {
   @@map("travas_domicilio_bancario")
 }
 
+// ------------------------------------------------------------------------------
+// FASE 18: SPLIT DE PAGAMENTO NATIVO EM GATEWAYS & ADQUIRENTES
+// Segregação Primária de Receita no Checkout (LC 116/03 & IN RFB 2.179 / COSIT 23/14)
+// ------------------------------------------------------------------------------
+
+model GatewaySubaccount {
+  id                      String   @id @default(uuid())
+  producerId              String   @map("producer_id")
+  producerNome            String   @map("producer_nome")
+  gateway                 String   // CIELO, PAGARME_STONE, EREDE, PAGBANK, ASAAS
+  recipientId             String   @unique @map("recipient_id") // ID externo do recebedor na adquirente
+  statusKyc               String   @default("PENDENTE") @map("status_kyc") // PENDENTE, EM_ANALISE, APROVADO, REJEITADO
+  documentoFiscal         String   @map("documento_fiscal") // CNPJ ou CPF
+  razaoSocial             String   @map("razao_social")
+  banco                   String
+  agencia                 String
+  conta                   String
+  tipoChavePix            String?  @map("tipo_chave_pix")
+  chavePix                String?  @map("chave_pix")
+  transferenciaAutomatica Boolean  @default(true) @map("transferencia_automatica")
+  periodicidadeLiquidacao String   @default("D+30") @map("periodicidade_liquidacao") // D+1_PIX, D+30_CREDITO, SEMANAL
+  motivoReprovacaoKyc     String?  @map("motivo_reprovacao_kyc")
+  homologadoEm            DateTime? @map("homologado_em")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  splitConfigs            GatewaySplitConfig[]
+  splitTransactions       PaymentSplitTransaction[]
+
+  @@index([producerId])
+  @@index([gateway])
+  @@index([statusKyc])
+  @@map("gateway_subaccounts")
+}
+
+model GatewaySplitConfig {
+  id                           String             @id @default(uuid())
+  eventId                      String             @unique @map("event_id")
+  eventNome                    String             @map("event_nome")
+  producerId                   String             @map("producer_id")
+  subaccountId                 String             @map("subaccount_id")
+  subaccount                   GatewaySubaccount  @relation(fields: [subaccountId], references: [id], onDelete: Cascade)
+  gateway                      String             @default("PAGARME_STONE") // CIELO, PAGARME_STONE, EREDE, PAGBANK, ASAAS
+  tipoDivisao                  String             @default("PERCENTUAL") @map("tipo_divisao") // PERCENTUAL, VALOR_FIXO_MAIS_PERCENTUAL
+  comissaoDiskPercent          Decimal            @default(12.00) @db.Decimal(5, 2) @map("comissao_disk_percent")
+  taxaServicoFixa              Decimal            @default(0.00) @db.Decimal(10, 2) @map("taxa_servico_fixa")
+  produtorMdrAbsorvido         Boolean            @default(true) @map("produtor_mdr_absorvido") // true: Produtor arca com MDR; false: Disk arca com MDR
+  produtorChargebackResponsavel Boolean           @default(true) @map("produtor_chargeback_responsavel")
+  status                       String             @default("ATIVO") // ATIVO, INATIVO, RASCUNHO
+  criadoPor                    String             @map("criado_por")
+  createdAt                    DateTime           @default(now()) @map("created_at")
+  updatedAt                    DateTime           @updatedAt @map("updated_at")
+
+  @@index([producerId])
+  @@index([gateway])
+  @@index([status])
+  @@map("gateway_split_configs")
+}
+
+model PaymentSplitTransaction {
+  id                   String             @id @default(uuid())
+  codigoTransacao      String             @unique @map("codigo_transacao") // Ex: "SPL-2026-000412"
+  transacaoIdExterna   String             @map("transacao_id_externa")
+  paymentId            String?            @map("payment_id")
+  saleId               String?            @map("sale_id")
+  eventId              String             @map("event_id")
+  eventNome            String             @map("event_nome")
+  subaccountId         String             @map("subaccount_id")
+  subaccount           GatewaySubaccount  @relation(fields: [subaccountId], references: [id], onDelete: Restrict)
+  gateway              String             // CIELO, PAGARME_STONE, EREDE, PAGBANK, ASAAS
+  metodoPagamento      String             @map("metodo_pagamento") // PIX, CARTAO_CREDITO_1X, CARTAO_CREDITO_PARCELADO, CARTAO_DEBITO
+  valorTotalBruto      Decimal            @db.Decimal(15, 2) @map("valor_total_bruto")
+  valorProdutor        Decimal            @db.Decimal(15, 2) @map("valor_produtor")
+  valorDiskIngressos   Decimal            @db.Decimal(15, 2) @map("valor_disk_ingressos")
+  valorMdrTotal        Decimal            @default(0.00) @db.Decimal(10, 2) @map("valor_mdr_total")
+  mdrProdutor          Decimal            @default(0.00) @db.Decimal(10, 2) @map("mdr_produtor")
+  mdrDiskIngressos     Decimal            @default(0.00) @db.Decimal(10, 2) @map("mdr_disk_ingressos")
+  status               String             @default("PROCESSADO") // PROCESSADO, RETIDO_ESCROW, LIQUIDADO, ESTORNADO, CONTESTADO_CHARGEBACK
+  estornadoEm          DateTime?          @map("estornado_em")
+  motivoEstorno        String?            @map("motivo_estorno")
+  liquidadoEm          DateTime?          @map("liquidado_em")
+  createdAt            DateTime           @default(now()) @map("created_at")
+
+  @@index([eventId])
+  @@index([subaccountId])
+  @@index([gateway])
+  @@index([status])
+  @@index([createdAt])
+  @@map("payment_split_transactions")
+}
+
+
 

@@ -60,6 +60,9 @@ import { AssinaturasDigitaisPage } from '../../modules/assinaturas/AssinaturasDi
 // FASE 17: Antecipações Financeiras, Cessão de Recebíveis & Travas Bancárias
 import { AntecipacoesPage } from '../../modules/antecipacoes/AntecipacoesPage';
 
+// FASE 18: Split de Pagamento Nativo em Gateway & Subadquirência
+import { SplitPaymentPage } from '../../modules/split/SplitPaymentPage';
+
 import { useAuthStore } from '../../stores/auth.store';
 import { PerfilUsuario } from '@diskingressos/types';
 
@@ -183,6 +186,11 @@ export const AppRouter: React.FC = () => {
         <Route path="financeiro/antecipacoes" element={<AntecipacoesPage />} />
         <Route path="cessao-recebiveis" element={<AntecipacoesPage />} />
         <Route path="travas-bancarias" element={<AntecipacoesPage />} />
+
+        {/* Módulos FASE 18: Split de Pagamento Nativo em Gateway & Subadquirência */}
+        <Route path="split" element={<SplitPaymentPage />} />
+        <Route path="financeiro/split" element={<SplitPaymentPage />} />
+        <Route path="gateways/split" element={<SplitPaymentPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />

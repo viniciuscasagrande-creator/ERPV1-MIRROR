@@ -30,3 +30,4 @@ export * from './disaster-recovery.js';
 export * from './governance-sod.js';
 export * from './digital-signature.js';
 export * from './antecipacao.js';
+export * from './split-payment.js';

@@ -22,6 +22,7 @@ import {
   HardDrive,
   ShieldAlert,
   TrendingUp,
+  Split,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -56,6 +57,7 @@ const menuItems: MenuItem[] = [
       { title: 'Alçadas & SoD', path: '/governanca/alcadas', badge: 'SoD' },
       { title: 'Assinaturas & Conta Azul', path: '/assinaturas', badge: 'Autentique' },
       { title: 'Antecipações & Travas', path: '/antecipacoes', badge: 'BCB' },
+      { title: 'Split de Pagamento', path: '/split', badge: 'Nativo' },
     ],
   },
   {
@@ -153,6 +155,13 @@ const menuItems: MenuItem[] = [
     icon: TrendingUp,
     path: '/antecipacoes',
     badge: 'BCB 4734',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+  },
+  {
+    title: 'Split & Subadquirência',
+    icon: Split,
+    path: '/split',
+    badge: 'Nativo',
     requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
   },
   {
