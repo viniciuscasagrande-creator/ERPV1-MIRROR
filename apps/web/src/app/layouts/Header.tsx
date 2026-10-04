@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Bell, Sun, Moon, LogOut, Shield, Building, Check, ExternalLink, ChevronRight } from 'lucide-react';
+import { Menu, Bell, Sun, Moon, LogOut, Shield, Building, Check, ExternalLink, ChevronRight, UserCheck, Clock } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { useNavigate } from 'react-router-dom';
@@ -81,6 +81,26 @@ export const Header: React.FC = () => {
             <span>DiskIngressos Corporativo</span>
           </div>
         )}
+
+        {/* Quick Hub Shortcuts */}
+        <div className="hidden lg:flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
+          <button
+            type="button"
+            onClick={() => navigate('/rh')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 text-xs font-bold transition-all shadow-sm cursor-pointer"
+          >
+            <UserCheck size={14} />
+            <span>Recursos Humanos (RH)</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/rh/ponto-eletronico-app')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all shadow-sm cursor-pointer"
+          >
+            <Clock size={14} />
+            <span>App de Ponto (REP-P)</span>
+          </button>
+        </div>
       </div>
 
       <div className="flex items-center gap-3">

@@ -96,6 +96,34 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
+    title: 'Recursos Humanos (RH)',
+    icon: UserCheck,
+    path: '/rh',
+    badge: 'DISK RH',
+    subItems: [
+      { title: 'Painel Geral do RH', path: '/rh' },
+      { title: 'App Registro de Ponto', path: '/rh/ponto-eletronico-app', badge: 'REP-P' },
+      { title: 'Equipes por Evento', path: '/rh/equipes-eventos', badge: 'Operação' },
+      { title: 'Custos Pessoal por Evento', path: '/rh/custos-eventos', badge: 'DRE Evento' },
+      { title: 'Colaboradores & Ficha', path: '/rh/colaboradores' },
+      { title: 'Estrutura & Organograma', path: '/rh/estrutura' },
+      { title: 'Admissões & Onboarding', path: '/rh/admissoes' },
+      { title: 'Documentos & Assinaturas', path: '/rh/documentos' },
+      { title: 'Ponto e Jornada', path: '/rh/espelho-ponto' },
+      { title: 'Férias & Ausências', path: '/rh/ferias' },
+      { title: 'Folha & Holerites', path: '/rh/folha-holerites', badge: 'eSocial' },
+      { title: 'Benefícios & Planos', path: '/rh/beneficios' },
+      { title: 'Recrutamento & R&S', path: '/rh/recrutamento' },
+      { title: 'Desempenho & PDI', path: '/rh/desempenho' },
+      { title: 'Treinamentos & NR', path: '/rh/treinamentos' },
+      { title: 'Saúde Ocupacional (ASO)', path: '/rh/saude-seguranca' },
+      { title: 'Desligamentos', path: '/rh/desligamentos' },
+      { title: 'Portal do Colaborador', path: '/rh/portal-colaborador' },
+      { title: 'Relatórios de RH & People', path: '/rh/relatorios' },
+      { title: 'Auditoria & LGPD RH', path: '/rh/auditoria-lgpd' },
+    ],
+  },
+  {
     title: 'Produtores',
     icon: Building2,
     badge: 'Hub 360°',
@@ -142,33 +170,6 @@ const menuItems: MenuItem[] = [
       { title: 'Segmentação RFM (LTV)', path: '/remarketing/segmentacao-rfm', badge: 'Clusters' },
       { title: 'Gatilhos & Webhooks', path: '/remarketing/gatilhos', badge: 'Auto' },
       { title: 'Reengajamento Pós-Evento', path: '/remarketing/reengajamento' },
-    ],
-  },
-  {
-    title: 'Recursos Humanos (RH)',
-    icon: UserCheck,
-    badge: 'Disk Interno',
-    subItems: [
-      { title: 'Painel Geral do RH', path: '/rh' },
-      { title: 'App Registro de Ponto', path: '/rh/ponto-eletronico-app', badge: 'REP-P' },
-      { title: 'Equipes por Evento', path: '/rh/equipes-eventos', badge: 'Operação' },
-      { title: 'Custos Pessoal por Evento', path: '/rh/custos-eventos', badge: 'DRE Evento' },
-      { title: 'Colaboradores & Ficha', path: '/rh/colaboradores' },
-      { title: 'Estrutura & Organograma', path: '/rh/estrutura' },
-      { title: 'Admissões & Onboarding', path: '/rh/admissoes' },
-      { title: 'Documentos & Assinaturas', path: '/rh/documentos' },
-      { title: 'Ponto e Jornada', path: '/rh/espelho-ponto' },
-      { title: 'Férias & Ausências', path: '/rh/ferias' },
-      { title: 'Folha & Holerites', path: '/rh/folha-holerites', badge: 'eSocial' },
-      { title: 'Benefícios & Planos', path: '/rh/beneficios' },
-      { title: 'Recrutamento & R&S', path: '/rh/recrutamento' },
-      { title: 'Desempenho & PDI', path: '/rh/desempenho' },
-      { title: 'Treinamentos & NR', path: '/rh/treinamentos' },
-      { title: 'Saúde Ocupacional (ASO)', path: '/rh/saude-seguranca' },
-      { title: 'Desligamentos', path: '/rh/desligamentos' },
-      { title: 'Portal do Colaborador', path: '/rh/portal-colaborador' },
-      { title: 'Relatórios de RH & People', path: '/rh/relatorios' },
-      { title: 'Auditoria & LGPD RH', path: '/rh/auditoria-lgpd' },
     ],
   },
   {
@@ -545,22 +546,45 @@ export const Sidebar: React.FC = () => {
 
           return (
             <div key={item.title} className="space-y-1">
-              <button
-                onClick={() => toggleSubMenu(item.title)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white text-slate-300 transition-colors"
-              >
-                <item.icon className="w-5 h-5 flex-shrink-0" />
-                {sidebarOpen && (
-                  <>
-                    <span className="flex-1 text-left truncate">{item.title}</span>
+              <div className="flex items-center justify-between rounded-lg hover:bg-slate-800 text-slate-300 transition-colors pr-2">
+                <NavLink
+                  to={item.path || (item.subItems && item.subItems[0] ? item.subItems[0].path : '#')}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-3 py-2.5 flex-1 text-sm font-medium transition-colors ${
+                      isActive ? 'text-disk-500 font-bold bg-slate-800/40 rounded-lg' : 'text-slate-300'
+                    }`
+                  }
+                >
+                  <item.icon className="w-5 h-5 flex-shrink-0" />
+                  {sidebarOpen && (
+                    <span className="flex-1 truncate text-left">{item.title}</span>
+                  )}
+                  {sidebarOpen && item.badge && (
+                    <span className="px-1.5 py-0.5 text-[9px] uppercase font-bold rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                      {item.badge}
+                    </span>
+                  )}
+                </NavLink>
+
+                {sidebarOpen && item.subItems && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleSubMenu(item.title);
+                    }}
+                    className="p-1 hover:bg-slate-700/60 rounded text-slate-400 hover:text-white transition-colors"
+                    title={isOpen ? 'Recolher submenu' : 'Expandir submenu'}
+                  >
                     {isOpen ? (
-                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                      <ChevronDown className="w-4 h-4" />
                     ) : (
-                      <ChevronRight className="w-4 h-4 text-slate-400" />
+                      <ChevronRight className="w-4 h-4" />
                     )}
-                  </>
+                  </button>
                 )}
-              </button>
+              </div>
 
               {sidebarOpen && isOpen && item.subItems && (
                 <div className="pl-9 pr-2 space-y-1">

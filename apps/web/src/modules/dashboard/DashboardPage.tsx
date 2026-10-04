@@ -21,6 +21,7 @@ import {
   Store,
   ArrowRight,
   Zap,
+  UserCheck,
 } from 'lucide-react';
 import { formatCurrencyBRL } from '@diskingressos/utils';
 
@@ -252,10 +253,24 @@ export const DashboardPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={() => navigate('/rh')}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+          >
+            <UserCheck className="w-4 h-4" />
+            <span>Recursos Humanos (RH)</span>
+          </button>
+          <button
+            onClick={() => navigate('/rh/ponto-eletronico-app')}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+          >
+            <Clock className="w-4 h-4" />
+            <span>App de Ponto (REP-P)</span>
+          </button>
           <button
             onClick={() => navigate('/eventos/central-fechamento')}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-disk-600 hover:bg-disk-700 text-white font-semibold text-xs shadow-md shadow-rose-900/30 transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs shadow-md transition-all cursor-pointer"
           >
             <Layers className="w-4 h-4" />
             <span>Central de Fechamento</span>
