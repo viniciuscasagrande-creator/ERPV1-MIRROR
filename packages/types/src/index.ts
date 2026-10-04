@@ -67,3 +67,4 @@ export * from './producer-management-hub.js';
 export * from './marketing-growth-engine.js';
 export * from './remarketing-abandoned-cart.js';
 export * from './utm-telemetry-ads.js';
+export * from './human-resources-management.js';

@@ -3909,6 +3909,125 @@ model AdsTelemetryAnomalyAlert {
   @@map("ads_telemetry_anomaly_alerts")
 }
 
+// ==========================================
+// RECURSOS HUMANOS (RH) & PONTO DIGITAL DISKINGRESSOS
+// ==========================================
+
+model EmployeeHr {
+  id                         String    @id @default(uuid())
+  matricula                  String    @unique @map("matricula") // Ex: "DSK-00124"
+  nomeCompleto               String    @map("nome_completo")
+  cpf                        String    @unique @map("cpf")
+  rg                         String?   @map("rg")
+  pisPasep                   String?   @map("pis_pasep")
+  ctpsNumero                 String?   @map("ctps_numero")
+  emailCorporativo           String    @unique @map("email_corporativo")
+  emailPessoal               String?   @map("email_pessoal")
+  telefone                   String    @map("telefone")
+  cargo                      String    @map("cargo")
+  departamento               String    @map("departamento") // BILHETERIA_PDV, SUPORTE_CLIENTE, TECNOLOGIA, FINANCEIRO, OPERACOES_EVENTOS, RH, DIRETORIA
+  regimeContratacao          String    @default("CLT") @map("regime_contratacao") // CLT, PJ, ESTAGIO, JOVEM_APRENDIZ
+  salarioBase                Decimal   @db.Decimal(12, 2) @map("salario_base")
+  dataAdmissao               DateTime  @map("data_admissao")
+  status                     String    @default("ATIVO") @map("status") // ATIVO, FERIAS, AFASTADO_INSS, DESLIGADO
+  bancoNome                  String?   @map("banco_nome")
+  agenciaBancaria            String?   @map("agencia_bancaria")
+  contaCorrente              String?   @map("conta_corrente")
+  chavePix                   String?   @map("chave_pix")
+  jornadaSemanalHoras        Int       @default(44) @map("jornada_semanal_horas")
+  saldoBancoHorasMinutos     Int       @default(0) @map("saldo_banco_horas_minutos")
+  fotoPerfilUrl              String?   @map("foto_perfil_url")
+  createdAt                  DateTime  @default(now()) @map("created_at")
+  updatedAt                  DateTime  @updatedAt @map("updated_at")
+
+  timeClockRecords           TimeClockRecord[]
+  payrollPayslips            PayrollPayslip[]
+  timeOffRequests            TimeOffRequest[]
+
+  @@map("employee_hr_profiles")
+}
+
+model TimeClockRecord {
+  id                         String      @id @default(uuid())
+  employeeId                 String      @map("employee_id")
+  employee                   EmployeeHr  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  dataHoraRegistro           DateTime    @default(now()) @map("data_hora_registro")
+  tipoRegistro               String      @map("tipo_registro") // ENTRADA_1, SAIDA_ALMOCO, RETORNO_ALMOCO, SAIDA_2, HORAS_EXTRAS_INICIO, HORAS_EXTRAS_FIM
+  latitude                   Decimal?    @db.Decimal(10, 7) @map("latitude")
+  longitude                  Decimal?    @db.Decimal(10, 7) @map("longitude")
+  localizacaoDescricao       String?     @map("localizacao_descricao") // Ex: "Sede DiskIngressos Curitiba" ou "Pedreira Paulo Leminski - Operação de Bilheteria"
+  ipOrigem                   String?     @map("ip_origem")
+  dispositivoOrigem          String?     @map("dispositivo_origem")
+  hashBiometriaSelfie        String?     @map("hash_biometria_selfie")
+  statusPortariaMtp671       String      @default("VALIDO_CONFORME_REP_P") @map("status_portaria_mtp671")
+  comprovanteNsrNumero       Int         @default(autoincrement()) @map("comprovante_nsr_numero")
+  observacao                 String?     @map("observacao")
+
+  @@index([employeeId])
+  @@index([dataHoraRegistro])
+  @@map("time_clock_records")
+}
+
+model PayrollPayslip {
+  id                         String      @id @default(uuid())
+  employeeId                 String      @map("employee_id")
+  employee                   EmployeeHr  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  competenciaMesAno          String      @map("competencia_mes_ano") // Ex: "04/2026"
+  tipoFolha                  String      @default("MENSAL") @map("tipo_folha") // MENSAL, ADIANTAMENTO_QUINZENAL, 13_PRIMEIRA_PARCELA, 13_SEGUNDA_PARCELA, FERIAS, RESCISAO
+  salarioBase                Decimal     @db.Decimal(12, 2) @map("salario_base")
+  totalProventos             Decimal     @db.Decimal(12, 2) @map("total_proventos")
+  totalDescontos             Decimal     @db.Decimal(12, 2) @map("total_descontos")
+  valorLiquidoReceber        Decimal     @db.Decimal(12, 2) @map("valor_liquido_receber")
+  baseCalculoInss            Decimal     @db.Decimal(12, 2) @map("base_calculo_inss")
+  descontoInss               Decimal     @db.Decimal(12, 2) @map("desconto_inss")
+  baseCalculoIrrf            Decimal     @db.Decimal(12, 2) @map("base_calculo_irrf")
+  descontoIrrf               Decimal     @db.Decimal(12, 2) @map("desconto_irrf")
+  depositoFgtsMes            Decimal     @db.Decimal(12, 2) @map("deposito_fgts_mes")
+  itensDetalhadosJson        String      @map("itens_detalhados_json") // Lista completa com códigos de verbas, proventos e descontos
+  status                     String      @default("DISPONIVEL") @map("status") // DISPONIVEL, ASSINADO_PELO_COLABORADOR, PAGO
+  dataAssinatura             DateTime?   @map("data_assinatura")
+  hashReciboEntrega          String      @map("hash_recibo_entrega")
+  dataPagamento              DateTime?   @map("data_pagamento")
+  createdAt                  DateTime    @default(now()) @map("created_at")
+
+  @@unique([employeeId, competenciaMesAno, tipoFolha])
+  @@map("payroll_payslips")
+}
+
+model HrNotice {
+  id                         String    @id @default(uuid())
+  titulo                     String    @map("titulo")
+  conteudo                   String    @map("conteudo")
+  departamentoAlvo           String    @default("TODOS") @map("departamento_alvo") // TODOS, BILHETERIA_PDV, SUPORTE_CLIENTE, TECNOLOGIA, OPERACOES_EVENTOS
+  prioridade                 String    @default("NORMAL") @map("prioridade") // ALTA, NORMAL, URGENTE
+  requerConfirmacaoLeitura   Boolean   @default(false) @map("requer_confirmacao_leitura")
+  totalLeiturasConfirmadas   Int       @default(0) @map("total_leituras_confirmadas")
+  ativo                      Boolean   @default(true) @map("ativo")
+  publicadoPor               String    @default("Recursos Humanos DiskIngressos") @map("publicado_por")
+  dataPublicacao             DateTime  @default(now()) @map("data_publicacao")
+
+  @@map("hr_notices")
+}
+
+model TimeOffRequest {
+  id                         String      @id @default(uuid())
+  employeeId                 String      @map("employee_id")
+  employee                   EmployeeHr  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  tipo                       String      @map("tipo") // FERIAS, ATESTADO_MEDICO, LICENCA_MATERNIDADE, LICENCA_PATERNIDADE, FOLGA_BANCO_HORAS
+  dataInicio                 DateTime    @map("data_inicio")
+  dataFim                    DateTime    @map("data_fim")
+  diasTotais                 Int         @map("dias_totais")
+  venderDiasAbono            Boolean     @default(false) @map("vender_dias_abono") // Abono pecuniário (10 dias)
+  adiantarDecimoTerceiro     Boolean     @default(false) @map("adiantar_decimo_terceiro")
+  status                     String      @default("PENDENTE") @map("status") // PENDENTE, APROVADO_GESTOR, HOMOLOGADO_RH, REPROVADO
+  motivoAprovacaoReprovacao  String?     @map("motivo_aprovacao_reprovacao")
+  documentoAnexoUrl          String?     @map("documento_anexo_url")
+  createdAt                  DateTime    @default(now()) @map("created_at")
+
+  @@index([employeeId])
+  @@map("time_off_requests")
+}
+
 
 
 

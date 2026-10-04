@@ -70,6 +70,7 @@ import { SoxIpoModule } from './modules/sox-ipo/sox-ipo.module';
 import { ProducerHubModule } from './modules/producer-hub/producer-hub.module';
 import { MarketingModule } from './modules/marketing/marketing.module';
 import { RemarketingModule } from './modules/remarketing/remarketing.module';
+import { HrModule } from './modules/human-resources/hr.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TenantGuard } from './common/guards/tenant.guard';
@@ -150,6 +151,7 @@ import { PrismaModule } from './database/prisma.module';
     ProducerHubModule,
     MarketingModule,
     RemarketingModule,
+    HrModule,
   ],
   providers: [
     PrismaService,

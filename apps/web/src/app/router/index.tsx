@@ -12,6 +12,8 @@ import { MarketingPage } from '../../modules/marketing/MarketingPage';
 import { CentralUtmPage } from '../../modules/marketing/CentralUtmPage';
 import { TelemetriaAdsPage } from '../../modules/marketing/TelemetriaAdsPage';
 import { RemarketingPage } from '../../modules/remarketing/RemarketingPage';
+import { HrManagementPage } from '../../modules/rh/HrManagementPage';
+import { AppRegistroPontoPage } from '../../modules/rh/AppRegistroPontoPage';
 import { VendasPage } from '../../modules/vendas/VendasPage';
 import { ContasReceberPage } from '../../modules/financeiro/ContasReceberPage';
 import { ContasPagarPage } from '../../modules/financeiro/ContasPagarPage';
@@ -499,9 +501,29 @@ export const AppRouter: React.FC = () => {
         <Route path="remarketing/gatilhos" element={<RemarketingPage />} />
         <Route path="remarketing/reengajamento" element={<RemarketingPage />} />
 
-
-
-
+        {/* Módulo Corporativo de Recursos Humanos (RH) DiskIngressos & Ponto REP-P */}
+        <Route path="rh" element={<HrManagementPage />} />
+        <Route path="rh/colaboradores" element={<HrManagementPage />} />
+        <Route path="rh/estrutura" element={<HrManagementPage />} />
+        <Route path="rh/admissoes" element={<HrManagementPage />} />
+        <Route path="rh/documentos" element={<HrManagementPage />} />
+        <Route path="rh/ponto" element={<HrManagementPage />} />
+        <Route path="rh/espelho-ponto" element={<HrManagementPage />} />
+        <Route path="rh/ponto-eletronico-app" element={<AppRegistroPontoPage />} />
+        <Route path="rh/avisos" element={<HrManagementPage />} />
+        <Route path="rh/ferias" element={<HrManagementPage />} />
+        <Route path="rh/folha-holerites" element={<HrManagementPage />} />
+        <Route path="rh/beneficios" element={<HrManagementPage />} />
+        <Route path="rh/recrutamento" element={<HrManagementPage />} />
+        <Route path="rh/desempenho" element={<HrManagementPage />} />
+        <Route path="rh/treinamentos" element={<HrManagementPage />} />
+        <Route path="rh/saude-seguranca" element={<HrManagementPage />} />
+        <Route path="rh/desligamentos" element={<HrManagementPage />} />
+        <Route path="rh/equipes-eventos" element={<HrManagementPage />} />
+        <Route path="rh/custos-eventos" element={<HrManagementPage />} />
+        <Route path="rh/portal-colaborador" element={<HrManagementPage />} />
+        <Route path="rh/relatorios" element={<HrManagementPage />} />
+        <Route path="rh/auditoria-lgpd" element={<HrManagementPage />} />
 
         {/* Módulos FASE 6: Fiscal, Tributário, NF-e / NFS-e & SPED */}
         <Route path="fiscal" element={<NotasFiscaisPage />} />
