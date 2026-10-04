@@ -40,6 +40,8 @@ import {
   Truck,
   Megaphone,
   Repeat,
+  Activity,
+  Link2,
 } from 'lucide-react';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -111,10 +113,23 @@ const menuItems: MenuItem[] = [
     badge: 'Growth',
     subItems: [
       { title: 'Campanhas Ads Multi-Canal', path: '/marketing/campanhas', badge: 'ROAS' },
+      { title: 'Central UTM Multi-Canal', path: '/marketing/central-utm', badge: 'Builder' },
       { title: 'Pixel & CAPI Server-Side', path: '/marketing/pixel', badge: 'Meta' },
       { title: 'Cupons & Descontos', path: '/marketing/cupons' },
       { title: 'Promoters & Afiliados', path: '/marketing/promoters', badge: 'Pix' },
       { title: 'Atribuição Multi-Toque', path: '/marketing/atribuicao', badge: 'IA' },
+    ],
+  },
+  {
+    title: 'Telemetria de Ads',
+    icon: Activity,
+    badge: 'Live',
+    requiredRole: [PerfilUsuario.ADMIN, PerfilUsuario.DIRETORIA, PerfilUsuario.FINANCEIRO],
+    subItems: [
+      { title: 'Painel Geral Telemetria', path: '/marketing/telemetria-ads', badge: 'Ping' },
+      { title: 'Conexões & Latência APIs', path: '/marketing/telemetria-ads', badge: 'CAPI' },
+      { title: 'Alertas & Anomalias Ads', path: '/marketing/telemetria-ads', badge: 'Alertas' },
+      { title: 'Stream de Eventos CAPI', path: '/marketing/telemetria-ads', badge: 'Realtime' },
     ],
   },
   {

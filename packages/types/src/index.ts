@@ -66,3 +66,4 @@ export * from './sox-ipo-governance.js';
 export * from './producer-management-hub.js';
 export * from './marketing-growth-engine.js';
 export * from './remarketing-abandoned-cart.js';
+export * from './utm-telemetry-ads.js';

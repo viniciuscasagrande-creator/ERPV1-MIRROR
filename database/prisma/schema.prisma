@@ -3813,6 +3813,102 @@ model RemarketingTriggerAutomation {
   @@map("remarketing_trigger_automations")
 }
 
+// ==========================================
+// CENTRAL UTM & RASTREAMENTO MULTI-CANAL
+// ==========================================
+
+model UtmTrackingCampaignLink {
+  id                         String    @id @default(uuid())
+  codigoIdentificador        String    @unique @map("codigo_identificador") // Ex: "UTM-2026-META-VMX01"
+  nomeCampanha               String    @map("nome_campanha")
+  canalOrigem                String    @map("canal_origem") // META_ADS, TIKTOK_ADS, SPOTIFY_ADS, GOOGLE_ADS_GA4, PINTEREST_ADS, X_TWITTER, LINKEDIN_ADS, INFLUENCER, QRCODE_OFFLINE, CRM_EMAIL
+  eventId                    String?   @map("event_id")
+  nomeEvento                 String    @map("nome_evento")
+  loteSetor                  String?   @map("lote_setor")
+  urlDestinoOriginal         String    @map("url_destino_original")
+  urlParametrizadaCompleta   String    @map("url_parametrizada_completa")
+  urlEncurtada               String    @unique @map("url_encurtada") // Ex: "https://dsk.ing/vmx-sp"
+  utmSource                  String    @map("utm_source")
+  utmMedium                  String    @map("utm_medium")
+  utmCampaign                String    @map("utm_campaign")
+  utmTerm                    String?   @map("utm_term")
+  utmContent                 String?   @map("utm_content")
+  parametrosExtrasJson       String?   @map("parametros_extras_json") // custom parameters
+  qrCodeDataUri              String?   @map("qr_code_data_uri")
+  totalCliques               Int       @default(0) @map("total_cliques")
+  totalConversoes            Int       @default(0) @map("total_conversoes")
+  receitaGeradaBRL           Decimal   @default(0.00) @db.Decimal(15, 2) @map("receita_gerada_brl")
+  taxaConversaoPercent       Decimal   @default(0.00) @db.Decimal(5, 2) @map("taxa_conversao_percent")
+  statusLink                 String    @default("ATIVO") @map("status_link") // ATIVO, PAUSADO, ARQUIVADO
+  criadoPor                  String    @default("Equipe Marketing DiskIngressos") @map("criado_por")
+  createdAt                  DateTime  @default(now()) @map("created_at")
+  updatedAt                  DateTime  @updatedAt @map("updated_at")
+
+  @@index([canalOrigem])
+  @@index([eventId])
+  @@map("utm_tracking_campaign_links")
+}
+
+// ==========================================
+// TELEMETRIA INTERNA DE ADS & OBSERVABILIDADE
+// ==========================================
+
+model AdsNetworkTelemetryMetric {
+  id                         String    @id @default(uuid())
+  canalNetwork               String    @map("canal_network") // META_ADS, GOOGLE_ADS_GA4, TIKTOK_ADS, SPOTIFY_ADS, PINTEREST_ADS, X_ADS
+  statusConexao              String    @default("OPERACIONAL_NORMAL") @map("status_conexao") // OPERACIONAL_NORMAL, INSTABILIDADE, DEGRADADO, CRITICO
+  latenciaMediaMs            Int       @map("latencia_media_ms")
+  taxaEntregaServerSideCapi  Decimal   @db.Decimal(5, 2) @map("taxa_entrega_server_side_capi") // ex: 99.8%
+  taxaDeduplicacaoScore      Decimal   @db.Decimal(4, 2) @map("taxa_deduplicacao_score") // ex: 9.6
+  taxaMatchingAttIosPercent  Decimal   @db.Decimal(5, 2) @map("taxa_matching_att_ios_percent") // ex: 84.5%
+  eventosProcessados24h      Int       @map("eventos_processados_24h")
+  falhasDisparo24h           Int       @default(0) @map("falhas_disparo_24h")
+  gastoMonitorado24hBRL      Decimal   @db.Decimal(15, 2) @map("gasto_monitorado_24h_brl")
+  roasEmTempoReal            Decimal   @db.Decimal(8, 2) @map("roas_em_tempo_real")
+  ultimoHealthPing           DateTime  @default(now()) @map("ultimo_health_ping")
+
+  @@map("ads_network_telemetry_metrics")
+}
+
+model AdsTelemetryLiveEvent {
+  id                         String    @id @default(uuid())
+  eventTraceId               String    @unique @map("event_trace_id")
+  canalNetwork               String    @map("canal_network") // META, GOOGLE_GA4, TIKTOK, SPOTIFY, PINTEREST
+  tipoEvento                 String    @map("tipo_evento") // PageView, ViewContent, AddToCart, InitiateCheckout, Purchase
+  valorMonetario             Decimal   @default(0.00) @db.Decimal(10, 2) @map("valor_monetario")
+  httpStatus                 Int       @default(200) @map("http_status")
+  latenciaDisparoMs          Int       @map("latencia_disparo_ms")
+  payloadSnippet             String    @map("payload_snippet")
+  ipOrigemHash               String    @map("ip_origem_hash")
+  navegadorDispositivo       String    @map("navegador_dispositivo") // iOS Safari In-App, Android Chrome, Desktop Chrome, etc.
+  statusEntrega              String    @default("CONFIRMADO_SERVER") @map("status_entrega")
+  timestampEvento            DateTime  @default(now()) @map("timestamp_evento")
+
+  @@index([canalNetwork])
+  @@index([tipoEvento])
+  @@map("ads_telemetry_live_events")
+}
+
+model AdsTelemetryAnomalyAlert {
+  id                         String    @id @default(uuid())
+  codigoAlerta               String    @unique @map("codigo_alerta") // Ex: "ALT-ROAS-META-004"
+  canalNetwork               String    @map("canal_network")
+  severidade                 String    @map("severidade") // CRITICA, ALERTA, INFORMATIVA
+  tipoAnomalia               String    @map("tipo_anomalia") // QUEDA_ROAS, PICO_CPA, FALHA_PIXEL_CAPI, DISCREPANCIA_GA4, DESVIO_ORCAMENTO
+  descricao                  String    @map("descricao")
+  valorDetectado             String    @map("valor_detectado")
+  valorEsperado              String    @map("valor_esperado")
+  acaoRecomendada            String    @map("acao_recomendada")
+  status                     String    @default("PENDENTE") @map("status") // PENDENTE, EM_INVESTIGACAO, RESOLVIDO
+  resolvidoPor               String?   @map("resolvido_por")
+  resolvidoEm                DateTime? @map("resolvido_em")
+  timestampAlerta            DateTime  @default(now()) @map("timestamp_alerta")
+
+  @@index([severidade])
+  @@index([status])
+  @@map("ads_telemetry_anomaly_alerts")
+}
+
 
 
 

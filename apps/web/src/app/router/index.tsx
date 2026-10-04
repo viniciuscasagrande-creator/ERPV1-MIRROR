@@ -9,6 +9,8 @@ import { EventosPage } from '../../modules/eventos/EventosPage';
 import { CentralFechamentoPage } from '../../modules/eventos/CentralFechamentoPage';
 import { ProdutoresPage } from '../../modules/produtores/ProdutoresPage';
 import { MarketingPage } from '../../modules/marketing/MarketingPage';
+import { CentralUtmPage } from '../../modules/marketing/CentralUtmPage';
+import { TelemetriaAdsPage } from '../../modules/marketing/TelemetriaAdsPage';
 import { RemarketingPage } from '../../modules/remarketing/RemarketingPage';
 import { VendasPage } from '../../modules/vendas/VendasPage';
 import { ContasReceberPage } from '../../modules/financeiro/ContasReceberPage';
@@ -486,6 +488,9 @@ export const AppRouter: React.FC = () => {
         <Route path="marketing/cupons" element={<MarketingPage />} />
         <Route path="marketing/promoters" element={<MarketingPage />} />
         <Route path="marketing/atribuicao" element={<MarketingPage />} />
+        <Route path="marketing/central-utm" element={<CentralUtmPage />} />
+        <Route path="marketing/telemetria-ads" element={<TelemetriaAdsPage />} />
+        <Route path="telemetria-ads" element={<TelemetriaAdsPage />} />
 
         {/* Motor de Remarketing & Recuperação de Carrinho */}
         <Route path="remarketing" element={<RemarketingPage />} />
