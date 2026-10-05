@@ -4028,6 +4028,147 @@ model TimeOffRequest {
   @@map("time_off_requests")
 }
 
+model EventStaffAllocation {
+  id                    String      @id @default(uuid())
+  eventoId              String      @map("evento_id")
+  eventoNome            String      @map("evento_nome")
+  localEvento           String?     @map("local_evento")
+  employeeNome          String      @map("employee_nome")
+  employeeId            String?     @map("employee_id")
+  tipoContratacao       String      @default("INTERNO_DISK") @map("tipo_contratacao")
+  funcaoOperacional     String      @map("funcao_operacional")
+  horasPrevistas        Int         @default(8) @map("horas_previstas")
+  horasRealizadas       Int         @default(8) @map("horas_realizadas")
+  valorDiariaCache      Decimal     @db.Decimal(12, 2) @map("valor_diaria_cache")
+  valorHorasExtras      Decimal     @default(0.00) @db.Decimal(12, 2) @map("valor_horas_extras")
+  statusPresenca        String      @default("CONFIRMADO") @map("status_presenca")
+  createdAt             DateTime    @default(now()) @map("created_at")
+
+  @@index([eventoId])
+  @@index([employeeId])
+  @@map("event_staff_allocations")
+}
+
+model EventStaffCost {
+  id                     String    @id @default(uuid())
+  eventoId               String    @unique @map("evento_id")
+  eventoNome             String    @map("evento_nome")
+  dataEvento             String    @map("data_evento")
+  centroCustoEvento      String    @map("centro_custo_evento")
+  equipeOperacionalBRL   Decimal   @db.Decimal(12, 2) @map("equipe_operacional_brl")
+  horasExtrasBRL         Decimal   @db.Decimal(12, 2) @map("horas_extras_brl")
+  alimentacaoBRL         Decimal   @db.Decimal(12, 2) @map("alimentacao_brl")
+  transporteBRL          Decimal   @db.Decimal(12, 2) @map("transporte_brl")
+  freelancersBRL         Decimal   @db.Decimal(12, 2) @map("freelancers_brl")
+  custoTotalPessoalBRL   Decimal   @db.Decimal(12, 2) @map("custo_total_pessoal_brl")
+  integradoAoDreEvento   Boolean   @default(true) @map("integrado_ao_dre_evento")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  @@map("event_staff_costs")
+}
+
+model HrGeofence {
+  id                   String    @id @default(uuid())
+  nome                 String    @map("nome")
+  latitude             Decimal   @db.Decimal(10, 7) @map("latitude")
+  longitude            Decimal   @db.Decimal(10, 7) @map("longitude")
+  raioMetros           Int       @default(150) @map("raio_metros")
+  tipoLocal            String    @default("ARENA_SHOW") @map("tipo_local")
+  cidade               String    @default("Curitiba - PR") @map("cidade")
+  status               String    @default("ATIVA") @map("status")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  @@map("hr_geofences")
+}
+
+model HrDevice {
+  id                   String    @id @default(uuid())
+  identificadorUnico   String    @unique @map("identificador_unico")
+  modelo               String    @map("modelo")
+  sistemaOperacional   String    @map("sistema_operacional")
+  responsavelNome      String    @map("responsavel_nome")
+  status               String    @default("AUTORIZADO") @map("status")
+  ultimoAcesso         DateTime? @map("ultimo_acesso")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  @@map("hr_devices")
+}
+
+model HrBenefitPlan {
+  id                   String    @id @default(uuid())
+  nome                 String    @map("nome")
+  categoria            String    @map("categoria")
+  fornecedor           String    @map("fornecedor")
+  custoEmpresa         Decimal   @db.Decimal(12, 2) @map("custo_empresa")
+  coparticipacaoColab  Decimal   @db.Decimal(12, 2) @map("coparticipacao_colab")
+  totalAderentes       Int       @default(0) @map("total_aderentes")
+  ativo                Boolean   @default(true) @map("ativo")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  @@map("hr_benefit_plans")
+}
+
+model HrJobOpening {
+  id                   String    @id @default(uuid())
+  titulo               String    @map("titulo")
+  departamento         String    @map("departamento")
+  tipoContrato         String    @default("CLT") @map("tipo_contrato")
+  localidade           String    @default("Curitiba - PR") @map("localidade")
+  faixaSalarial        String    @map("faixa_salarial")
+  status               String    @default("ABERTA") @map("status")
+  totalCandidatos      Int       @default(0) @map("total_candidatos")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  @@map("hr_job_openings")
+}
+
+model HrJobCandidate {
+  id                   String    @id @default(uuid())
+  vagaId               String    @map("vaga_id")
+  nome                 String    @map("nome")
+  email                String    @map("email")
+  telefone             String    @map("telefone")
+  etapaFunil           String    @default("TRIAGEM") @map("etapa_funil")
+  scoreIa              Int       @default(85) @map("score_ia")
+  curriculoUrl         String?   @map("curriculo_url")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  @@index([vagaId])
+  @@map("hr_job_candidates")
+}
+
+model HrTraining {
+  id                   String    @id @default(uuid())
+  titulo               String    @map("titulo")
+  categoria            String    @map("categoria")
+  duracaoHoras         Int       @map("duracao_horas")
+  obrigatorio          Boolean   @default(false) @map("obrigatorio")
+  instrutor            String    @map("instrutor")
+  totalInscritos       Int       @default(0) @map("total_inscritos")
+  status               String    @default("ATIVO") @map("status")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  @@map("hr_trainings")
+}
+
+model HrOccupationalExam {
+  id                   String    @id @default(uuid())
+  employeeId           String    @map("employee_id")
+  employeeNome         String    @map("employee_nome")
+  tipoExame            String    @map("tipo_exame")
+  dataExame            DateTime  @map("data_exame")
+  dataValidadeAso      DateTime  @map("data_validade_aso")
+  resultado            String    @default("APTO") @map("resultado")
+  clinicaMedica        String    @map("clinica_medica")
+  crmMedico            String    @map("crm_medico")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  @@index([employeeId])
+  @@map("hr_occupational_exams")
+}
+
+
 
 
 
