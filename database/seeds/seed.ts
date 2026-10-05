@@ -1608,7 +1608,129 @@ async function main() {
   }
 
   console.log('✅ Períodos contábeis e travas de competência semeados com sucesso!');
-  console.log('🏁 Seed completo de todas as 10 Fases concluído.');
+
+  // 18. MÓDULO CORPORATIVO DE RECURSOS HUMANOS (RH DISKINGRESSOS)
+  console.log('⏳ Semeando Colaboradores, Ponto REP-P e Estrutura de RH...');
+  
+  await prisma.employeeHr.upsert({
+    where: { matricula: 'DSK-00101' },
+    update: {},
+    create: {
+      matricula: 'DSK-00101',
+      nomeCompleto: 'Ana Carolina Meirelles',
+      cpf: '123.456.789-01',
+      rg: '9.876.543-2 SSP/PR',
+      pisPasep: '120.45892.11-9',
+      ctpsNumero: '4829102/0010-PR',
+      emailCorporativo: 'ana.meirelles@diskingressos.com.br',
+      emailPessoal: 'aninha.meirelles@gmail.com',
+      telefone: '(41) 99876-5432',
+      cargo: 'Supervisora de Bilheteria & Operações de Campo',
+      departamento: 'BILHETERIA_PDV',
+      regimeContratacao: 'CLT',
+      salarioBase: 4850.0,
+      dataAdmissao: new Date('2023-03-15T00:00:00Z'),
+      status: 'ATIVO',
+      bancoNome: 'Banco Itaú S.A.',
+      agenciaBancaria: '3829',
+      contaCorrente: '29102-4',
+      chavePix: '12345678901',
+      jornadaSemanalHoras: 44,
+      saldoBancoHorasMinutos: 360,
+    },
+  });
+
+  await prisma.employeeHr.upsert({
+    where: { matricula: 'DSK-00102' },
+    update: {},
+    create: {
+      matricula: 'DSK-00102',
+      nomeCompleto: 'Lucas Gabriel Pinheiro',
+      cpf: '234.567.890-12',
+      rg: '10.234.567-8 SSP/PR',
+      pisPasep: '131.98234.22-4',
+      ctpsNumero: '5910293/0020-PR',
+      emailCorporativo: 'lucas.pinheiro@diskingressos.com.br',
+      telefone: '(41) 99123-4567',
+      cargo: 'Desenvolvedor Full Stack Sênior',
+      departamento: 'TECNOLOGIA',
+      regimeContratacao: 'CLT',
+      salarioBase: 9200.0,
+      dataAdmissao: new Date('2022-08-01T00:00:00Z'),
+      status: 'ATIVO',
+      bancoNome: 'Banco Santander (Brasil) S.A.',
+      agenciaBancaria: '0912',
+      contaCorrente: '130982-1',
+      chavePix: 'lucas.pinheiro@diskingressos.com.br',
+      jornadaSemanalHoras: 40,
+      saldoBancoHorasMinutos: 180,
+    },
+  });
+
+  await prisma.hrNotice.createMany({
+    data: [
+      {
+        titulo: 'Aviso Obrigatório: Atualização Cadastral eSocial 2026',
+        conteudo: 'Todos os colaboradores devem revisar dependentes e endereço até 15/10.',
+        departamentoAlvo: 'TODOS',
+        prioridade: 'ALTA',
+        requerConfirmacaoLeitura: true,
+      },
+      {
+        titulo: 'Escala Especial Festival Curitiba Pop Rock 2026',
+        conteudo: 'Operadores de bilheteria e fiscais de portão confirmados na escala da Pedreira.',
+        departamentoAlvo: 'BILHETERIA_PDV',
+        prioridade: 'NORMAL',
+        requerConfirmacaoLeitura: false,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  await prisma.hrGeofence.createMany({
+    data: [
+      {
+        nome: 'Sede Administrativa DiskIngressos',
+        latitude: -25.4284,
+        longitude: -49.2733,
+        raioMetros: 100,
+        tipoLocal: 'SEDE_ADMINISTRATIVA',
+        cidade: 'Curitiba - PR',
+        status: 'ATIVA',
+      },
+      {
+        nome: 'Pedreira Paulo Leminski (Festival Pop Rock)',
+        latitude: -25.3855,
+        longitude: -49.2764,
+        raioMetros: 250,
+        tipoLocal: 'ARENA_SHOW',
+        cidade: 'Curitiba - PR',
+        status: 'ATIVA',
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  await prisma.eventStaffCost.upsert({
+    where: { eventoId: 'evt-poprock-01' },
+    update: {},
+    create: {
+      eventoId: 'evt-poprock-01',
+      eventoNome: 'Festival Curitiba Pop Rock 2026',
+      dataEvento: '14/11/2026',
+      centroCustoEvento: 'CC-EVT-POPROCK-2026',
+      equipeOperacionalBRL: 8400.0,
+      horasExtrasBRL: 2150.0,
+      alimentacaoBRL: 1300.0,
+      transporteBRL: 900.0,
+      freelancersBRL: 4500.0,
+      custoTotalPessoalBRL: 17250.0,
+      integradoAoDreEvento: true,
+    },
+  });
+
+  console.log('✅ Dados de Recursos Humanos, Ponto REP-P e Custos por Evento semeados com sucesso!');
+  console.log('🏁 Seed completo do ecossistema DiskIngressos ERP concluído.');
 }
 
 main()
